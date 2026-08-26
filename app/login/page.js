@@ -70,7 +70,7 @@ export default function LoginPage() {
   const [bootLogs, setBootLogs] = useState([]);
 
   // Storage Keys
-  const SESSION_KEY = 'aegis_erp_session';
+  const SESSION_KEY = 'campusx_erp_session';
 
   // Hashing Helper (matches server side)
   const hashPassword = (plain) => {
@@ -392,14 +392,14 @@ export default function LoginPage() {
     else if (session.role.includes('library')) campus = 'West Academic Archway';
 
     // Map RAG model
-    let ragModel = 'aegis-rag-academic-v4';
-    if (session.role === 'superadmin' || session.role === 'platformadmin') ragModel = 'aegis-rag-sec-ops-v5';
-    else if (session.role.includes('compliance') || session.role.includes('auditor')) ragModel = 'aegis-rag-regulatory-v3';
-    else if (session.role.includes('finance')) ragModel = 'aegis-rag-ledger-v2';
+    let ragModel = 'campusx-rag-academic-v4';
+    if (session.role === 'superadmin' || session.role === 'platformadmin') ragModel = 'campusx-rag-sec-ops-v5';
+    else if (session.role.includes('compliance') || session.role.includes('auditor')) ragModel = 'campusx-rag-regulatory-v3';
+    else if (session.role.includes('finance')) ragModel = 'campusx-rag-ledger-v2';
 
     // Short DID wallet sync code
     const didSuffix = hashPassword(session.email).substring(2);
-    const didStatus = `did:aegis:2026:${didSuffix || '8f2b1d'} [SYNCED]`;
+    const didStatus = `did:campusx:2026:${didSuffix || '8f2b1d'} [SYNCED]`;
 
     const displayRole = {
       superadmin: 'Global Super Admin',
@@ -432,7 +432,7 @@ export default function LoginPage() {
     }[session.role] || 'User';
 
     const logsList = [
-      { progress: 0, text: `Initializing Aegis Secure Shell v5.0.0-mega-upgrade...` },
+      { progress: 0, text: `Initializing CampusX Secure Shell v5.0.0-mega-upgrade...` },
       { progress: 8, text: `Establishing handshake with local node on port 5000...` },
       { progress: 15, text: `[OK] Local socket handshake verified. Connection secure.` },
       { progress: 22, text: `Opening transaction ledger SQLite database...` },
@@ -614,9 +614,9 @@ export default function LoginPage() {
   // Mock SSO triggers
   const handleSSO = (provider) => {
     const ssoUser = {
-      Google: { id: 'usr_sso_g', name: 'SSO Scholar (Google)', email: 'student@aegis.demo', role: 'student', avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150' },
-      Microsoft: { id: 'usr_sso_m', name: 'SSO Admin (Microsoft)', email: 'univadmin@aegis.demo', role: 'admin', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150' },
-      Passkey: { id: 'usr_sso_p', name: 'SSO Director (Passkey)', email: 'superadmin@aegis.demo', role: 'superadmin', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150' }
+      Google: { id: 'usr_sso_g', name: 'SSO Scholar (Google)', email: 'student@campusx.demo', role: 'student', avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150' },
+      Microsoft: { id: 'usr_sso_m', name: 'SSO Admin (Microsoft)', email: 'univadmin@campusx.demo', role: 'admin', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150' },
+      Passkey: { id: 'usr_sso_p', name: 'SSO Director (Passkey)', email: 'superadmin@campusx.demo', role: 'superadmin', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150' }
     };
 
     const user = ssoUser[provider];
@@ -637,7 +637,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="bg-brand-bg-primary text-brand-text-main font-sans min-h-screen flex items-center justify-center p-4">
+    <div className="auth-page min-h-screen w-full bg-[#ebf0f7] flex flex-col items-center justify-start sm:justify-center p-3 sm:p-6 overflow-y-auto">
       {systemBooting && (
         <div className="system-loader-overlay">
           <div className="system-loader-card">
@@ -645,7 +645,7 @@ export default function LoginPage() {
             <div className="loader-header">
               <div className="flex items-center gap-2">
                 <span className="w-2.5 h-2.5 rounded-full bg-brand-accent-cyan animate-pulse"></span>
-                <span className="text-xs font-bold uppercase tracking-[0.2em] text-white font-mono">Aegis Secure Shell Boot v4.19</span>
+                <span className="text-xs font-bold uppercase tracking-[0.2em] text-white font-mono">CampusX Secure Shell Boot v4.19</span>
               </div>
               <div className="text-[10px] text-brand-text-muted font-mono">
                 SYS_STATUS: LOADING_WORKSPACE ({bootProgress}%)
@@ -675,55 +675,63 @@ export default function LoginPage() {
           </div>
         </div>
       )}
+      
 
-      <div className="auth-container w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 min-h-[750px] bg-brand-bg-secondary border border-brand-border rounded-3xl overflow-hidden shadow-2xl relative">
+
+      {/* Main Container Card */}
+      <div className="auth-container w-full max-w-5xl grid grid-cols-1 md:grid-cols-12 bg-white rounded-3xl overflow-hidden shadow-2xl border border-slate-200/80 my-auto">
         
         {/* Brand Left Panel */}
-        <div className="auth-brand relative hidden md:flex flex-col justify-between p-12 overflow-hidden bg-[#050b18] border-r border-brand-border">
-          <div className="orb orb-1"></div>
-          <div className="orb orb-2"></div>
-          <div className="orb orb-3"></div>
-          <div className="dot-grid"></div>
+        <div className="auth-brand md:col-span-5 relative hidden md:flex flex-col justify-between p-10 overflow-hidden bg-[#eef3fb] border-r border-slate-200/80 text-slate-800">
+          <div className="dot-grid absolute inset-0 opacity-40 pointer-events-none"></div>
 
-          <div className="brand-content relative z-10">
-            <div className="brand-logo w-14 h-14 rounded-2xl bg-brand-primary/10 flex items-center justify-center text-brand-primary mb-8 border border-brand-primary/20">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7">
+          <div className="brand-content relative z-10 flex flex-col justify-center h-full">
+            
+            {/* Top Logo */}
+            <div className="brand-logo w-16 h-16 rounded-2xl bg-indigo-100 text-indigo-600 flex items-center justify-center mb-6 shadow-sm mx-auto border border-indigo-200/60">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8">
                 <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
                 <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"/>
               </svg>
             </div>
 
-            <h1 className="brand-title text-3xl font-bold tracking-tight text-white font-display mb-2">AEGIS OS</h1>
-            <p className="brand-tagline text-brand-text-muted text-sm mb-12">Role-Aware Enterprise IAM & Administrative Workspace</p>
+            <h1 className="brand-title text-3xl font-extrabold tracking-tight text-center mb-2 font-display">
+              <span className="text-slate-900">CAMPUSX </span>
+              <span className="text-[#6366f1]">OS</span>
+            </h1>
+            <p className="brand-tagline text-slate-500 text-sm text-center mb-10 max-w-xs mx-auto leading-relaxed">
+              Role-Aware Enterprise IAM & Administrative Workspace
+            </p>
 
-            <div className="brand-features flex flex-col gap-6">
-              <div className="brand-feature flex items-start gap-4">
-                <div className="feature-icon w-10 h-10 rounded-lg bg-brand-bg-secondary flex items-center justify-center text-brand-primary border border-brand-border shrink-0">
+            {/* Three Feature Cards */}
+            <div className="brand-features flex flex-col gap-4 w-full">
+              <div className="brand-feature bg-white/90 backdrop-blur-sm border border-slate-200/80 shadow-sm p-4 rounded-2xl flex items-start gap-4 hover:shadow-md transition-all">
+                <div className="feature-icon w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0 border border-indigo-100">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                 </div>
                 <div className="feature-text flex flex-col">
-                  <strong className="text-sm font-semibold text-white">Zero Trust Architecture</strong>
-                  <span className="text-xs text-brand-text-muted mt-1">Automatic IAM role resolution, secure URL route guards, and granular blockchain verification.</span>
+                  <strong className="text-sm font-bold text-slate-900">Zero Trust Architecture</strong>
+                  <span className="text-xs text-slate-500 mt-0.5 leading-relaxed">Automatic IAM role resolution, secure URL route guards, and granular blockchain verification.</span>
                 </div>
               </div>
               
-              <div className="brand-feature flex items-start gap-4">
-                <div className="feature-icon w-10 h-10 rounded-lg bg-brand-bg-secondary flex items-center justify-center text-brand-accent-cyan border border-brand-border shrink-0">
+              <div className="brand-feature bg-white/90 backdrop-blur-sm border border-slate-200/80 shadow-sm p-4 rounded-2xl flex items-start gap-4 hover:shadow-md transition-all">
+                <div className="feature-icon w-10 h-10 rounded-xl bg-cyan-50 text-cyan-600 flex items-center justify-center shrink-0 border border-cyan-100">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
                 </div>
                 <div className="feature-text flex flex-col">
-                  <strong className="text-sm font-semibold text-white">Unified Identity Hub</strong>
-                  <span className="text-xs text-brand-text-muted mt-1">Singular login for ERP, CONNECT, CHAIN, and WEB3. Automatically filters permissions, widgets, and links.</span>
+                  <strong className="text-sm font-bold text-slate-900">Unified Identity Hub</strong>
+                  <span className="text-xs text-slate-500 mt-0.5 leading-relaxed">Singular login for ERP, CONNECT, CHAIN, and WEB3. Automatically filters permissions, widgets, and links.</span>
                 </div>
               </div>
 
-              <div className="brand-feature flex items-start gap-4">
-                <div className="feature-icon w-10 h-10 rounded-lg bg-brand-bg-secondary flex items-center justify-center text-brand-accent-emerald border border-brand-border shrink-0">
+              <div className="brand-feature bg-white/90 backdrop-blur-sm border border-slate-200/80 shadow-sm p-4 rounded-2xl flex items-start gap-4 hover:shadow-md transition-all">
+                <div className="feature-icon w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 border border-emerald-100">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                 </div>
                 <div className="feature-text flex flex-col">
-                  <strong className="text-sm font-semibold text-white">Active Threat Detection</strong>
-                  <span className="text-xs text-brand-text-muted mt-1">Real-time local ML anomaly score models tracking password attempts, patterns, and login contexts.</span>
+                  <strong className="text-sm font-bold text-slate-900">Active Threat Detection</strong>
+                  <span className="text-xs text-slate-500 mt-0.5 leading-relaxed">Real-time local ML anomaly score models tracking password attempts, patterns, and login contexts.</span>
                 </div>
               </div>
             </div>
@@ -731,17 +739,17 @@ export default function LoginPage() {
         </div>
 
         {/* Form Right Panel */}
-        <div className="auth-form-panel flex flex-col justify-between p-8 md:p-12 bg-brand-bg-secondary relative">
+        <div className="auth-form-panel md:col-span-7 flex flex-col justify-between p-6 md:p-8 bg-white relative overflow-y-auto">
           
           {/* Force Password Change Overlay */}
           {mustChange && tempUser && (
-            <div className="absolute inset-0 bg-brand-bg-secondary z-50 p-8 md:p-12 flex flex-col justify-center fade-in">
+            <div className="absolute inset-0 bg-white z-50 p-8 md:p-12 flex flex-col justify-center fade-in">
               <div className="mb-6">
-                <div className="w-12 h-12 rounded-xl bg-brand-accent-amber/10 flex items-center justify-center text-brand-accent-amber mb-4 border border-brand-accent-amber/20">
+                <div className="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center text-amber-600 mb-4 border border-amber-200">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
                 </div>
-                <h2 className="text-2xl font-bold text-white font-display mb-1">Update Security Credentials</h2>
-                <p className="text-xs text-brand-text-muted">First-time login detected for <span className="text-brand-accent-cyan font-mono">{tempUser.email}</span>. A password change is required to secure your account.</p>
+                <h2 className="text-2xl font-bold text-slate-900 font-display mb-1">Update Security Credentials</h2>
+                <p className="text-xs text-slate-500">First-time login detected for <span className="text-indigo-600 font-mono font-bold">{tempUser.email}</span>. A password change is required to secure your account.</p>
               </div>
 
               <form onSubmit={handleChangePassword} className="flex flex-col gap-4">
@@ -752,136 +760,70 @@ export default function LoginPage() {
                     onChange={(e) => setNewPassword(e.target.value)}
                     required 
                     placeholder="New Password" 
-                    className="w-full bg-brand-bg-tertiary border border-brand-border rounded-xl px-4 py-3 pr-11 text-sm text-white outline-none focus:border-brand-primary transition-all placeholder-brand-text-subtle"
+                    className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3.5 pr-11 text-sm text-slate-900 outline-none focus:border-[#4f46e5] focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all placeholder-slate-400"
                   />
                   <button 
                     type="button" 
                     onClick={() => setNewPasswordShow(!newPasswordShow)}
-                    className="password-toggle absolute right-4 top-3.5 text-brand-text-subtle hover:text-white cursor-pointer bg-transparent border-none"
+                    className="password-toggle absolute right-4 top-3.5 text-slate-400 hover:text-slate-700 cursor-pointer bg-transparent border-none"
                   >
                     {newPasswordShow ? (
-                      <svg className="eye-closed w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                      <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
                     ) : (
-                      <svg className="eye-open w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                      <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                     )}
                   </button>
                 </div>
 
-                {/* Password Strength Indicator */}
-                <div className="password-strength">
-                  <div className="strength-bar w-full h-1 bg-brand-bg-primary rounded overflow-hidden">
-                    <div 
-                      className={`strength-fill h-full transition-all duration-300 ${getNewPassStrength().level === 'weak' ? 'bg-brand-accent-ruby w-1/3' : (getNewPassStrength().level === 'medium' ? 'bg-brand-accent-amber w-2/3' : 'bg-brand-accent-emerald w-full')}`}
-                    ></div>
-                  </div>
-                  <span className={`strength-text text-[0.7rem] mt-1 block ${getNewPassStrength().level === 'weak' ? 'text-brand-accent-ruby' : (getNewPassStrength().level === 'medium' ? 'text-brand-accent-amber' : 'text-brand-accent-emerald')}`}>
-                    Complexity: {getNewPassStrength().text}
-                  </span>
-                </div>
-
-                <div className="auth-input-group relative">
-                  <input 
-                    type="password" 
-                    value={confirmNewPassword}
-                    onChange={(e) => setConfirmNewPassword(e.target.value)}
-                    required 
-                    placeholder="Confirm New Password" 
-                    className="w-full bg-brand-bg-tertiary border border-brand-border rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-brand-primary transition-all placeholder-brand-text-subtle"
-                  />
-                </div>
-
                 <button 
                   type="submit" 
-                  disabled={changePasswordLoading}
-                  className="auth-submit-btn w-full py-3 bg-brand-primary hover:bg-brand-primary-hover text-white rounded-xl font-semibold transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                  disabled={changeLoading}
+                  className="w-full py-3.5 bg-[#4f46e5] hover:bg-[#4338ca] text-white rounded-2xl font-bold text-sm transition-all shadow-lg shadow-indigo-500/25 cursor-pointer disabled:opacity-50"
                 >
-                  {changePasswordLoading ? 'Updating Credentials...' : 'Save Password & Authenticate'}
+                  {changeLoading ? 'Updating Password...' : 'Save & Proceed to Workspace'}
                 </button>
-
-                {changePasswordError && (
-                  <div className="auth-error mt-2 p-3 bg-brand-accent-ruby/10 border border-brand-accent-ruby/20 text-brand-accent-ruby rounded-xl text-xs flex items-center gap-2">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4.5 h-4.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                    <span>{changePasswordError}</span>
-                  </div>
-                )}
-              </form>
-            </div>
-          )}
-
-          {/* MFA Verification Screen Overlay */}
-          {mfaActive && pendingUserSession && (
-            <div className="absolute inset-0 bg-brand-bg-secondary z-50 p-8 md:p-12 flex flex-col justify-center fade-in">
-              <div className="mb-6">
-                <div className="w-12 h-12 rounded-xl bg-brand-accent-cyan/10 flex items-center justify-center text-brand-accent-cyan mb-4 border border-brand-accent-cyan/20 animate-pulse">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                </div>
-                <h2 className="text-2xl font-bold text-white font-display mb-1">MFA Verification</h2>
-                <p className="text-xs text-brand-text-muted">Multi-factor security protocol enabled for <span className="text-brand-accent-cyan font-mono">{pendingUserSession.email}</span>. Please enter the verification code sent to your authenticated application.</p>
-              </div>
-
-              <form onSubmit={handleMfaVerify} className="flex flex-col gap-4">
-                <div className="auth-input-group relative">
-                  <input 
-                    type="text" 
-                    value={mfaCode}
-                    onChange={(e) => setMfaCode(e.target.value)}
-                    required 
-                    placeholder="Enter Code (Use 123456 for Demo)" 
-                    maxLength={6}
-                    className="w-full bg-brand-bg-tertiary border border-brand-border rounded-xl px-4 py-3 text-center text-lg font-bold font-mono tracking-[0.4em] text-white outline-none focus:border-brand-primary transition-all placeholder-brand-text-subtle placeholder:text-xs placeholder:tracking-normal"
-                  />
-                </div>
-
-                <button 
-                  type="submit" 
-                  disabled={mfaLoading}
-                  className="auth-submit-btn w-full py-3 bg-brand-primary hover:bg-brand-primary-hover text-white rounded-xl font-semibold transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
-                >
-                  {mfaLoading ? 'Verifying Identity...' : 'Confirm MFA Verification'}
-                </button>
-
-                <button 
-                  type="button" 
-                  onClick={() => { setMfaActive(false); setMfaCode(''); setMfaError(''); }}
-                  className="text-xs text-brand-text-muted hover:text-white transition-colors bg-transparent border-none mt-2"
-                >
-                  &larr; Cancel and Sign In with another account
-                </button>
-
-                {mfaError && (
-                  <div className="auth-error mt-2 p-3 bg-brand-accent-ruby/10 border border-brand-accent-ruby/20 text-brand-accent-ruby rounded-xl text-xs flex items-center gap-2">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4.5 h-4.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                    <span>{mfaError}</span>
-                  </div>
-                )}
               </form>
             </div>
           )}
 
           {/* Mobile-only Header */}
-          <div className="mobile-brand flex md:hidden flex-col items-center gap-4 mb-8">
-            <div className="brand-logo w-12 h-12 rounded-xl bg-brand-primary/10 flex items-center justify-center text-brand-primary border border-brand-primary/20">
+          <div className="mobile-brand flex md:hidden flex-col items-center gap-2 mb-6">
+            <div className="brand-logo w-12 h-12 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center border border-indigo-200">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
                 <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
                 <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"/>
               </svg>
             </div>
-            <h1 className="brand-title text-xl font-bold tracking-tight text-white font-display">AEGIS OS</h1>
+            <h1 className="brand-title text-xl font-extrabold tracking-tight text-slate-900 font-display">CAMPUSX OS</h1>
           </div>
 
-          {/* Form Tabs */}
-          <div className="auth-tabs flex gap-4 border-b border-brand-border pb-4 mb-8 shrink-0">
+          {/* Header Title & Subtitle FIRST */}
+          <div className="auth-header-section mb-4">
+            <h2 className="text-2xl md:text-3xl font-bold text-slate-900 font-display mb-1">
+              {activeTab === 'signin' ? 'Welcome Back' : 'Create Access Credentials'}
+            </h2>
+            <p className="text-xs md:text-sm text-slate-500">
+              {activeTab === 'signin' ? 'Enter your credentials or choose a SSO provider to log in' : 'Register a new identity on the CampusX mesh network'}
+            </p>
+          </div>
+
+          {/* Upper Segmented Pill Tab Switcher SECOND */}
+          <div className="auth-tab-switcher bg-[#f1f4f9] p-1.5 rounded-2xl border border-slate-200/70 flex items-center mb-6 shrink-0 w-full shadow-sm">
             <button 
-              className={`auth-tab text-sm font-semibold pb-2 border-b-2 cursor-pointer transition-all hover:text-white ${activeTab === 'signin' ? 'active border-brand-primary text-white' : 'border-transparent text-brand-text-muted'}`}
+              type="button"
+              className={`flex-1 py-2.5 px-6 text-xs font-bold rounded-xl transition-all duration-200 cursor-pointer text-center flex items-center justify-center gap-2 ${activeTab === 'signin' ? 'bg-[#4f46e5] text-white shadow-md shadow-indigo-500/20' : 'text-slate-600 hover:text-slate-900 bg-transparent'}`}
               onClick={() => { setActiveTab('signin'); setSigninError(''); }}
             >
-              Sign In
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+              <span>Sign In</span>
             </button>
             <button 
-              className={`auth-tab text-sm font-semibold pb-2 border-b-2 cursor-pointer transition-all hover:text-white ${activeTab === 'signup' ? 'active border-brand-primary text-white' : 'border-transparent text-brand-text-muted'}`}
-              onClick={() => { setActiveTab('signup'); setSignupError(''); }}
+              type="button"
+              className={`flex-1 py-2.5 px-6 text-xs font-bold rounded-xl transition-all duration-200 cursor-pointer text-center flex items-center justify-center gap-2 ${activeTab === 'signup' ? 'bg-[#4f46e5] text-white shadow-md shadow-indigo-500/20' : 'text-slate-600 hover:text-slate-900 bg-transparent'}`}
+              onClick={() => { setActiveTab('signup'); setSigninError(''); }}
             >
-              Sign Up
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="17" y1="11" x2="23" y2="11"/></svg>
+              <span>Sign Up</span>
             </button>
           </div>
 
@@ -889,10 +831,8 @@ export default function LoginPage() {
           {activeTab === 'signin' ? (
             <div className="auth-form-container fade-in flex-1 flex flex-col justify-between">
               <div>
-                <h2 className="text-2xl font-bold text-white font-display mb-1">Welcome Back</h2>
-                <p className="text-sm text-brand-text-muted mb-6">Enter your credentials or choose a SSO provider to log in</p>
-
                 <form onSubmit={handleSignIn}>
+                  {/* Email Input */}
                   <div className="auth-input-group relative mb-4">
                     <input 
                       type="email" 
@@ -900,11 +840,14 @@ export default function LoginPage() {
                       onChange={(e) => setSigninEmail(e.target.value)}
                       required 
                       placeholder="Email Address" 
-                      className="w-full bg-brand-bg-tertiary border border-brand-border rounded-xl px-4 py-3 pl-11 text-sm text-white outline-none focus:border-brand-primary transition-all placeholder-brand-text-subtle"
+                      className="w-full bg-[#f8fafc] border border-slate-200 rounded-2xl px-4 py-3.5 pl-11 text-sm text-slate-900 outline-none focus:border-[#4f46e5] focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all placeholder-slate-400 shadow-sm"
                     />
-                    <svg className="input-icon absolute left-4 top-3.5 w-5 h-5 text-brand-text-subtle" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                    <div className="absolute left-3.5 top-0 bottom-0 flex items-center pointer-events-none text-slate-400">
+                      <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                    </div>
                   </div>
 
+                  {/* Password Input */}
                   <div className="auth-input-group relative mb-4">
                     <input 
                       type={signinShowPassword ? "text" : "password"} 
@@ -912,12 +855,12 @@ export default function LoginPage() {
                       onChange={(e) => setSigninPassword(e.target.value)}
                       required 
                       placeholder="Password" 
-                      className="w-full bg-brand-bg-tertiary border border-brand-border rounded-xl px-4 py-3 pr-11 text-sm text-white outline-none focus:border-brand-primary transition-all placeholder-brand-text-subtle"
+                      className="w-full bg-[#f8fafc] border border-slate-200 rounded-2xl px-4 py-3.5 pr-11 text-sm text-slate-900 outline-none focus:border-[#4f46e5] focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all placeholder-slate-400 shadow-sm"
                     />
                     <button 
                       type="button" 
                       onClick={() => setSigninShowPassword(!signinShowPassword)}
-                      className="password-toggle absolute right-4 top-3.5 text-brand-text-subtle hover:text-white cursor-pointer bg-transparent border-none"
+                      className="password-toggle absolute right-4 top-4 text-slate-400 hover:text-slate-700 cursor-pointer bg-transparent border-none"
                     >
                       {signinShowPassword ? (
                         <svg className="eye-closed w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
@@ -927,115 +870,40 @@ export default function LoginPage() {
                     </button>
                   </div>
 
+                  {/* Options Row */}
                   <div className="auth-options flex items-center justify-between mb-5">
-                    <label className="custom-checkbox flex items-center gap-2 text-xs text-brand-text-muted cursor-pointer select-none">
-                      <input type="checkbox" className="accent-brand-primary" />
+                    <label className="custom-checkbox flex items-center gap-2 text-xs text-slate-600 cursor-pointer select-none">
+                      <input type="checkbox" className="accent-indigo-600 rounded" />
                       Remember this machine
                     </label>
-                    <span className="forgot-link text-xs text-brand-primary hover:text-brand-primary-hover transition-all cursor-pointer" onClick={() => alert('Demo notice: All passwords start as "Demo@123". Check credentials below.')}>Forgot Password?</span>
+                    <span className="forgot-link text-xs text-[#4f46e5] font-semibold hover:underline cursor-pointer" onClick={() => alert('Demo notice: All passwords start as "Demo@123". Check credentials below.')}>Forgot Password?</span>
                   </div>
 
+                  {/* Submit Button */}
                   <button 
                     type="submit" 
                     disabled={signinLoading}
-                    className="auth-submit-btn w-full py-3 bg-brand-primary hover:bg-brand-primary-hover text-white rounded-xl font-semibold transition-all shadow-lg shadow-brand-primary/20 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                    className="auth-submit-btn w-full py-3.5 bg-[#4f46e5] hover:bg-[#4338ca] text-white rounded-2xl font-bold text-sm transition-all shadow-lg shadow-indigo-500/25 flex items-center justify-center gap-2 cursor-pointer border-none disabled:opacity-50"
                   >
                     {signinLoading ? 'Authenticating...' : 'Sign In'}
                   </button>
 
                   {signinError && (
-                    <div className="auth-error mt-3 p-3 bg-brand-accent-ruby/10 border border-brand-accent-ruby/20 text-brand-accent-ruby rounded-xl text-xs flex items-center gap-2">
+                    <div className="auth-error mt-3 p-3 bg-rose-50 border border-rose-200 text-rose-600 rounded-xl text-xs flex items-center gap-2">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4.5 h-4.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
                       <span>{signinError}</span>
                     </div>
                   )}
                 </form>
 
-                {/* Platform Admin Demo Environment Card */}
-                {isDev && (
-                  <div className="auth-demo-card mt-6 p-5 bg-brand-bg-tertiary/75 border border-brand-primary/25 rounded-2xl shadow-[0_0_15px_rgba(99,102,241,0.15)] text-left flex flex-col gap-3">
-                    <div className="flex justify-between items-center border-b border-brand-border/40 pb-2">
-                      <div className="flex items-center gap-2">
-                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" className="text-brand-primary"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                        <span className="text-xs font-bold text-white font-display">Platform Admin Demo Environment</span>
-                      </div>
-                      <span className="badge bg-brand-primary/10 border border-brand-primary/20 text-brand-primary text-[9px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">
-                        Platform Admin
-                      </span>
-                    </div>
-
-                    <div className="flex flex-col gap-1.5 text-xs">
-                      <div className="flex justify-between items-center bg-brand-bg-secondary border border-brand-border rounded-xl p-2 px-3">
-                        <div className="flex flex-col">
-                          <span className="text-[8px] text-brand-text-subtle font-bold uppercase">Email</span>
-                          <span className="text-xs font-semibold text-white font-mono mt-0.5">admin@aegis.demo</span>
-                        </div>
-                        <button 
-                          type="button"
-                          onClick={() => copyToClipboard('admin@aegis.demo', 'email')}
-                          className="p-1.5 hover:bg-brand-bg-tertiary hover:text-white rounded-lg text-brand-text-muted transition-colors cursor-pointer text-[10px] font-bold flex items-center gap-1 border-none bg-transparent"
-                        >
-                          {copiedField === 'email' ? 'Copied!' : (
-                            <>
-                              <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                              Copy
-                            </>
-                          )}
-                        </button>
-                      </div>
-
-                      <div className="flex justify-between items-center bg-brand-bg-secondary border border-brand-border rounded-xl p-2 px-3">
-                        <div className="flex flex-col">
-                          <span className="text-[8px] text-brand-text-subtle font-bold uppercase">Password</span>
-                          <span className="text-xs font-semibold text-white font-mono mt-0.5">Demo@123</span>
-                        </div>
-                        <button 
-                          type="button"
-                          onClick={() => copyToClipboard('Demo@123', 'password')}
-                          className="p-1.5 hover:bg-brand-bg-tertiary hover:text-white text-brand-text-muted transition-colors cursor-pointer text-[10px] font-bold flex items-center gap-1 border-none bg-transparent"
-                        >
-                          {copiedField === 'password' ? 'Copied!' : (
-                            <>
-                              <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                              Copy
-                            </>
-                          )}
-                        </button>
-                      </div>
-                    </div>
-
-                    <div className="flex flex-col gap-1.5 mt-1">
-                      <span className="text-[8px] text-brand-text-subtle font-bold uppercase tracking-wider pl-1">Unlocked Modules & Capabilities</span>
-                      <div className="flex flex-wrap gap-1">
-                        {[
-                          'Platform Dashboard', 'University Management', 'User Management', 'Permission Management', 
-                          'Analytics Center', 'App Management', 'AEGIS ERP', 'AEGIS CONNECT', 'AEGIS CHAIN', 
-                          'AEGIS MARKET', 'AEGIS AI', 'AEGIS RESEARCH', 'AEGIS SPORTS'
-                        ].map(feature => (
-                          <span key={feature} className="text-[9px] font-semibold bg-brand-bg-secondary border border-brand-border/60 text-brand-text-muted px-2 py-0.5 rounded-md">
-                            {feature}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-
-                    <button 
-                      type="button" 
-                      onClick={() => handleOneClickLogin('admin@aegis.demo', 'Demo@123')}
-                      className="w-full py-2.5 bg-gradient-to-tr from-brand-primary to-indigo-500 hover:brightness-110 text-white rounded-xl text-xs font-bold transition-all shadow-[0_0_15px_rgba(99,102,241,0.25)] flex items-center justify-center gap-2 cursor-pointer mt-1 border-none"
-                    >
-                      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
-                      <span>One-Click Demo Login</span>
-                    </button>
-                  </div>
-                )}
-
-                <div className="auth-divider flex items-center text-center my-4 text-[10px] text-brand-text-subtle before:content-[''] before:flex-1 before:border-b before:border-brand-border/40 before:mr-4 after:content-[''] after:flex-1 after:border-b after:border-brand-border/40 after:ml-4">
+                {/* SSO Divider */}
+                <div className="auth-divider flex items-center text-center my-5 text-[10px] font-bold tracking-wider text-slate-400 uppercase before:content-[''] before:flex-1 before:border-b before:border-slate-200 before:mr-4 after:content-[''] after:flex-1 after:border-b after:border-slate-200 after:ml-4">
                   <span>OR SIGN IN USING SSO</span>
                 </div>
 
+                {/* SSO Buttons */}
                 <div className="social-buttons grid grid-cols-3 gap-3">
-                  <button type="button" className="social-btn flex items-center justify-center gap-2 py-2 bg-brand-bg-tertiary border border-brand-border hover:bg-brand-bg-secondary text-brand-text-main rounded-xl text-xs font-semibold transition-all cursor-pointer" onClick={() => handleSSO('Google')}>
+                  <button type="button" className="social-btn flex items-center justify-center gap-2 py-2.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-2xl text-xs font-semibold shadow-sm transition-all cursor-pointer" onClick={() => handleSSO('Google')}>
                     <svg viewBox="0 0 24 24" width="16" height="16">
                       <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
                       <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
@@ -1044,7 +912,7 @@ export default function LoginPage() {
                     </svg>
                     Google
                   </button>
-                  <button type="button" className="social-btn flex items-center justify-center gap-2 py-2 bg-brand-bg-tertiary border border-brand-border hover:bg-brand-bg-secondary text-brand-text-main rounded-xl text-xs font-semibold transition-all cursor-pointer" onClick={() => handleSSO('Microsoft')}>
+                  <button type="button" className="social-btn flex items-center justify-center gap-2 py-2.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-2xl text-xs font-semibold shadow-sm transition-all cursor-pointer" onClick={() => handleSSO('Microsoft')}>
                     <svg viewBox="0 0 24 24" width="16" height="16">
                       <rect x="1" y="1" width="10" height="10" fill="#F25022"/>
                       <rect x="13" y="1" width="10" height="10" fill="#7FBA00"/>
@@ -1053,160 +921,145 @@ export default function LoginPage() {
                     </svg>
                     Microsoft
                   </button>
-                  <button type="button" className="social-btn flex items-center justify-center gap-2 py-2 bg-brand-bg-tertiary border border-brand-border hover:bg-brand-bg-secondary text-brand-text-main rounded-xl text-xs font-semibold transition-all cursor-pointer" onClick={() => handleSSO('Passkey')}>
-                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-brand-accent-cyan"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+                  <button type="button" className="social-btn flex items-center justify-center gap-2 py-2.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-2xl text-xs font-semibold shadow-sm transition-all cursor-pointer" onClick={() => handleSSO('Passkey')}>
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-cyan-600"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
                     Passkey
                   </button>
                 </div>
               </div>
 
-              {/* Demo Credentials Prefiller */}
+              {/* All Quick Demo Logins Section */}
               {isDev && (
-                <div className="auth-demo-info mt-6 p-4 bg-brand-bg-tertiary rounded-2xl border border-brand-border">
-                  <p className="text-[10px] font-bold uppercase tracking-wider text-brand-text-muted mb-2.5">Quick Demo Logins (Click to prefill)</p>
-                  <div className="demo-creds-list grid grid-cols-2 gap-2 max-h-[250px] overflow-y-auto pr-1 chat-scroll">
-                    <div className="demo-cred p-2 rounded-lg bg-brand-bg-secondary hover:bg-brand-primary/10 border border-brand-border transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('superadmin@aegis.demo', 'Demo@123')}>
-                      <span className="role-badge text-[10px] font-semibold text-brand-accent-ruby">Super Admin</span>
-                      <span className="text-[10px] text-brand-text-muted truncate mt-0.5">superadmin@aegis.demo</span>
+                <div className="auth-demo-info mt-6 p-4 bg-[#f8fafc] rounded-2xl border border-slate-200/80 text-center shadow-sm">
+                  <div className="flex items-center justify-between mb-3 pb-2 border-b border-slate-200/70">
+                    <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-700 font-display">Quick Demo Logins (Click to prefill)</span>
+                    <button 
+                      type="button" 
+                      onClick={() => handleOneClickLogin('admin@campusx.demo', 'Demo@123')}
+                      className="py-1 px-3 bg-[#4f46e5] hover:bg-[#4338ca] text-white rounded-lg text-[10px] font-bold transition-all shadow-sm flex items-center gap-1.5 cursor-pointer border-none"
+                    >
+                      <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                      <span>1-Click Admin Login</span>
+                    </button>
+                  </div>
+
+                  <div className="demo-creds-list grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-[200px] overflow-y-auto pr-1 text-left chat-scroll">
+                    <div className="demo-cred p-2 rounded-xl bg-white hover:bg-indigo-50/80 border border-slate-200/80 transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('superadmin@campusx.demo', 'Demo@123')}>
+                      <span className="role-badge text-[10px] font-bold text-rose-600">Super Admin</span>
+                      <span className="text-[10px] text-slate-500 truncate mt-0.5">superadmin@campusx.demo</span>
                     </div>
-                    <div className="demo-cred p-2 rounded-lg bg-brand-bg-secondary hover:bg-brand-primary/10 border border-brand-border transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('admin@aegis.demo', 'Demo@123')}>
-                      <span className="role-badge text-[10px] font-semibold text-brand-accent-cyan">Platform Admin</span>
-                      <span className="text-[10px] text-brand-text-muted truncate mt-0.5">admin@aegis.demo</span>
+                    <div className="demo-cred p-2 rounded-xl bg-white hover:bg-indigo-50/80 border border-slate-200/80 transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('admin@campusx.demo', 'Demo@123')}>
+                      <span className="role-badge text-[10px] font-bold text-cyan-600">Platform Admin</span>
+                      <span className="text-[10px] text-slate-500 truncate mt-0.5">admin@campusx.demo</span>
                     </div>
-                    <div className="demo-cred p-2 rounded-lg bg-brand-bg-secondary hover:bg-brand-primary/10 border border-brand-border transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('univadmin@aegis.demo', 'Demo@123')}>
-                      <span className="role-badge text-[10px] font-semibold text-brand-accent-amber">Univ Admin</span>
-                      <span className="text-[10px] text-brand-text-muted truncate mt-0.5">univadmin@aegis.demo</span>
+                    <div className="demo-cred p-2 rounded-xl bg-white hover:bg-indigo-50/80 border border-slate-200/80 transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('univadmin@campusx.demo', 'Demo@123')}>
+                      <span className="role-badge text-[10px] font-bold text-amber-600">Univ Admin</span>
+                      <span className="text-[10px] text-slate-500 truncate mt-0.5">univadmin@campusx.demo</span>
                     </div>
-                    <div className="demo-cred p-2 rounded-lg bg-brand-bg-secondary hover:bg-brand-primary/10 border border-brand-border transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('registrar@aegis.demo', 'Demo@123')}>
-                      <span className="role-badge text-[10px] font-semibold text-brand-accent-emerald">Registrar Officer</span>
-                      <span className="text-[10px] text-brand-text-muted truncate mt-0.5">registrar@aegis.demo</span>
+                    <div className="demo-cred p-2 rounded-xl bg-white hover:bg-indigo-50/80 border border-slate-200/80 transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('registrar@campusx.demo', 'Demo@123')}>
+                      <span className="role-badge text-[10px] font-bold text-emerald-600">Registrar Officer</span>
+                      <span className="text-[10px] text-slate-500 truncate mt-0.5">registrar@campusx.demo</span>
                     </div>
-                    <div className="demo-cred p-2 rounded-lg bg-brand-bg-secondary hover:bg-brand-primary/10 border border-brand-border transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('dean@aegis.demo', 'Demo@123')}>
-                      <span className="role-badge text-[10px] font-semibold text-brand-primary">Dean of Faculty</span>
-                      <span className="text-[10px] text-brand-text-muted truncate mt-0.5">dean@aegis.demo</span>
+                    <div className="demo-cred p-2 rounded-xl bg-white hover:bg-indigo-50/80 border border-slate-200/80 transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('dean@campusx.demo', 'Demo@123')}>
+                      <span className="role-badge text-[10px] font-bold text-indigo-600">Dean of Faculty</span>
+                      <span className="text-[10px] text-slate-500 truncate mt-0.5">dean@campusx.demo</span>
                     </div>
-                    <div className="demo-cred p-2 rounded-lg bg-brand-bg-secondary hover:bg-brand-primary/10 border border-brand-border transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('hod@aegis.demo', 'Demo@123')}>
-                      <span className="role-badge text-[10px] font-semibold text-brand-accent-amber">HOD Professor</span>
-                      <span className="text-[10px] text-brand-text-muted truncate mt-0.5">hod@aegis.demo</span>
+                    <div className="demo-cred p-2 rounded-xl bg-white hover:bg-indigo-50/80 border border-slate-200/80 transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('hod@campusx.demo', 'Demo@123')}>
+                      <span className="role-badge text-[10px] font-bold text-amber-600">HOD Professor</span>
+                      <span className="text-[10px] text-slate-500 truncate mt-0.5">hod@campusx.demo</span>
                     </div>
-                    <div className="demo-cred p-2 rounded-lg bg-brand-bg-secondary hover:bg-brand-primary/10 border border-brand-border transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('faculty@aegis.demo', 'Demo@123')}>
-                      <span className="role-badge text-[10px] font-semibold text-brand-accent-cyan">Faculty Professor</span>
-                      <span className="text-[10px] text-brand-text-muted truncate mt-0.5">faculty@aegis.demo</span>
+                    <div className="demo-cred p-2 rounded-xl bg-white hover:bg-indigo-50/80 border border-slate-200/80 transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('faculty@campusx.demo', 'Demo@123')}>
+                      <span className="role-badge text-[10px] font-bold text-cyan-600">Faculty Professor</span>
+                      <span className="text-[10px] text-slate-500 truncate mt-0.5">faculty@campusx.demo</span>
                     </div>
-                    <div className="demo-cred p-2 rounded-lg bg-brand-bg-secondary hover:bg-brand-primary/10 border border-brand-border transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('finance@aegis.demo', 'Demo@123')}>
-                      <span className="role-badge text-[10px] font-semibold text-brand-accent-emerald">Finance Manager</span>
-                      <span className="text-[10px] text-brand-text-muted truncate mt-0.5">finance@aegis.demo</span>
+                    <div className="demo-cred p-2 rounded-xl bg-white hover:bg-indigo-50/80 border border-slate-200/80 transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('finance@campusx.demo', 'Demo@123')}>
+                      <span className="role-badge text-[10px] font-bold text-emerald-600">Finance Manager</span>
+                      <span className="text-[10px] text-slate-500 truncate mt-0.5">finance@campusx.demo</span>
                     </div>
-                    <div className="demo-cred p-2 rounded-lg bg-brand-bg-secondary hover:bg-brand-primary/10 border border-brand-border transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('research@aegis.demo', 'Demo@123')}>
-                      <span className="role-badge text-[10px] font-semibold text-[#8B5CF6]">Research Coord</span>
-                      <span className="text-[10px] text-brand-text-muted truncate mt-0.5">research@aegis.demo</span>
+                    <div className="demo-cred p-2 rounded-xl bg-white hover:bg-indigo-50/80 border border-slate-200/80 transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('research@campusx.demo', 'Demo@123')}>
+                      <span className="role-badge text-[10px] font-bold text-purple-600">Research Coord</span>
+                      <span className="text-[10px] text-slate-500 truncate mt-0.5">research@campusx.demo</span>
                     </div>
-                    <div className="demo-cred p-2 rounded-lg bg-brand-bg-secondary hover:bg-brand-primary/10 border border-brand-border transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('placement@aegis.demo', 'Demo@123')}>
-                      <span className="role-badge text-[10px] font-semibold text-[#3B82F6]">Placement Officer</span>
-                      <span className="text-[10px] text-brand-text-muted truncate mt-0.5">placement@aegis.demo</span>
+                    <div className="demo-cred p-2 rounded-xl bg-white hover:bg-indigo-50/80 border border-slate-200/80 transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('placement@campusx.demo', 'Demo@123')}>
+                      <span className="role-badge text-[10px] font-bold text-blue-600">Placement Officer</span>
+                      <span className="text-[10px] text-slate-500 truncate mt-0.5">placement@campusx.demo</span>
                     </div>
-                    <div className="demo-cred p-2 rounded-lg bg-brand-bg-secondary hover:bg-brand-primary/10 border border-brand-border transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('student@aegis.demo', 'Demo@123')}>
-                      <span className="role-badge text-[10px] font-semibold text-brand-primary">Student</span>
-                      <span className="text-[10px] text-brand-text-muted truncate mt-0.5">student@aegis.demo</span>
+                    <div className="demo-cred p-2 rounded-xl bg-white hover:bg-indigo-50/80 border border-slate-200/80 transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('student@campusx.demo', 'Demo@123')}>
+                      <span className="role-badge text-[10px] font-bold text-indigo-600">Student</span>
+                      <span className="text-[10px] text-slate-500 truncate mt-0.5">student@campusx.demo</span>
                     </div>
-                    <div className="demo-cred p-2 rounded-lg bg-brand-bg-secondary hover:bg-brand-primary/10 border border-brand-border transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('parent_role@aegis.demo', 'Demo@123')}>
-                      <span className="role-badge text-[10px] font-bold text-[#EC4899]">General Parent</span>
-                      <span className="text-[10px] text-brand-text-muted truncate mt-0.5">parent_role@aegis.demo</span>
+                    <div className="demo-cred p-2 rounded-xl bg-white hover:bg-indigo-50/80 border border-slate-200/80 transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('parent_role@campusx.demo', 'Demo@123')}>
+                      <span className="role-badge text-[10px] font-bold text-pink-600">General Parent</span>
+                      <span className="text-[10px] text-slate-500 truncate mt-0.5">parent_role@campusx.demo</span>
                     </div>
-                    <div className="demo-cred p-2 rounded-lg bg-brand-bg-secondary hover:bg-brand-primary/10 border border-brand-border transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('alumni@aegis.demo', 'Demo@123')}>
-                      <span className="role-badge text-[10px] font-semibold text-brand-text-muted">Alumni Account</span>
-                      <span className="text-[10px] text-brand-text-muted truncate mt-0.5">alumni@aegis.demo</span>
+                    <div className="demo-cred p-2 rounded-xl bg-white hover:bg-indigo-50/80 border border-slate-200/80 transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('alumni@campusx.demo', 'Demo@123')}>
+                      <span className="role-badge text-[10px] font-bold text-slate-600">Alumni Account</span>
+                      <span className="text-[10px] text-slate-500 truncate mt-0.5">alumni@campusx.demo</span>
                     </div>
-                    <div className="demo-cred p-2 rounded-lg bg-brand-bg-secondary hover:bg-brand-primary/10 border border-brand-border transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('recruiter@aegis.demo', 'Demo@123')}>
-                      <span className="role-badge text-[10px] font-semibold text-[#6366F1]">Recruiter</span>
-                      <span className="text-[10px] text-brand-text-muted truncate mt-0.5">recruiter@aegis.demo</span>
+                    <div className="demo-cred p-2 rounded-xl bg-white hover:bg-indigo-50/80 border border-slate-200/80 transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('recruiter@campusx.demo', 'Demo@123')}>
+                      <span className="role-badge text-[10px] font-bold text-indigo-600">Recruiter</span>
+                      <span className="text-[10px] text-slate-500 truncate mt-0.5">recruiter@campusx.demo</span>
                     </div>
-                    <div className="demo-cred p-2 rounded-lg bg-brand-bg-secondary hover:bg-brand-primary/10 border border-brand-border transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('sportsdirector@aegis.demo', 'Demo@123')}>
-                      <span className="role-badge text-[10px] font-bold text-brand-primary">Sports Director</span>
-                      <span className="text-[10px] text-brand-text-muted truncate mt-0.5">sportsdirector@aegis.demo</span>
+                    <div className="demo-cred p-2 rounded-xl bg-white hover:bg-indigo-50/80 border border-slate-200/80 transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('sportsdirector@campusx.demo', 'Demo@123')}>
+                      <span className="role-badge text-[10px] font-bold text-indigo-600">Sports Director</span>
+                      <span className="text-[10px] text-slate-500 truncate mt-0.5">sportsdirector@campusx.demo</span>
                     </div>
-                    <div className="demo-cred p-2 rounded-lg bg-brand-bg-secondary hover:bg-brand-primary/10 border border-brand-border transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('coach@aegis.demo', 'Demo@123')}>
-                      <span className="role-badge text-[10px] font-bold text-brand-accent-cyan">Sports Coach</span>
-                      <span className="text-[10px] text-brand-text-muted truncate mt-0.5">coach@aegis.demo</span>
+                    <div className="demo-cred p-2 rounded-xl bg-white hover:bg-indigo-50/80 border border-slate-200/80 transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('coach@campusx.demo', 'Demo@123')}>
+                      <span className="role-badge text-[10px] font-bold text-cyan-600">Sports Coach</span>
+                      <span className="text-[10px] text-slate-500 truncate mt-0.5">coach@campusx.demo</span>
                     </div>
-                    <div className="demo-cred p-2 rounded-lg bg-brand-bg-secondary hover:bg-brand-primary/10 border border-brand-border transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('athlete@aegis.demo', 'Demo@123')}>
-                      <span className="role-badge text-[10px] font-bold text-brand-accent-emerald">Sports Athlete</span>
-                      <span className="text-[10px] text-brand-text-muted truncate mt-0.5">athlete@aegis.demo</span>
+                    <div className="demo-cred p-2 rounded-xl bg-white hover:bg-indigo-50/80 border border-slate-200/80 transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('athlete@campusx.demo', 'Demo@123')}>
+                      <span className="role-badge text-[10px] font-bold text-emerald-600">Sports Athlete</span>
+                      <span className="text-[10px] text-slate-500 truncate mt-0.5">athlete@campusx.demo</span>
                     </div>
-                    <div className="demo-cred p-2 rounded-lg bg-brand-bg-secondary hover:bg-brand-primary/10 border border-brand-border transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('parent@aegis.demo', 'Demo@123')}>
-                      <span className="role-badge text-[10px] font-bold text-[#8B5CF6]">Sports Parent</span>
-                      <span className="text-[10px] text-brand-text-muted truncate mt-0.5">parent@aegis.demo</span>
+                    <div className="demo-cred p-2 rounded-xl bg-white hover:bg-indigo-50/80 border border-slate-200/80 transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('parent@campusx.demo', 'Demo@123')}>
+                      <span className="role-badge text-[10px] font-bold text-purple-600">Sports Parent</span>
+                      <span className="text-[10px] text-slate-500 truncate mt-0.5">parent@campusx.demo</span>
                     </div>
-                    <div className="demo-cred p-2 rounded-lg bg-brand-bg-secondary hover:bg-brand-primary/10 border border-brand-border transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('deptadmin@aegis.demo', 'Demo@123')}>
-                      <span className="role-badge text-[10px] font-bold text-[#F59E0B]">Department Admin</span>
-                      <span className="text-[10px] text-brand-text-muted truncate mt-0.5">deptadmin@aegis.demo</span>
+                    <div className="demo-cred p-2 rounded-xl bg-white hover:bg-indigo-50/80 border border-slate-200/80 transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('deptadmin@campusx.demo', 'Demo@123')}>
+                      <span className="role-badge text-[10px] font-bold text-amber-600">Department Admin</span>
+                      <span className="text-[10px] text-slate-500 truncate mt-0.5">deptadmin@campusx.demo</span>
                     </div>
-                    <div className="demo-cred p-2 rounded-lg bg-brand-bg-secondary hover:bg-brand-primary/10 border border-brand-border transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('libraryadmin@aegis.demo', 'Demo@123')}>
-                      <span className="role-badge text-[10px] font-bold text-[#10B981]">Library Admin</span>
-                      <span className="text-[10px] text-brand-text-muted truncate mt-0.5">libraryadmin@aegis.demo</span>
+                    <div className="demo-cred p-2 rounded-xl bg-white hover:bg-indigo-50/80 border border-slate-200/80 transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('libraryadmin@campusx.demo', 'Demo@123')}>
+                      <span className="role-badge text-[10px] font-bold text-emerald-600">Library Admin</span>
+                      <span className="text-[10px] text-slate-500 truncate mt-0.5">libraryadmin@campusx.demo</span>
                     </div>
-                    <div className="demo-cred p-2 rounded-lg bg-brand-bg-secondary hover:bg-brand-primary/10 border border-brand-border transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('hosteladmin@aegis.demo', 'Demo@123')}>
-                      <span className="role-badge text-[10px] font-bold text-[#6366F1]">Hostel Manager</span>
-                      <span className="text-[10px] text-brand-text-muted truncate mt-0.5">hosteladmin@aegis.demo</span>
+                    <div className="demo-cred p-2 rounded-xl bg-white hover:bg-indigo-50/80 border border-slate-200/80 transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('hosteladmin@campusx.demo', 'Demo@123')}>
+                      <span className="role-badge text-[10px] font-bold text-indigo-600">Hostel Manager</span>
+                      <span className="text-[10px] text-slate-500 truncate mt-0.5">hosteladmin@campusx.demo</span>
                     </div>
-                    <div className="demo-cred p-2 rounded-lg bg-brand-bg-secondary hover:bg-brand-primary/10 border border-brand-border transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('transportadmin@aegis.demo', 'Demo@123')}>
-                      <span className="role-badge text-[10px] font-bold text-[#14B8A6]">Transport Coord</span>
-                      <span className="text-[10px] text-brand-text-muted truncate mt-0.5">transportadmin@aegis.demo</span>
+                    <div className="demo-cred p-2 rounded-xl bg-white hover:bg-indigo-50/80 border border-slate-200/80 transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('transportadmin@campusx.demo', 'Demo@123')}>
+                      <span className="role-badge text-[10px] font-bold text-teal-600">Transport Coord</span>
+                      <span className="text-[10px] text-slate-500 truncate mt-0.5">transportadmin@campusx.demo</span>
                     </div>
-                    <div className="demo-cred p-2 rounded-lg bg-brand-bg-secondary hover:bg-brand-primary/10 border border-brand-border transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('medical@aegis.demo', 'Demo@123')}>
-                      <span className="role-badge text-[10px] font-bold text-[#EF4444]">Medical Staff</span>
-                      <span className="text-[10px] text-brand-text-muted truncate mt-0.5">medical@aegis.demo</span>
+                    <div className="demo-cred p-2 rounded-xl bg-white hover:bg-indigo-50/80 border border-slate-200/80 transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('medical@campusx.demo', 'Demo@123')}>
+                      <span className="role-badge text-[10px] font-bold text-rose-600">Medical Staff</span>
+                      <span className="text-[10px] text-slate-500 truncate mt-0.5">medical@campusx.demo</span>
                     </div>
-                    <div className="demo-cred p-2 rounded-lg bg-brand-bg-secondary hover:bg-brand-primary/10 border border-brand-border transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('guest@aegis.demo', 'Demo@123')}>
+                    <div className="demo-cred p-2 rounded-xl bg-white hover:bg-indigo-50/80 border border-slate-200/80 transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('guest@campusx.demo', 'Demo@123')}>
                       <span className="role-badge text-[10px] font-bold text-slate-400">Guest Visitor</span>
-                      <span className="text-[10px] text-brand-text-muted truncate mt-0.5">guest@aegis.demo</span>
+                      <span className="text-[10px] text-slate-500 truncate mt-0.5">guest@campusx.demo</span>
                     </div>
-                    <div className="demo-cred p-2 rounded-lg bg-brand-bg-secondary hover:bg-brand-primary/10 border border-brand-border transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('consultant@aegis.demo', 'Demo@123')}>
-                      <span className="role-badge text-[10px] font-bold text-[#8B5CF6]">Consultant</span>
-                      <span className="text-[10px] text-brand-text-muted truncate mt-0.5">consultant@aegis.demo</span>
+                    <div className="demo-cred p-2 rounded-xl bg-white hover:bg-indigo-50/80 border border-slate-200/80 transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('consultant@campusx.demo', 'Demo@123')}>
+                      <span className="role-badge text-[10px] font-bold text-purple-600">Consultant</span>
+                      <span className="text-[10px] text-slate-500 truncate mt-0.5">consultant@campusx.demo</span>
                     </div>
-                    <div className="demo-cred p-2 rounded-lg bg-brand-bg-secondary hover:bg-brand-primary/10 border border-brand-border transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('auditor@aegis.demo', 'Demo@123')}>
-                      <span className="role-badge text-[10px] font-bold text-brand-accent-amber">Auditor</span>
-                      <span className="text-[10px] text-brand-text-muted truncate mt-0.5">auditor@aegis.demo</span>
+                    <div className="demo-cred p-2 rounded-xl bg-white hover:bg-indigo-50/80 border border-slate-200/80 transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('auditor@campusx.demo', 'Demo@123')}>
+                      <span className="role-badge text-[10px] font-bold text-amber-600">Auditor</span>
+                      <span className="text-[10px] text-slate-500 truncate mt-0.5">auditor@campusx.demo</span>
                     </div>
-                    <div className="demo-cred p-2 rounded-lg bg-brand-bg-secondary hover:bg-brand-primary/10 border border-brand-border transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('compliance@aegis.demo', 'Demo@123')}>
-                      <span className="role-badge text-[10px] font-bold text-brand-accent-cyan">Compliance Officer</span>
-                      <span className="text-[10px] text-brand-text-muted truncate mt-0.5">compliance@aegis.demo</span>
+                    <div className="demo-cred p-2 rounded-xl bg-white hover:bg-indigo-50/80 border border-slate-200/80 transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('compliance@campusx.demo', 'Demo@123')}>
+                      <span className="role-badge text-[10px] font-bold text-cyan-600">Compliance Officer</span>
+                      <span className="text-[10px] text-slate-500 truncate mt-0.5">compliance@campusx.demo</span>
                     </div>
                   </div>
                 </div>
               )}
-
-              {/* AI Anomaly Monitor */}
-              <div className="auth-ai-threat-panel mt-4 p-4 bg-brand-bg-tertiary rounded-2xl border border-brand-border">
-                <div className="flex items-center justify-between mb-2 pb-1.5 border-b border-brand-border/40">
-                  <div className="flex items-center gap-2">
-                    <span className="w-2.5 h-2.5 rounded-full bg-brand-primary animate-pulse"></span>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-brand-text-main font-display">AI Threat Intel Monitor</span>
-                  </div>
-                  <span className={`badge text-[0.65rem] py-0.5 px-2 font-mono rounded ${threatStatus === 'Normal' ? 'bg-brand-accent-emerald/20 text-brand-accent-emerald' : (threatStatus === 'Elevated Threat' ? 'bg-brand-accent-amber/20 text-brand-accent-amber' : 'bg-brand-accent-ruby/20 text-brand-accent-ruby')}`}>
-                    {threatStatus}
-                  </span>
-                </div>
-                <div className="flex flex-col gap-2 text-xs text-brand-text-muted">
-                  <div className="flex justify-between items-center text-[10px]">
-                    <span>Login Request Anomaly Probability:</span>
-                    <span className="font-bold text-brand-text-main font-mono">{threatPercent}%</span>
-                  </div>
-                  <div className="w-full bg-brand-bg-secondary h-2.5 rounded-full overflow-hidden mt-1 relative border border-brand-border/40">
-                    <div className="h-full rounded-full transition-all duration-300" style={{ width: `${threatPercent}%`, backgroundColor: threatBarColor }}></div>
-                  </div>
-                  <p className="text-[9px] text-brand-text-subtle mt-1">{threatDesc}</p>
-                </div>
-              </div>
             </div>
           ) : (
             /* Sign Up View */
             <div className="auth-form-container fade-in flex-1 flex flex-col justify-between">
               <div>
-                <h2 className="text-2xl font-bold text-white font-display mb-1">Create Access Credentials</h2>
-                <p className="text-sm text-brand-text-muted mb-6">Register a new identity on the Aegis mesh network</p>
-
                 <form onSubmit={handleSignUp}>
                   <div className="auth-input-group relative mb-4">
                     <input 
@@ -1215,7 +1068,7 @@ export default function LoginPage() {
                       onChange={(e) => setSignupName(e.target.value)}
                       required 
                       placeholder="Full Name" 
-                      className="w-full bg-brand-bg-tertiary border border-brand-border rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-brand-primary transition-all placeholder-brand-text-subtle"
+                      className="w-full bg-[#f8fafc] border border-slate-200 rounded-2xl px-4 py-3.5 text-sm text-slate-900 outline-none focus:border-[#4f46e5] focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all placeholder-slate-400 shadow-sm"
                     />
                   </div>
 
@@ -1226,7 +1079,7 @@ export default function LoginPage() {
                       onChange={(e) => setSignupEmail(e.target.value)}
                       required 
                       placeholder="Email Address" 
-                      className="w-full bg-brand-bg-tertiary border border-brand-border rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-brand-primary transition-all placeholder-brand-text-subtle"
+                      className="w-full bg-[#f8fafc] border border-slate-200 rounded-2xl px-4 py-3.5 text-sm text-slate-900 outline-none focus:border-[#4f46e5] focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all placeholder-slate-400 shadow-sm"
                     />
                   </div>
 
@@ -1234,7 +1087,7 @@ export default function LoginPage() {
                     <select 
                       value={signupRole}
                       onChange={(e) => setSignupRole(e.target.value)}
-                      className="w-full bg-brand-bg-tertiary border border-brand-border rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-brand-primary transition-all"
+                      className="w-full bg-[#f8fafc] border border-slate-200 rounded-2xl px-4 py-3.5 text-sm text-slate-900 outline-none focus:border-[#4f46e5] focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all shadow-sm"
                     >
                       <option value="student">Student</option>
                       <option value="faculty">Faculty Member</option>
@@ -1248,7 +1101,7 @@ export default function LoginPage() {
                       <option value="alumni">Alumni</option>
                       <option value="recruiter">Recruiter</option>
                     </select>
-                    <label className="select-label absolute left-4 top-1 text-[0.65rem] text-brand-text-subtle">Access Hierarchy Role</label>
+                    <label className="select-label absolute left-4 top-1 text-[0.65rem] text-slate-400 font-bold uppercase">Access Hierarchy Role</label>
                   </div>
 
                   <div className="auth-input-group relative mb-3">
@@ -1258,12 +1111,12 @@ export default function LoginPage() {
                       onChange={(e) => setSignupPassword(e.target.value)}
                       required 
                       placeholder="Password" 
-                      className="w-full bg-brand-bg-tertiary border border-brand-border rounded-xl px-4 py-3 pr-11 text-sm text-white outline-none focus:border-brand-primary transition-all placeholder-brand-text-subtle"
+                      className="w-full bg-[#f8fafc] border border-slate-200 rounded-2xl px-4 py-3.5 pr-11 text-sm text-slate-900 outline-none focus:border-[#4f46e5] focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all placeholder-slate-400 shadow-sm"
                     />
                     <button 
                       type="button" 
                       onClick={() => setSignupShowPassword(!signupShowPassword)}
-                      className="password-toggle absolute right-4 top-3.5 text-brand-text-subtle hover:text-white cursor-pointer bg-transparent border-none"
+                      className="password-toggle absolute right-4 top-4 text-slate-400 hover:text-slate-700 cursor-pointer bg-transparent border-none"
                     >
                       {signupShowPassword ? (
                         <svg className="eye-closed w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
@@ -1275,12 +1128,12 @@ export default function LoginPage() {
 
                   {/* Password Strength Indicator */}
                   <div className="password-strength mb-4">
-                    <div className="strength-bar w-full h-1 bg-brand-bg-primary rounded overflow-hidden">
+                    <div className="strength-bar w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
                       <div 
-                        className={`strength-fill h-full transition-all duration-300 ${strengthLevel === 'weak' ? 'bg-brand-accent-ruby w-1/3' : (strengthLevel === 'medium' ? 'bg-brand-accent-amber w-2/3' : 'bg-brand-accent-emerald w-full')}`}
+                        className={`strength-fill h-full transition-all duration-300 ${strengthLevel === 'weak' ? 'bg-rose-500 w-1/3' : (strengthLevel === 'medium' ? 'bg-amber-500 w-2/3' : 'bg-emerald-500 w-full')}`}
                       ></div>
                     </div>
-                    <span className={`strength-text text-[0.7rem] mt-1 block ${strengthLevel === 'weak' ? 'text-brand-accent-ruby' : (strengthLevel === 'medium' ? 'text-brand-accent-amber' : 'text-brand-accent-emerald')}`}>
+                    <span className={`strength-text text-[0.7rem] mt-1 block font-bold ${strengthLevel === 'weak' ? 'text-rose-500' : (strengthLevel === 'medium' ? 'text-amber-500' : 'text-emerald-500')}`}>
                       Complexity: {strengthText.toUpperCase()}
                     </span>
                   </div>
@@ -1292,27 +1145,27 @@ export default function LoginPage() {
                       onChange={(e) => setSignupConfirmPassword(e.target.value)}
                       required 
                       placeholder="Confirm Password" 
-                      className="w-full bg-brand-bg-tertiary border border-brand-border rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-brand-primary transition-all placeholder-brand-text-subtle"
+                      className="w-full bg-[#f8fafc] border border-slate-200 rounded-2xl px-4 py-3.5 text-sm text-slate-900 outline-none focus:border-[#4f46e5] focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all placeholder-slate-400 shadow-sm"
                     />
                   </div>
 
                   <button 
                     type="submit" 
                     disabled={signupLoading}
-                    className="auth-submit-btn w-full py-3 bg-brand-primary hover:bg-brand-primary-hover text-white rounded-xl font-semibold transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+                    className="auth-submit-btn w-full py-3.5 bg-[#4f46e5] hover:bg-[#4338ca] text-white rounded-2xl font-bold text-sm transition-all shadow-lg shadow-indigo-500/25 flex items-center justify-center gap-2 cursor-pointer border-none disabled:opacity-50"
                   >
                     {signupLoading ? 'Registering Account...' : 'Complete Register'}
                   </button>
 
                   {signupError && (
-                    <div className="auth-error mt-3 p-3 bg-brand-accent-ruby/10 border border-brand-accent-ruby/20 text-brand-accent-ruby rounded-xl text-xs flex items-center gap-2">
+                    <div className="auth-error mt-3 p-3 bg-rose-50 border border-rose-200 text-rose-600 rounded-xl text-xs flex items-center gap-2">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4.5 h-4.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
                       <span>{signupError}</span>
                     </div>
                   )}
 
                   {signupSuccess && (
-                    <div className="auth-success mt-3 p-3 bg-brand-accent-emerald/10 border border-brand-accent-emerald/20 text-brand-accent-emerald rounded-xl text-xs flex items-center gap-2">
+                    <div className="auth-success mt-3 p-3 bg-emerald-50 border border-emerald-200 text-emerald-600 rounded-xl text-xs flex items-center gap-2">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4.5 h-4.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
                       <span>{signupSuccess}</span>
                     </div>
@@ -1323,8 +1176,8 @@ export default function LoginPage() {
           )}
 
           {/* Footer */}
-          <div className="auth-footer text-center mt-8 text-[11px] text-brand-text-subtle shrink-0">
-            <p>&copy; 2026 Aegis University Operating System. All rights reserved.</p>
+          <div className="auth-footer text-center mt-6 text-xs text-slate-400 shrink-0">
+            <p>&copy; 2026 CampusX University Operating System. All rights reserved.</p>
           </div>
         </div>
 

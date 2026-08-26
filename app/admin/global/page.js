@@ -7,21 +7,21 @@ export default function GlobalSuperAdminDashboard() {
   const [currentUser, setCurrentUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [k8sPods, setK8sPods] = useState([
-    { name: 'aegis-core-api-84f5d', status: 'Running', cpu: '12%', ram: '256MB', restarts: 0 },
-    { name: 'aegis-connect-webrtc-8a7e3', status: 'Running', cpu: '48%', ram: '812MB', restarts: 2 },
-    { name: 'aegis-chain-validator-01', status: 'Active', cpu: '8%', ram: '512MB', restarts: 0 },
-    { name: 'aegis-ai-copilot-model-c7b99', status: 'Running', cpu: '94%', ram: '2.4GB', restarts: 1 },
-    { name: 'aegis-postgresql-primary-0', status: 'Online', cpu: '15%', ram: '1.2GB', restarts: 0 }
+    { name: 'campusx-core-api-84f5d', status: 'Running', cpu: '12%', ram: '256MB', restarts: 0 },
+    { name: 'campusx-connect-webrtc-8a7e3', status: 'Running', cpu: '48%', ram: '812MB', restarts: 2 },
+    { name: 'campusx-chain-validator-01', status: 'Active', cpu: '8%', ram: '512MB', restarts: 0 },
+    { name: 'campusx-ai-copilot-model-c7b99', status: 'Running', cpu: '94%', ram: '2.4GB', restarts: 1 },
+    { name: 'campusx-postgresql-primary-0', status: 'Online', cpu: '15%', ram: '1.2GB', restarts: 0 }
   ]);
   const [auditLogs, setAuditLogs] = useState([
-    { id: 'log_9081', user: 'superadmin@aegis.demo', action: 'K8s Cluster Scale Up', target: 'aegis-connect-webrtc', ip: '10.244.0.1', timestamp: 'Just now' },
-    { id: 'log_9078', user: 'registrar@aegis.demo', action: 'Degree Certificate Signed', target: 'STU006 PATEL', ip: '192.168.12.44', timestamp: '5 mins ago' },
-    { id: 'log_9075', user: 'admin@aegis.demo', action: 'New Faculty Enrolled', target: 'Dr. Helen Vance', ip: '192.168.1.10', timestamp: '12 mins ago' }
+    { id: 'log_9081', user: 'superadmin@campusx.demo', action: 'K8s Cluster Scale Up', target: 'campusx-connect-webrtc', ip: '10.244.0.1', timestamp: 'Just now' },
+    { id: 'log_9078', user: 'registrar@campusx.demo', action: 'Degree Certificate Signed', target: 'STU006 PATEL', ip: '192.168.12.44', timestamp: '5 mins ago' },
+    { id: 'log_9075', user: 'admin@campusx.demo', action: 'New Faculty Enrolled', target: 'Dr. Helen Vance', ip: '192.168.1.10', timestamp: '12 mins ago' }
   ]);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const session = sessionStorage.getItem('aegis_erp_session');
+      const session = sessionStorage.getItem('campusx_erp_session');
       if (session) {
         setCurrentUser(JSON.parse(session));
       }
@@ -44,7 +44,7 @@ export default function GlobalSuperAdminDashboard() {
       {/* Dashboard Title */}
       <div className="flex justify-between items-center pb-4 border-b border-brand-border/40">
         <div>
-          <h1 className="text-3xl font-display font-bold text-white tracking-tight flex items-center gap-3">
+          <h1 className="text-3xl font-display font-bold text-brand-text-main tracking-tight flex items-center gap-3">
             <Layers className="w-8 h-8 text-brand-accent-ruby" />
             Global Operations Command Center
           </h1>
@@ -61,7 +61,7 @@ export default function GlobalSuperAdminDashboard() {
         <div className="card p-5 bg-brand-bg-secondary border border-brand-border rounded-2xl flex items-center justify-between">
           <div>
             <span className="text-brand-text-muted text-xs font-semibold">Active Tenants</span>
-            <span className="block text-2xl font-bold font-display text-white mt-1">12 Universities</span>
+            <span className="block text-2xl font-bold font-display text-brand-text-main mt-1">12 Universities</span>
             <span className="text-[10px] text-brand-accent-emerald mt-1 block">✓ All nodes synchronized</span>
           </div>
           <div className="p-3 bg-brand-accent-emerald/10 rounded-xl text-brand-accent-emerald">
@@ -106,7 +106,7 @@ export default function GlobalSuperAdminDashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Kubernetes Pod Monitoring */}
         <div className="card bg-brand-bg-secondary border border-brand-border rounded-2xl p-6 flex flex-col gap-4">
-          <h3 className="text-lg font-bold font-display text-white border-b border-brand-border/40 pb-3 flex items-center gap-2">
+          <h3 className="text-lg font-bold font-display text-brand-text-main border-b border-brand-border/40 pb-3 flex items-center gap-2">
             <Cpu className="w-5 h-5 text-brand-accent-cyan" />
             Kubernetes Pod Orchestrator
           </h3>
@@ -114,7 +114,7 @@ export default function GlobalSuperAdminDashboard() {
             {k8sPods.map(pod => (
               <div key={pod.name} className="flex justify-between items-center p-3 bg-brand-bg-tertiary/60 border border-brand-border/40 rounded-xl">
                 <div className="flex flex-col min-w-0">
-                  <span className="text-xs font-bold text-white truncate font-mono">{pod.name}</span>
+                  <span className="text-xs font-bold text-brand-text-main truncate font-mono">{pod.name}</span>
                   <span className="text-[10px] text-brand-text-muted mt-1">CPU: {pod.cpu} | Memory: {pod.ram}</span>
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
@@ -130,7 +130,7 @@ export default function GlobalSuperAdminDashboard() {
 
         {/* Global Security Audit Registry */}
         <div className="card bg-brand-bg-secondary border border-brand-border rounded-2xl p-6 flex flex-col gap-4">
-          <h3 className="text-lg font-bold font-display text-white border-b border-brand-border/40 pb-3 flex items-center gap-2">
+          <h3 className="text-lg font-bold font-display text-brand-text-main border-b border-brand-border/40 pb-3 flex items-center gap-2">
             <Terminal className="w-5 h-5 text-brand-accent-ruby" />
             System Audit Log Register
           </h3>
@@ -138,7 +138,7 @@ export default function GlobalSuperAdminDashboard() {
             {auditLogs.map(log => (
               <div key={log.id} className="flex items-start justify-between p-3 border-b border-brand-border/20 text-xs">
                 <div className="flex flex-col gap-1 text-xs">
-                  <span className="font-bold text-white">{log.action}</span>
+                  <span className="font-bold text-brand-text-main">{log.action}</span>
                   <span className="text-brand-text-muted">Target: <code className="text-brand-accent-cyan font-mono text-[10px]">{log.target}</code></span>
                   <span className="text-[10px] text-brand-text-subtle">Operator: {log.user} | IP: {log.ip}</span>
                 </div>

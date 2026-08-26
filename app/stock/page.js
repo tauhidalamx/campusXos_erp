@@ -38,8 +38,8 @@ const mockIndices = [
 ];
 
 const mockWatchlists = {
-  AEGIS: { name: 'Aegis Tech Holdings', price: 154.20, change: 3.25, volume: '1.2M', cap: '$3.1B' },
-  TECH: { name: 'Aegis Incubator Index', price: 84.10, change: -2.66, volume: '840K', cap: '$1.8B' },
+  CAMPUSX: { name: 'CampusX Tech Holdings', price: 154.20, change: 3.25, volume: '1.2M', cap: '$3.1B' },
+  TECH: { name: 'CampusX Incubator Index', price: 84.10, change: -2.66, volume: '840K', cap: '$1.8B' },
   EDU: { name: 'EdTech Global Corp', price: 210.50, change: 6.10, volume: '2.4M', cap: '$5.4B' },
   RES: { name: 'Quantum Lab Inc', price: 45.75, change: 0.33, volume: '410K', cap: '$980M' }
 };
@@ -73,22 +73,22 @@ const agentPersonas = {
     name: 'News Agent',
     role: 'Scrapes financial bulletins and measures sentiment indexes.',
     avatar: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=150',
-    prompt: 'Query: Check latest Aegis announcements.\nResponse: 🤖 **News Agent**: Aegis AI Incubator secured $12M in federal grant funding. Alternative sentiment indexes shifted +14% bullish on ticker AEGIS.'
+    prompt: 'Query: Check latest CampusX announcements.\nResponse: 🤖 **News Agent**: CampusX AI Incubator secured $12M in federal grant funding. Alternative sentiment indexes shifted +14% bullish on ticker CAMPUSX.'
   },
   prediction: {
     name: 'Prediction Agent',
     role: 'Hosts TensorFlow models (LSTM/Transformers) parameter fits.',
     avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
-    prompt: 'Query: Provide model projection for ticker AEGIS.\nResponse: 🤖 **Prediction Agent**: LSTM 7-day forecast indicates a target of $162.40 with a confidence threshold score of 94.2%. Trend direction: UP.'
+    prompt: 'Query: Provide model projection for ticker CAMPUSX.\nResponse: 🤖 **Prediction Agent**: LSTM 7-day forecast indicates a target of $162.40 with a confidence threshold score of 94.2%. Trend direction: UP.'
   }
 };
 
 export default function MarketIntelligencePage() {
-  const [selectedStock, setSelectedStock] = useState('AEGIS');
+  const [selectedStock, setSelectedStock] = useState('CAMPUSX');
   const [activeTab, setActiveTab] = useState('overview'); // 'overview' | 'predictions' | 'charts' | 'quant' | 'portfolio' | 'agents'
   
   // Custom watchlist state
-  const [watchlist, setWatchlist] = useState(['AEGIS', 'TECH', 'EDU']);
+  const [watchlist, setWatchlist] = useState(['CAMPUSX', 'TECH', 'EDU']);
   const [searchTicker, setSearchTicker] = useState('');
   
   // Model training configurations
@@ -121,7 +121,7 @@ export default function MarketIntelligencePage() {
   const [portfolio, setPortfolio] = useState({
     cash: 10000,
     holdings: {
-      AEGIS: 30,
+      CAMPUSX: 30,
       EDU: 10
     }
   });
@@ -130,7 +130,7 @@ export default function MarketIntelligencePage() {
 
   // Quantitative Alert creation
   const [alerts, setAlerts] = useState([
-    { id: '1', symbol: 'AEGIS', trigger: 160.00, type: 'ABOVE', status: 'ACTIVE' }
+    { id: '1', symbol: 'CAMPUSX', trigger: 160.00, type: 'ABOVE', status: 'ACTIVE' }
   ]);
   const [alertPrice, setAlertPrice] = useState(160.00);
   const [alertType, setAlertType] = useState('ABOVE');
@@ -139,12 +139,19 @@ export default function MarketIntelligencePage() {
   const [selectedAgent, setSelectedAgent] = useState('analyst');
   const [agentInput, setAgentInput] = useState('');
   const [agentLogs, setAgentLogs] = useState([
-    { sender: 'ai', text: 'Select a specialized Aegis AI Financial Agent and query them directly.' }
+    { sender: 'ai', text: 'Select a specialized CampusX AI Financial Agent and query them directly.' }
   ]);
   const [agentLoading, setAgentLoading] = useState(false);
 
   // Canvas drawing ref
   const canvasRef = useRef(null);
+
+  // Redirect to new standalone /market route for premium sub-navigation experience
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      window.location.href = '/market';
+    }
+  }, []);
 
   // Draw Candlestick & Indicator overlays
   useEffect(() => {

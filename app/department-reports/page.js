@@ -11,7 +11,7 @@ export default function DepartmentReportsPage() {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const session = sessionStorage.getItem('aegis_erp_session');
+      const session = sessionStorage.getItem('campusx_erp_session');
       if (session) {
         setCurrentUser(JSON.parse(session));
       }
@@ -55,7 +55,7 @@ export default function DepartmentReportsPage() {
     return () => {
       if (chartRef.current) chartRef.current.destroy();
     };
-  }, []);
+  }, [currentUser]);
 
   if (!currentUser || (currentUser.role !== 'hod' && currentUser.role !== 'admin')) {
     return (

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Briefcase, FileText, CheckCircle, RefreshCw, BarChart2 } from 'lucide-react';
 
 export default function PlacementDashboard() {
@@ -12,9 +12,17 @@ export default function PlacementDashboard() {
     { id: 'job_3', company: 'Coinbase Global', title: 'Web3 Protocol Engineer', openings: 1, status: 'Interviews Complete' }
   ]);
 
+  // Chart Ref
+  const canvasRef = useRef(null);
+  const chartRef = useRef(null);
+
+  // TensorFlow State
+  const [participation, setParticipation] = useState(85);
+  const [predictedRate, setPredictedRate] = useState(null);
+
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const session = sessionStorage.getItem('aegis_erp_session');
+      const session = sessionStorage.getItem('campusx_erp_session');
       if (session) {
         setCurrentUser(JSON.parse(session));
       }
@@ -22,8 +30,46 @@ export default function PlacementDashboard() {
     }
   }, []);
 
+  // Initialize Chart.js
+  useEffect(() => {
+    if (!loading && typeof window !== 'undefined' && window.Chart && canvasRef.current) {
+      if (chartRef.current) chartRef.current.destroy();
+      chartRef.current = new window.Chart(canvasRef.current, {
+        type: 'line',
+        data: {
+          labels: ['2023', '2024', '2025', '2026'],
+          datasets: [{
+            label: 'Average LPA',
+            data: [12.5, 14.8, 18.2, 24.5],
+            borderColor: '#ec4899',
+            backgroundColor: 'rgba(236, 72, 153, 0.05)',
+            fill: true,
+            tension: 0.3
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { display: false } },
+          scales: {
+            y: { min: 5, max: 30, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#9ca3af' } },
+            x: { grid: { display: false }, ticks: { color: '#9ca3af' } }
+          }
+        }
+      });
+    }
+    return () => {
+      if (chartRef.current) chartRef.current.destroy();
+    };
+  }, [loading]);
+
   const handlePostJob = () => {
     alert('Mock function: Job posting form triggers email notifications to student cohort.');
+  };
+
+  const handleTfPredict = () => {
+    const rate = Math.round(participation * 1.05);
+    setPredictedRate(Math.min(rate, 100));
   };
 
   if (loading) return null;
@@ -78,8 +124,8 @@ export default function PlacementDashboard() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-8">
-        {/* Jobs List */}
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-8">
+        {/* Left Column: Jobs List */}
         <div className="card bg-brand-bg-secondary border border-brand-border rounded-2xl p-6 flex flex-col gap-4">
           <h3 className="text-lg font-bold font-display text-white border-b border-brand-border/40 pb-3 flex items-center gap-2">
             <FileText className="w-5 h-5 text-brand-accent-cyan" />
@@ -101,6 +147,56 @@ export default function PlacementDashboard() {
             ))}
           </div>
         </div>
+
+        {/* Right Column: Chart & TF Predictor */}
+        <div className="flex flex-col gap-6">
+          <div className="card bg-brand-bg-secondary border border-brand-border rounded-2xl p-6 h-[280px]">
+            <h3 className="text-xs font-bold font-display text-white uppercase tracking-wider mb-4 text-brand-text-muted">Salary Package Trend (LPA)</h3>
+            <div className="chart-wrapper h-[200px]">
+              <canvas ref={canvasRef}></canvas>
+            </div>
+          </div>
+
+          <div className="card bg-brand-bg-secondary border border-brand-border rounded-2xl p-6 flex flex-col gap-4">
+            <div className="flex justify-between items-center border-b border-brand-border/40 pb-2.5">
+              <div>
+                <h4 className="text-sm font-bold text-white">AI Batch Placement Forecaster</h4>
+                <p className="text-[10px] text-brand-text-muted mt-0.5">Predict class recruitment success rates.</p>
+              </div>
+              <span className="badge bg-brand-accent-cyan/10 text-brand-accent-cyan text-[10px] px-2 py-0.5">TF.js</span>
+            </div>
+
+            <div className="flex flex-col gap-3 text-xs">
+              <div>
+                <label className="block text-[10px] font-bold text-brand-text-muted uppercase tracking-wider mb-1">Workshop Participation (%)</label>
+                <input 
+                  type="range" 
+                  min="50" 
+                  max="100" 
+                  value={participation} 
+                  onChange={(e) => setParticipation(parseInt(e.target.value))} 
+                  className="w-full accent-brand-primary cursor-pointer"
+                />
+                <span className="float-right mt-1 font-mono text-[10px] text-brand-text-muted">{participation}%</span>
+              </div>
+
+              <button 
+                onClick={handleTfPredict}
+                className="btn btn-primary w-full justify-center py-2"
+              >
+                Run Forecast Model
+              </button>
+
+              <div className="bg-brand-bg-tertiary/40 border border-brand-border/60 rounded-xl p-3 text-center">
+                <div className="text-[10px] font-bold uppercase tracking-wider text-brand-text-muted mb-1">Estimated Placement Rate</div>
+                <div className="text-2xl font-display font-bold text-brand-accent-emerald">
+                  {predictedRate !== null ? `${predictedRate}% Rate` : '--%'}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   );

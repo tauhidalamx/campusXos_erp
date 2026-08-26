@@ -3,912 +3,913 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { 
   Search, 
-  Filter, 
   Mic, 
+  MicOff,
   Send, 
   Video, 
+  VideoOff,
   Phone, 
-  Monitor, 
-  Terminal, 
-  Compass, 
+  PhoneOff,
+  Info,
   MessageSquare, 
   Users, 
-  FlaskConical, 
-  Calendar, 
   Volume2, 
-  Radio, 
-  CheckSquare, 
-  BarChart2, 
-  Bookmark, 
-  Bell, 
-  Settings, 
-  Plus, 
-  LogOut, 
-  MoreVertical, 
   Paperclip, 
-  Image as ImageIcon, 
-  Smile, 
-  Cpu, 
-  ShieldCheck, 
-  Trash2, 
-  FileCheck,
   Sparkles,
-  Link2,
-  X
+  CheckCheck,
+  X,
+  FileText,
+  ShieldCheck,
+  ChevronDown,
+  ChevronRight,
+  Pin,
+  FlaskConical,
+  Smile,
+  Trash2,
+  Copy,
+  MoreVertical,
+  Check
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ConnectProvider, useConnect } from '../ConnectContext';
+import SuiteSidebar from '../components/SuiteSidebar';
 import '../connect.css';
 import './messages.css';
 
-// Mock list of chat channels/threads
-const initialChatThreads = [
-  { id: 'ai_copilot', name: 'Aegis AI Copilot', category: 'ai', role: 'System Engine', dept: 'AI Lab', lastMsg: 'I calculated a +12% performance factor improvement...', timestamp: '10:42 AM', unread: 0, status: 'online', type: 'ai', pinned: true },
-  { id: 'usr_001', name: 'Dr. Raymond Park', category: 'faculty', role: 'Faculty HOD', dept: 'Computer Science', lastMsg: 'Please submit the consensus draft review by tonight.', timestamp: '10:30 AM', unread: 2, status: 'busy', type: 'user', pinned: true },
-  { id: 'usr_005', name: 'Carlos Mendez', category: 'students', role: 'Student Delegate', dept: 'Electrical Eng', lastMsg: 'Carlos is typing...', timestamp: '9:15 AM', unread: 0, status: 'online', type: 'user', typing: true },
-  { id: 'usr_002', name: 'Prof. Marcus Chen', category: 'faculty', role: 'Professor', dept: 'Computer Science', lastMsg: 'The midterm scores are posted to Aegis Chain.', timestamp: 'Yesterday', unread: 0, status: 'meeting', type: 'user', meetingActive: true },
-  { id: 'dept_cs', name: 'CS Department Huddle', category: 'departments', role: 'Official Channel', dept: 'CS Department', lastMsg: 'Consensus review meeting scheduled on-chain.', timestamp: 'Yesterday', unread: 0, status: 'online', type: 'channel' },
-  { id: 'class_cs202', name: 'CS202 - Data Structures', category: 'students', role: 'Class Group', dept: 'CS Cohort', lastMsg: 'Has anyone downloaded the binary tree prep PDF?', timestamp: 'June 11', unread: 1, status: 'online', type: 'channel' },
-  { id: 'res_dl_models', name: 'AI Deep Learning Models', category: 'research', role: 'Research Group', dept: 'AI Research', lastMsg: 'Citation indicators paper draft updated.', timestamp: 'June 10', unread: 3, status: 'online', type: 'channel', voiceActive: true },
-  { id: 'placement_leads', name: 'Placement Cell - Tech Leads', category: 'communities', role: 'Career Board', dept: 'Placements', lastMsg: 'Meta software intern applications closing soon.', timestamp: 'June 09', unread: 0, status: 'online', type: 'channel' },
-  { id: 'lounge_voice', name: 'Aegis Stage Lounge', category: 'voice', role: 'Voice stage', dept: 'Lounge', lastMsg: 'Dr. Raymond started live stage stream.', timestamp: 'June 08', unread: 0, status: 'online', type: 'voice', voiceActive: true }
+// Initial Sectioned Threads with Data Sanitization
+const initialThreads = [
+  // 1. PINNED & AI ASSISTANT
+  { 
+    id: 'ai_chat', 
+    name: 'CampusX AI Copilot', 
+    role: 'AI System Assistant', 
+    dept: 'AI Research Lab', 
+    avatar: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=150', 
+    online: true, 
+    status: 'System Online', 
+    category: 'ai', 
+    sectionId: 'pinned',
+    sectionTitle: '📌 PINNED & AI',
+    unread: 0, 
+    lastMsg: 'Hello! I am your research assistant. Ask me anything...', 
+    time: 'Just now' 
+  },
+
+  // 2. DIRECT MESSAGES
+  { 
+    id: 'usr_001', 
+    name: 'Dr. Raymond Park', 
+    role: 'Faculty HOD', 
+    dept: 'Computer Science', 
+    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150', 
+    online: true, 
+    status: 'Active Now', 
+    category: 'faculty', 
+    sectionId: 'direct',
+    sectionTitle: '💬 DIRECT MESSAGES',
+    unread: 2, 
+    lastMsg: 'Please submit the consensus draft review by tonight.', 
+    time: '10:30 AM' 
+  },
+  { 
+    id: 'usr_002', 
+    name: 'Dr. Evelyn Sterling', 
+    role: 'Professor & Lead Researcher', 
+    dept: 'Computer Science', 
+    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150', 
+    online: true, 
+    status: 'Online', 
+    category: 'faculty', 
+    sectionId: 'direct',
+    sectionTitle: '💬 DIRECT MESSAGES',
+    unread: 0, 
+    lastMsg: 'The midterm scores are posted to CampusX Chain.', 
+    time: 'Yesterday' 
+  },
+  { 
+    id: 'usr_005', 
+    name: 'Carlos Mendez', 
+    role: 'Student Representative', 
+    dept: 'Electrical Eng', 
+    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150', 
+    online: true, 
+    status: 'Active 5m ago', 
+    category: 'students', 
+    sectionId: 'direct',
+    sectionTitle: '💬 DIRECT MESSAGES',
+    unread: 1, 
+    lastMsg: 'Ready for the AI lab project discussion?', 
+    time: '9:15 AM' 
+  },
+
+  // 3. CHANNELS & GROUPS
+  { 
+    id: 'channel_general', 
+    name: 'General Campus Channel', 
+    role: 'Official Broadcast', 
+    dept: 'University Wide', 
+    avatar: 'https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=150', 
+    online: true, 
+    status: 'Official Channel', 
+    category: 'departments', 
+    sectionId: 'channels',
+    sectionTitle: '👥 CHANNELS & GROUPS',
+    unread: 0, 
+    lastMsg: 'Welcome to CampusX Connect central channel.', 
+    time: '10:15 AM' 
+  },
+  { 
+    id: 'class_cs202', 
+    name: 'CS202 - Data Structures', 
+    role: 'Course Cohort', 
+    dept: 'CS Department', 
+    avatar: 'https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?w=150', 
+    online: true, 
+    status: '34 Members', 
+    category: 'students', 
+    sectionId: 'channels',
+    sectionTitle: '👥 CHANNELS & GROUPS',
+    unread: 3, 
+    lastMsg: 'Has anyone downloaded the binary tree prep PDF?', 
+    time: 'June 11' 
+  },
+
+  // 4. RESEARCH LABS
+  { 
+    id: 'res_dl_models', 
+    name: 'AI Deep Learning Lab', 
+    role: 'Research Group', 
+    dept: 'AI Research', 
+    avatar: 'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=150', 
+    online: true, 
+    status: 'Active Research', 
+    category: 'research', 
+    sectionId: 'research',
+    sectionTitle: '🔬 RESEARCH & LABS',
+    unread: 0, 
+    lastMsg: 'Citation indicators paper draft updated.', 
+    time: 'June 10' 
+  },
+
+  // 5. VOICE STAGES
+  { 
+    id: 'lounge_voice', 
+    name: 'CampusX Stage Lounge', 
+    role: 'Voice Stage', 
+    dept: 'Lounge', 
+    avatar: 'https://images.unsplash.com/photo-1515187029135-18ee286d815b?w=150', 
+    online: true, 
+    status: 'Live Audio Stage', 
+    category: 'voice', 
+    sectionId: 'voice',
+    sectionTitle: '🔊 VOICE STAGES',
+    unread: 0, 
+    lastMsg: 'Dr. Raymond started live stage stream.', 
+    time: 'June 08' 
+  }
 ];
 
-function MessagesIndexPageContent() {
-  const { currentUser } = useConnect();
-  
-  // State management
-  const [chatThreads, setChatThreads] = useState(initialChatThreads);
-  const [selectedChatId, setSelectedChatId] = useState(null);
-  const [selectedChat, setSelectedChat] = useState(null);
-  
+const sectionsList = [
+  { id: 'pinned', title: '📌 PINNED & AI', icon: Pin },
+  { id: 'direct', title: '💬 DIRECT MESSAGES', icon: MessageSquare },
+  { id: 'channels', title: '👥 CHANNELS & GROUPS', icon: Users },
+  { id: 'research', title: '🔬 RESEARCH & LABS', icon: FlaskConical },
+  { id: 'voice', title: '🔊 VOICE STAGES', icon: Volume2 }
+];
+
+const quickEmojis = ['👍', '❤️', '🔥', '🙌', '🤖'];
+
+function DirectMessengerContent() {
+  const { 
+    currentUser, 
+    chatMessages, 
+    handleChatSend, 
+    handleToggleReaction,
+    handleDeleteMessage,
+    handlePinMessage,
+    activeChatChannel, 
+    setActiveChatChannel,
+    startCall,
+    endCall,
+    activeCallUser,
+    callStatus,
+    isMuted,
+    setIsMuted,
+    isCamOff,
+    setIsCamOff
+  } = useConnect();
+
+  // Local State
+  const [threads, setThreads] = useState(initialThreads);
   const [searchQuery, setSearchQuery] = useState('');
-  const [activeCategory, setActiveCategory] = useState('all'); // 'all', 'dm', 'faculty', 'students', 'departments', 'research', 'communities', 'voice', 'meetings', 'ai'
+  const [activeCategory, setActiveCategory] = useState('all');
+  const [collapsedSections, setCollapsedSections] = useState({});
+  const [inputText, setInputText] = useState('');
+  const [attachedFile, setAttachedFile] = useState(null);
+  const [attachedPreview, setAttachedPreview] = useState(null);
+  const [isRecordingVoice, setIsRecordingVoice] = useState(false);
+  const [voiceTimer, setVoiceTimer] = useState(0);
+  const [showRightPanel, setShowRightPanel] = useState(true);
+  const [callTimer, setCallTimer] = useState(0);
+  const [copiedMsgId, setCopiedMsgId] = useState(null);
+  const [hoveredMsgId, setHoveredMsgId] = useState(null);
 
-  // Composer States
-  const [composerText, setComposerText] = useState('');
-  const [attachmentList, setAttachmentList] = useState([]);
-  
-  // Remote control states
-  const [remoteControlActive, setRemoteControlActive] = useState(false);
-  const [remoteControlStatus, setRemoteControlStatus] = useState('Idle'); // 'Idle' | 'Requesting' | 'Controlling'
-  const [mouseTracePoints, setMouseTracePoints] = useState([]);
-  
-  // Custom WebRTC Meeting modal state
-  const [showMeetingModal, setShowMeetingModal] = useState(false);
-  const [activeMeetingRoom, setActiveMeetingRoom] = useState(null);
+  const messagesEndRef = useRef(null);
+  const fileInputRef = useRef(null);
+  const localVideoRef = useRef(null);
+  const localStreamRef = useRef(null);
 
-  // Messages logs dictionary
-  const [chatLogs, setChatLogs] = useState({
-    'ai_copilot': [
-      { sender: 'Aegis AI Copilot', text: 'Hello Aria! I am your research assistant. Ask me anything about university ledgers or citation details.', timestamp: '10:15 AM' },
-      { sender: 'Aria Nakamura', text: 'Can you summarize the consensus parameter latency results?', timestamp: '10:18 AM' },
-      { sender: 'Aegis AI Copilot', text: '🤖 **Aegis AI Research Summary**:\n• **Context**: Highlights core developments of university network parameters.\n• **Action Item**: Immediate updates to collaborative channels are recommended.\n• **Metric Projections**: Calculations indicate a potential +12% efficiency index increase.', timestamp: '10:20 AM' }
-    ],
-    'usr_001': [
-      { sender: 'Dr. Raymond Park', text: 'Aria, we need to finalize the paper submission today.', timestamp: '10:00 AM' },
-      { sender: 'Dr. Raymond Park', text: 'Please submit the consensus draft review by tonight.', timestamp: '10:30 AM' }
-    ]
-  });
+  const selectedThread = threads.find(t => t.id === activeChatChannel) || threads[0];
 
-  // Handle active thread selection
-  const selectConversation = (thread) => {
-    setSelectedChatId(thread.id);
-    setSelectedChat(thread);
+  const toggleSection = (sectionId) => {
+    setCollapsedSections(prev => ({
+      ...prev,
+      [sectionId]: !prev[sectionId]
+    }));
   };
 
-  // Add message to chat log
-  const handleSendMessage = () => {
-    if (!composerText.trim() && attachmentList.length === 0) return;
-    
-    const now = new Date();
-    const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    const newMsg = {
-      sender: 'Aria Nakamura',
-      text: composerText,
-      timestamp: timeStr,
-      attachments: [...attachmentList]
-    };
+  // Auto-scroll messages
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [chatMessages, activeChatChannel]);
 
-    setChatLogs(prev => ({
-      ...prev,
-      [selectedChatId]: [...(prev[selectedChatId] || []), newMsg]
-    }));
-    setComposerText('');
-    setAttachmentList([]);
+  // Voice recording timer
+  useEffect(() => {
+    let interval = null;
+    if (isRecordingVoice) {
+      interval = setInterval(() => setVoiceTimer(prev => prev + 1), 1000);
+    } else {
+      setVoiceTimer(0);
+    }
+    return () => clearInterval(interval);
+  }, [isRecordingVoice]);
 
-    // Update last message in cards list
-    setChatThreads(prev => prev.map(t => {
-      if (t.id === selectedChatId) {
-        return { ...t, lastMsg: composerText || 'Sent attachment' };
+  // Active call timer
+  useEffect(() => {
+    let interval = null;
+    if (callStatus === 'Connected') {
+      interval = setInterval(() => setCallTimer(prev => prev + 1), 1000);
+    } else {
+      setCallTimer(0);
+    }
+    return () => clearInterval(interval);
+  }, [callStatus]);
+
+  // Webcam initialization for video call
+  useEffect(() => {
+    if (activeCallUser && activeCallUser.callMode === 'video') {
+      navigator.mediaDevices?.getUserMedia({ video: true, audio: true })
+        .then(stream => {
+          localStreamRef.current = stream;
+          if (localVideoRef.current) {
+            localVideoRef.current.srcObject = stream;
+          }
+        })
+        .catch(err => {
+          console.warn('Local camera fallback:', err.message);
+        });
+    }
+
+    return () => {
+      if (localStreamRef.current) {
+        localStreamRef.current.getTracks().forEach(track => track.stop());
       }
-      return t;
-    }));
+    };
+  }, [activeCallUser]);
 
-    // Trigger mock reply from AI
-    if (selectedChatId === 'ai_copilot') {
-      setTimeout(() => {
-        const replyMsg = {
-          sender: 'Aegis AI Copilot',
-          text: '🤖 **Aegis Node Insights**:\nYour parameters have been logged and synced. Let me know if you would like me to output consensus telemetry metrics.',
-          timestamp: 'Just now'
-        };
-        setChatLogs(prev => ({
-          ...prev,
-          [selectedChatId]: [...(prev[selectedChatId] || []), replyMsg]
-        }));
-      }, 1000);
+  const formatTimer = (secs) => {
+    const m = Math.floor(secs / 60);
+    const s = secs % 60;
+    return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  };
+
+  // Filter threads safely
+  const filteredThreads = threads.filter(t => {
+    const query = searchQuery.toLowerCase().trim();
+    const matchSearch = !query || 
+                        (t.name && t.name.toLowerCase().includes(query)) || 
+                        (t.dept && t.dept.toLowerCase().includes(query)) ||
+                        (t.role && t.role.toLowerCase().includes(query));
+    const matchCategory = activeCategory === 'all' || 
+                          (activeCategory === 'dm' && t.sectionId === 'direct') ||
+                          t.category === activeCategory;
+    return matchSearch && matchCategory;
+  });
+
+  const handleFileSelect = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setAttachedFile(file);
+    if (file.type.startsWith('image/')) {
+      setAttachedPreview(URL.createObjectURL(file));
+    } else {
+      setAttachedPreview(null);
     }
   };
 
-  // Add dummy file attachments
-  const attachMockFile = (fileName) => {
-    setAttachmentList([...attachmentList, { name: fileName, size: '2.4 MB' }]);
+  const onSendMessage = (e) => {
+    if (e) e.preventDefault();
+    if (!inputText.trim() && !attachedFile && !attachedPreview) return;
+
+    let mediaType = null;
+    let mediaUrl = attachedPreview;
+
+    if (attachedFile) {
+      if (attachedFile.type.startsWith('image/')) mediaType = 'image';
+      else if (attachedFile.type.startsWith('video/')) mediaType = 'video';
+      else mediaType = 'file';
+    }
+
+    handleChatSend(inputText.trim(), mediaUrl, mediaType);
+    setInputText('');
+    setAttachedFile(null);
+    setAttachedPreview(null);
   };
 
-  // Remote Control Handlers
-  const handleRequestControl = () => {
-    setRemoteControlStatus('Requesting');
-    setRemoteControlActive(true);
-    setTimeout(() => {
-      setRemoteControlStatus('Controlling');
-    }, 1800);
+  const toggleVoiceRecording = () => {
+    if (isRecordingVoice) {
+      setIsRecordingVoice(false);
+      handleChatSend(`🎤 Voice Note (${formatTimer(voiceTimer)})`, null, 'audio');
+    } else {
+      setIsRecordingVoice(true);
+    }
   };
 
-  const handleStopControl = () => {
-    setRemoteControlActive(false);
-    setRemoteControlStatus('Idle');
-    setMouseTracePoints([]);
+  const copyToClipboard = (text, id) => {
+    navigator.clipboard?.writeText(text);
+    setCopiedMsgId(id);
+    setTimeout(() => setCopiedMsgId(null), 1500);
   };
 
-  // Capture virtual mouse tracks
-  const handleMouseOverScreen = (e) => {
-    if (remoteControlStatus !== 'Controlling') return;
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = Math.round(e.clientX - rect.left);
-    const y = Math.round(e.clientY - rect.top);
-    setMouseTracePoints(prev => {
-      const next = [...prev, { x, y, id: Date.now() }];
-      if (next.length > 5) next.shift();
-      return next;
-    });
-  };
-
-  // Start Meeting UI
-  const launchMeetingRoom = (roomName) => {
-    setActiveMeetingRoom(roomName);
-    setShowMeetingModal(true);
-  };
-
-  // Filters logic
-  const filteredThreads = chatThreads.filter(thread => {
-    // Search query match
-    const queryMatch = thread.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                       thread.dept.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                       thread.lastMsg.toLowerCase().includes(searchQuery.toLowerCase());
-    
-    if (!queryMatch) return false;
-
-    // Category filter match
-    if (activeCategory === 'all') return true;
-    if (activeCategory === 'dm') return thread.type === 'user';
-    if (activeCategory === 'faculty') return thread.category === 'faculty';
-    if (activeCategory === 'students') return thread.category === 'students';
-    if (activeCategory === 'departments') return thread.category === 'departments';
-    if (activeCategory === 'research') return thread.category === 'research';
-    if (activeCategory === 'communities') return thread.category === 'communities';
-    if (activeCategory === 'voice') return thread.category === 'voice';
-    if (activeCategory === 'meetings') return thread.meetingActive;
-    if (activeCategory === 'ai') return thread.category === 'ai';
-
-    return true;
-  });
+  const currentMessages = chatMessages[activeChatChannel] || [];
 
   return (
-    <div className="messages-main-container select-none connect-font-inter">
-      
-      {/* 1. LEFT SIDEBAR (320px) - Fixed Positioning */}
-      <aside className="w-[320px] bg-[#071126] border-r border-white/5 flex flex-col justify-between h-full fixed top-0 bottom-0 left-0 z-50 left-sidebar-navigation py-6 px-4">
-        <div className="flex flex-col gap-6">
-          {/* Logo Branding */}
-          <div className="flex items-center gap-3 mb-2 px-2">
-            <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-brand-primary to-indigo-500 flex items-center justify-center glow-accent">
-              <span className="font-display font-extrabold text-lg text-white">AC</span>
+    <div className="flex h-screen bg-brand-bg-primary text-brand-text-main overflow-hidden font-sans select-none relative" style={{ paddingLeft: '80px' }}>
+      {/* Left Global App Suite Sidebar */}
+      <SuiteSidebar />
+
+      {/* Main Container Layout */}
+      <div className="flex-1 flex overflow-hidden w-full h-full">
+        
+        {/* ================= 1. SECTION-WISE CONTACTS & CHANNELS SIDEBAR (320px - 360px) ================= */}
+        <div className="w-80 lg:w-90 border-r border-brand-border/40 bg-brand-bg-secondary/50 backdrop-blur-3xl flex flex-col shrink-0">
+          
+          {/* Header */}
+          <div className="p-4 border-b border-brand-border/40 flex justify-between items-center">
+            <div>
+              <h1 className="text-xl font-display font-black tracking-tight text-brand-text-main flex items-center gap-2">
+                Messenger
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_12px_rgba(16,185,129,0.6)]" />
+              </h1>
+              <p className="text-[11px] font-semibold text-brand-text-muted mt-0.5">Liquid Glass 2.0 Section-Wise Messaging</p>
             </div>
-            <span className="text-xl font-bold tracking-tight text-white uppercase large-branding-text">
-              AEGIS CONNECT
-            </span>
+            <button 
+              onClick={() => setActiveChatChannel('ai_chat')}
+              className="p-2 bg-brand-primary/10 hover:bg-brand-primary/20 text-brand-primary rounded-xl border border-brand-primary/20 transition-all cursor-pointer shadow-sm"
+              title="Start Direct AI Session"
+            >
+              <Sparkles className="w-4 h-4" />
+            </button>
           </div>
 
-          {/* Create New CTA */}
-          <button 
-            onClick={() => {
-              const newName = prompt("Enter conversation recipient or channel name:");
-              if (newName) {
-                const newId = 'ch_' + Date.now();
-                const newThread = {
-                  id: newId,
-                  name: newName,
-                  category: 'students',
-                  role: 'Direct Chat',
-                  dept: 'Student Forum',
-                  lastMsg: 'Thread initialized. Write a message.',
-                  timestamp: 'Just now',
-                  unread: 0,
-                  status: 'online',
-                  type: 'user'
-                };
-                setChatThreads([newThread, ...chatThreads]);
-                setSelectedChatId(newId);
-                setSelectedChat(newThread);
-              }
-            }}
-            className="w-full h-16 rounded-[20px] bg-brand-primary hover:brightness-110 text-white font-extrabold text-sm flex items-center justify-center gap-2 transition-all cursor-pointer glow-accent cta-create-btn"
-            style={{ boxShadow: '0 0 30px rgba(99,102,241,.35)' }}
-          >
-            <Plus className="w-5 h-5 shrink-0" />
-            <span>New Conversation</span>
-          </button>
-
-          {/* Navigation link roster */}
-          <nav className="flex flex-col gap-1 overflow-y-auto max-h-[50vh] pr-1 chat-scroll text-xs">
-            {[
-              { id: 'feed', label: 'Feed', icon: Compass },
-              { id: 'messages', label: 'Messages', icon: MessageSquare, active: true },
-              { id: 'communities', label: 'Communities', icon: Users },
-              { id: 'research', label: 'Research', icon: FlaskConical },
-              { id: 'events', label: 'Events', icon: Calendar },
-              { id: 'calling', label: 'Video Calling', icon: Video },
-              { id: 'voice', label: 'Voice Rooms', icon: Volume2 },
-              { id: 'meetings', label: 'Meetings', icon: Radio },
-              { id: 'tasks', label: 'Task Board', icon: CheckSquare },
-              { id: 'polls', label: 'Campus Polls', icon: BarChart2 },
-              { id: 'bookmarks', label: 'Bookmarks', icon: Bookmark },
-              { id: 'notifications', label: 'Notifications', icon: Bell },
-              { id: 'settings', label: 'Settings', icon: Settings }
-            ].map((link) => {
-              const LinkIcon = link.icon;
-              return (
-                <button
-                  key={link.id}
-                  className={`w-full py-3 px-4 rounded-[20px] flex items-center gap-3 transition-all relative font-bold text-left cursor-pointer border border-transparent ${
-                    link.active 
-                      ? 'bg-indigo-500/15 text-white font-extrabold' 
-                      : 'text-slate-400 hover:text-white hover:bg-white/[0.02]'
-                  }`}
-                >
-                  {link.active && (
-                    <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1.5 h-6 bg-[#6366F1] rounded-r-md" />
-                  )}
-                  <LinkIcon className={`w-5 h-5 shrink-0 ${link.active ? 'text-[#6366F1]' : 'text-slate-400'}`} />
-                  <span className="truncate">{link.label}</span>
+          {/* Search Contacts Bar */}
+          <div className="p-3 border-b border-brand-border/30">
+            <div className="flex items-center bg-brand-bg-primary/70 border border-brand-border/60 rounded-2xl px-3.5 py-2 gap-2 focus-within:border-brand-primary/60 transition-all shadow-inner">
+              <Search className="w-4 h-4 text-brand-text-muted shrink-0" />
+              <input 
+                type="text"
+                placeholder="Search messages, peers, channels..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="bg-transparent border-none text-xs text-brand-text-main outline-none w-full placeholder-brand-text-muted"
+              />
+              {searchQuery && (
+                <button onClick={() => setSearchQuery('')} className="text-brand-text-muted hover:text-brand-text-main cursor-pointer">
+                  <X className="w-3.5 h-3.5" />
                 </button>
+              )}
+            </div>
+          </div>
+
+          {/* Active Peer Stories & Online Status Bar */}
+          <div className="p-3 border-b border-brand-border/30 overflow-x-auto flex gap-3.5 no-scrollbar">
+            {threads.slice(0, 7).map(t => (
+              <div 
+                key={t.id} 
+                onClick={() => setActiveChatChannel(t.id)} 
+                className="flex flex-col items-center gap-1.5 cursor-pointer shrink-0 group"
+              >
+                <div className="relative p-0.5 rounded-full bg-gradient-to-tr from-amber-400 via-rose-500 to-indigo-600 group-hover:scale-105 transition-all shadow-sm">
+                  <img src={t.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150'} alt={t.name} className="w-11 h-11 rounded-full object-cover border-2 border-brand-bg-primary" />
+                  {t.online && (
+                    <span className="absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-brand-bg-primary shadow-sm" />
+                  )}
+                </div>
+                <span className="text-[10px] font-bold text-brand-text-muted group-hover:text-brand-text-main truncate max-w-[56px]">{t.name.split(' ')[0]}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* Category Filter Pills */}
+          <div className="px-3 py-2 border-b border-brand-border/30 flex gap-1.5 overflow-x-auto no-scrollbar">
+            {[
+              { id: 'all', label: 'All Sections' },
+              { id: 'dm', label: 'Direct DMs' },
+              { id: 'faculty', label: 'Faculty' },
+              { id: 'students', label: 'Students' },
+              { id: 'ai', label: 'AI Assistant' }
+            ].map(cat => (
+              <button
+                key={cat.id}
+                onClick={() => setActiveCategory(cat.id)}
+                className={`px-3 py-1 rounded-full text-[10px] font-bold transition-all cursor-pointer whitespace-nowrap ${
+                  activeCategory === cat.id
+                    ? 'bg-gradient-to-r from-brand-primary to-indigo-600 text-white shadow-md'
+                    : 'bg-brand-bg-primary/50 text-brand-text-muted hover:text-brand-text-main border border-brand-border/40'
+                }`}
+              >
+                {cat.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Section-Wise Accordion List */}
+          <div className="flex-1 overflow-y-auto p-2.5 space-y-4">
+            {sectionsList.map(sec => {
+              const secThreads = filteredThreads.filter(t => t.sectionId === sec.id);
+              if (secThreads.length === 0) return null;
+              const isCollapsed = collapsedSections[sec.id];
+
+              return (
+                <div key={sec.id} className="space-y-1.5">
+                  {/* Section Header */}
+                  <div 
+                    onClick={() => toggleSection(sec.id)}
+                    className="flex justify-between items-center px-2.5 py-1 cursor-pointer select-none text-brand-text-muted hover:text-brand-text-main group"
+                  >
+                    <span className="text-[10px] font-extrabold uppercase tracking-wider flex items-center gap-1.5">
+                      {isCollapsed ? <ChevronRight className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
+                      {sec.title}
+                    </span>
+                    <span className="px-2 py-0.5 rounded-full bg-brand-bg-primary/70 border border-brand-border/40 text-[9px] font-mono font-bold">
+                      {secThreads.length}
+                    </span>
+                  </div>
+
+                  {/* Threads inside Section */}
+                  {!isCollapsed && (
+                    <div className="space-y-1 pl-1">
+                      {secThreads.map(t => {
+                        const isSelected = activeChatChannel === t.id;
+                        return (
+                          <div
+                            key={t.id}
+                            onClick={() => setActiveChatChannel(t.id)}
+                            className={`p-2.5 rounded-2xl cursor-pointer transition-all flex items-center gap-3 border ${
+                              isSelected
+                                ? 'bg-gradient-to-r from-brand-primary/15 to-indigo-600/15 border-brand-primary/40 text-brand-text-main shadow-md'
+                                : 'border-transparent hover:bg-brand-bg-primary/40 text-brand-text-muted hover:text-brand-text-main'
+                            }`}
+                          >
+                            <div className="relative shrink-0">
+                              <img src={t.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150'} alt={t.name} className="w-10 h-10 rounded-full object-cover border border-brand-border/40" />
+                              {t.online && (
+                                <span className="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-500 border-2 border-brand-bg-primary shadow-sm" />
+                              )}
+                            </div>
+
+                            <div className="flex-1 min-w-0">
+                              <div className="flex justify-between items-baseline mb-0.5">
+                                <h3 className="text-xs font-bold text-brand-text-main truncate">{t.name}</h3>
+                                <span className="text-[10px] text-brand-text-muted font-mono shrink-0 ml-2">{t.time}</span>
+                              </div>
+                              <p className="text-[11px] text-brand-text-muted truncate">{t.lastMsg}</p>
+                            </div>
+
+                            {t.unread > 0 && (
+                              <span className="w-4 h-4 rounded-full bg-brand-primary text-white text-[9px] font-bold flex items-center justify-center shrink-0 shadow-md animate-pulse">
+                                {t.unread}
+                              </span>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
               );
             })}
-          </nav>
+          </div>
         </div>
 
-        {/* Bottom Docked User Profile details */}
-        <div className="border-t border-white/5 pt-4 flex items-center justify-between mt-auto">
-          <div className="flex items-center gap-2.5 min-w-0">
-            <div className="relative shrink-0">
-              <img 
-                src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150" 
-                alt="Profile" 
-                className="w-10 h-10 rounded-full border border-white/10 object-cover" 
-              />
-              <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 rounded-full border-2 border-[#071126]"></span>
+        {/* ================= 2. MAIN DIRECT MESSAGING CONVERSATION WINDOW ================= */}
+        <div className="flex-1 flex flex-col bg-brand-bg-primary/40 relative overflow-hidden">
+          
+          {/* Direct Chat Header */}
+          <div className="px-6 py-4 border-b border-brand-border/40 bg-brand-bg-secondary/50 backdrop-blur-3xl flex justify-between items-center z-10 shadow-sm">
+            <div className="flex items-center gap-3">
+              <div className="relative">
+                <img src={selectedThread.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150'} alt={selectedThread.name} className="w-10 h-10 rounded-full object-cover border border-brand-border/40 shadow-sm" />
+                {selectedThread.online && (
+                  <span className="absolute bottom-0 right-0 w-3 h-3 rounded-full bg-emerald-500 border-2 border-brand-bg-primary shadow-sm" />
+                )}
+              </div>
+              <div>
+                <h2 className="text-sm font-display font-bold text-brand-text-main flex items-center gap-1.5">
+                  {selectedThread.name}
+                  <ShieldCheck className="w-3.5 h-3.5 text-brand-primary" />
+                </h2>
+                <p className="text-[11px] text-brand-text-muted flex items-center gap-2">
+                  <span>{selectedThread.role} • {selectedThread.dept}</span>
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                  <span className="text-emerald-500 font-semibold">{selectedThread.status}</span>
+                </p>
+              </div>
             </div>
-            <div className="flex flex-col min-w-0 text-left">
-              <span className="text-xs font-extrabold text-white truncate">Aria Nakamura</span>
-              <span className="text-[9px] text-slate-400 truncate font-semibold">Student Delegate • CS</span>
+
+            {/* Direct Calling & Details Toolbar */}
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => startCall(selectedThread, 'audio')}
+                className="p-2.5 bg-brand-bg-primary border border-brand-border/60 hover:bg-brand-primary/10 hover:border-brand-primary/30 text-brand-text-muted hover:text-brand-primary rounded-xl transition-all cursor-pointer shadow-sm"
+                title="Start Audio Call"
+              >
+                <Phone className="w-4 h-4" />
+              </button>
+
+              <button
+                onClick={() => startCall(selectedThread, 'video')}
+                className="p-2.5 bg-brand-primary text-white hover:brightness-110 rounded-xl transition-all cursor-pointer shadow-md flex items-center gap-1.5 text-xs font-bold"
+                title="Start HD Video Call"
+              >
+                <Video className="w-4 h-4" />
+                <span className="hidden sm:inline">Video Call</span>
+              </button>
+
+              <button
+                onClick={() => setShowRightPanel(!showRightPanel)}
+                className="p-2.5 bg-brand-bg-primary border border-brand-border/60 hover:bg-brand-primary/10 text-brand-text-muted hover:text-brand-text-main rounded-xl transition-all cursor-pointer ml-1"
+                title="Toggle Contact Details"
+              >
+                <Info className="w-4 h-4" />
+              </button>
             </div>
           </div>
 
-          <button 
-            onClick={() => {
-              if (confirm("Sign out of Aegis session?")) window.location.href = "/auth";
-            }}
-            className="p-2 bg-[#102043]/30 hover:bg-rose-500/10 text-slate-400 hover:text-rose-400 border border-white/5 hover:border-rose-500/20 rounded-xl transition-all cursor-pointer"
-            title="Logout"
-          >
-            <LogOut className="w-4 h-4" />
-          </button>
-        </div>
-      </aside>
+          {/* Messages Stream Body */}
+          <div className="flex-1 overflow-y-auto p-6 space-y-4">
+            <div className="flex justify-center my-2">
+              <span className="px-3 py-1 bg-brand-bg-secondary/70 border border-brand-border/40 rounded-full text-[10px] font-bold text-brand-text-muted uppercase tracking-wider shadow-sm">
+                Today • Encrypted Channel
+              </span>
+            </div>
 
-      {/* 2. MIDDLE PANEL (420px): Conversation List */}
-      <section 
-        className="w-[420px] bg-[#0B1736] border-r border-white/5 flex flex-col h-full overflow-hidden shrink-0"
-        style={{ marginLeft: '320px' }} // Offsets the fixed left sidebar
-      >
-        {/* Header Section */}
-        <div className="p-4 border-b border-white/5 bg-[#102043]/20 flex flex-col gap-3 shrink-0">
-          <div className="flex justify-between items-center px-1">
-            <h2 className="text-sm font-extrabold text-white uppercase tracking-wider">Messages Workspace</h2>
-            <span className="text-[10px] text-slate-400 bg-white/5 border border-white/5 px-2 py-0.5 rounded font-mono font-bold">
-              {filteredThreads.length} active
-            </span>
-          </div>
-
-          {/* Custom Search Box */}
-          <div className="h-14 bg-[#102043] rounded-[18px] px-3.5 flex items-center gap-2 border border-white/5">
-            <Search className="w-4.5 h-4.5 text-slate-400 shrink-0" />
-            <input 
-              type="text" 
-              placeholder="Search messages..." 
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="flex-1 bg-transparent border-none text-xs text-white placeholder-slate-500 outline-none font-semibold"
-            />
-            <button className="p-1.5 hover:bg-white/5 rounded-lg text-slate-400 hover:text-white cursor-pointer transition-colors">
-              <Filter className="w-4 h-4" />
-            </button>
-            <button className="p-1.5 hover:bg-white/5 rounded-lg text-slate-400 hover:text-white cursor-pointer transition-colors">
-              <Mic className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-
-        {/* Horizontal scrollable category pill list */}
-        <div className="flex gap-2 overflow-x-auto p-3 border-b border-white/5 bg-[#071126]/30 scrollbar-none shrink-0 scroll-smooth">
-          {[
-            { id: 'all', label: 'All' },
-            { id: 'dm', label: 'Direct Messages' },
-            { id: 'faculty', label: 'Faculty' },
-            { id: 'students', label: 'Students' },
-            { id: 'departments', label: 'Departments' },
-            { id: 'research', label: 'Research Groups' },
-            { id: 'communities', label: 'Communities' },
-            { id: 'voice', label: 'Voice Rooms' },
-            { id: 'meetings', label: 'Meetings' },
-            { id: 'ai', label: 'AI Assistant' }
-          ].map((cat) => (
-            <button
-              key={cat.id}
-              onClick={() => setActiveCategory(cat.id)}
-              className={`px-3 py-1.5 rounded-xl text-[10px] font-bold tracking-wide transition-all whitespace-nowrap cursor-pointer shrink-0 border ${
-                activeCategory === cat.id 
-                  ? 'bg-brand-primary text-white border-transparent' 
-                  : 'bg-white/5 border-white/5 text-slate-400 hover:text-white hover:bg-white/10'
-              }`}
-            >
-              {cat.label}
-            </button>
-          ))}
-        </div>
-
-        {/* Vertical conversations scroll feed */}
-        <div className="flex-1 overflow-y-auto p-3 flex flex-col gap-2 chat-scroll">
-          {filteredThreads.length === 0 ? (
-            <div className="text-center py-8 text-slate-500 text-xs">No conversations matched your search tags.</div>
-          ) : (
-            filteredThreads.map((thread) => {
-              const isActive = selectedChatId === thread.id;
-              
-              // Status ring helper
-              let statusColor = 'border-slate-500';
-              if (thread.status === 'online') statusColor = 'border-emerald-500';
-              else if (thread.status === 'busy') statusColor = 'border-rose-500';
-              else if (thread.status === 'meeting') statusColor = 'border-indigo-500 animate-pulse';
+            {currentMessages.map((msg) => {
+              const isSelf = msg.senderId === currentUser?.id || msg.senderName === currentUser?.name || msg.senderId === 'usr_me';
+              const isHovered = hoveredMsgId === msg.id;
 
               return (
                 <div
-                  key={thread.id}
-                  onClick={() => selectConversation(thread)}
-                  className={`w-full h-[88px] p-4 rounded-[18px] flex items-center justify-between border cursor-pointer transition-all duration-150 ${
-                    isActive 
-                      ? 'bg-brand-primary/10 border-brand-primary/20 text-white' 
-                      : 'bg-[#102043]/30 border-white/5 hover:bg-white/[0.02] text-slate-300'
-                  }`}
+                  key={msg.id}
+                  onMouseEnter={() => setHoveredMsgId(msg.id)}
+                  onMouseLeave={() => setHoveredMsgId(null)}
+                  className={`flex items-end gap-2.5 group ${isSelf ? 'flex-row-reverse' : 'flex-row'} relative`}
                 >
-                  <div className="flex items-center gap-3 min-w-0 flex-1">
-                    {/* User profile avatar / channel icon */}
-                    <div className="relative shrink-0">
-                      {thread.type === 'ai' ? (
-                        <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center">
-                          <Sparkles className="w-5 h-5 text-brand-primary animate-pulse" />
-                        </div>
-                      ) : thread.type === 'channel' ? (
-                        <div className="w-10 h-10 rounded-xl bg-[#102043] border border-white/5 text-slate-300 flex items-center justify-center">
-                          <Users className="w-5 h-5" />
-                        </div>
-                      ) : (
-                        <img 
-                          src={`https://images.unsplash.com/photo-${thread.id === 'usr_001' ? '1534528741775-53994a69daeb' : (thread.id === 'usr_005' ? '1500648767791-00dcc994a43e' : '1507003211169-0a1dd7228f2d')}?w=150`} 
-                          alt="" 
-                          className="w-10 h-10 rounded-full object-cover border border-white/10" 
-                        />
-                      )}
-                      
-                      {thread.type !== 'channel' && (
-                        <span className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-[#0B1736] ${statusColor}`} />
-                      )}
-                    </div>
+                  {!isSelf && (
+                    <img
+                      src={msg.senderAvatar || selectedThread.avatar || 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150'}
+                      alt=""
+                      className="w-7 h-7 rounded-full object-cover border border-brand-border/40 mb-1 shrink-0 shadow-sm"
+                    />
+                  )}
 
-                    <div className="flex-1 min-w-0 text-left">
-                      <div className="flex justify-between items-baseline">
-                        <span className="text-xs font-bold text-white truncate pr-2">{thread.name}</span>
-                        <span className="text-[9px] text-slate-500 font-medium shrink-0">{thread.timestamp}</span>
-                      </div>
-                      
-                      <div className="flex items-center gap-1.5 mt-0.5 text-[9px] font-semibold text-slate-400">
-                        <span>{thread.role}</span>
-                        <span className="text-white/30">•</span>
-                        <span className="truncate">{thread.dept}</span>
-                      </div>
+                  <div className={`flex flex-col max-w-[75%] md:max-w-[65%] ${isSelf ? 'items-end' : 'items-start'}`}>
+                    <span className="text-[10px] font-medium text-brand-text-muted mb-1 px-1 flex items-center gap-1.5">
+                      <span>{isSelf ? 'You' : msg.senderName}</span>
+                      <span>•</span>
+                      <span>{msg.time}</span>
+                      {msg.pinned && <Pin className="w-3 h-3 text-amber-400 rotate-45" />}
+                    </span>
 
-                      {/* Msg text / typing state */}
-                      <p className={`text-[10px] truncate mt-1 ${thread.typing ? 'text-[#6366F1] font-bold italic' : 'text-slate-400'}`}>
-                        {thread.typing ? 'Carlos is typing...' : thread.lastMsg}
-                      </p>
+                    {/* Chat Bubble Container */}
+                    <div
+                      className={`p-3.5 rounded-2xl text-xs leading-relaxed relative transition-all ${
+                        isSelf
+                          ? 'bg-gradient-to-r from-brand-primary via-indigo-600 to-purple-600 text-white rounded-br-xs shadow-md font-medium border border-white/10'
+                          : 'bg-brand-bg-secondary/80 backdrop-blur-2xl border border-brand-border/60 text-brand-text-main rounded-bl-xs shadow-sm'
+                      }`}
+                    >
+                      {/* Media Image Attachment */}
+                      {msg.mediaUrl && (
+                        <div className="mb-2 rounded-xl overflow-hidden border border-white/20 shadow-sm">
+                          <img src={msg.mediaUrl} alt="Attachment" className="max-h-60 w-full object-cover" />
+                        </div>
+                      )}
+
+                      {/* Text content */}
+                      {msg.text && <p className="whitespace-pre-wrap">{msg.text}</p>}
+
+                      {/* Reactions Badges */}
+                      {msg.reactions && Object.keys(msg.reactions).length > 0 && (
+                        <div className="flex gap-1 mt-2 flex-wrap">
+                          {Object.entries(msg.reactions).map(([emoji, count]) => (
+                            <button
+                              key={emoji}
+                              onClick={() => handleToggleReaction(activeChatChannel, msg.id, emoji)}
+                              className="px-2 py-0.5 rounded-full bg-brand-bg-primary/80 border border-brand-border/40 text-[11px] flex items-center gap-1 hover:scale-105 transition-all cursor-pointer"
+                            >
+                              <span>{emoji}</span>
+                              <span className="font-bold">{count}</span>
+                            </button>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* Read status checkmarks */}
+                      {isSelf && (
+                        <div className="flex justify-end mt-1 text-white/80">
+                          <CheckCheck className="w-3.5 h-3.5 text-emerald-300" />
+                        </div>
+                      )}
                     </div>
                   </div>
 
-                  {/* Actions / indicators */}
-                  <div className="flex flex-col gap-1 items-end shrink-0 pl-2">
-                    {thread.unread > 0 && (
-                      <span className="bg-brand-primary text-white text-[9px] font-extrabold px-1.5 py-0.5 rounded-full shrink-0">
-                        {thread.unread}
-                      </span>
-                    )}
-                    <div className="flex items-center gap-1">
-                      {thread.meetingActive && <Video className="w-3.5 h-3.5 text-indigo-400 animate-pulse" />}
-                      {thread.voiceActive && <Volume2 className="w-3.5 h-3.5 text-cyan-400" />}
+                  {/* Hover Quick Reaction & Actions Toolbar */}
+                  {isHovered && (
+                    <div className={`absolute top-0 ${isSelf ? 'right-full mr-2' : 'left-full ml-2'} bg-brand-bg-secondary/90 border border-brand-border/60 backdrop-blur-xl rounded-2xl p-1 shadow-xl flex items-center gap-1 z-30`}>
+                      {quickEmojis.map(emoji => (
+                        <button
+                          key={emoji}
+                          onClick={() => handleToggleReaction(activeChatChannel, msg.id, emoji)}
+                          className="p-1 hover:bg-brand-bg-primary/60 rounded-lg text-sm transition-all cursor-pointer hover:scale-125"
+                        >
+                          {emoji}
+                        </button>
+                      ))}
+
+                      <div className="w-px h-4 bg-brand-border/40 mx-0.5" />
+
+                      <button
+                        onClick={() => handlePinMessage(activeChatChannel, msg.id)}
+                        className="p-1 hover:bg-brand-bg-primary/60 rounded-lg text-brand-text-muted hover:text-amber-400 transition-all cursor-pointer"
+                        title="Pin Message"
+                      >
+                        <Pin className="w-3.5 h-3.5" />
+                      </button>
+
+                      <button
+                        onClick={() => copyToClipboard(msg.text, msg.id)}
+                        className="p-1 hover:bg-brand-bg-primary/60 rounded-lg text-brand-text-muted hover:text-brand-text-main transition-all cursor-pointer"
+                        title="Copy text"
+                      >
+                        {copiedMsgId === msg.id ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                      </button>
+
+                      {isSelf && (
+                        <button
+                          onClick={() => handleDeleteMessage(activeChatChannel, msg.id)}
+                          className="p-1 hover:bg-brand-bg-primary/60 rounded-lg text-brand-text-muted hover:text-rose-500 transition-all cursor-pointer"
+                          title="Delete message"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      )}
                     </div>
-                  </div>
+                  )}
                 </div>
               );
-            })
+            })}
+            <div ref={messagesEndRef} />
+          </div>
+
+          {/* Attachment Preview Drawer */}
+          {attachedPreview && (
+            <div className="px-6 py-2 bg-brand-bg-secondary/80 border-t border-brand-border/40 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <img src={attachedPreview} alt="Preview" className="w-10 h-10 rounded-lg object-cover border border-brand-border/60" />
+                <span className="text-xs text-brand-text-muted font-medium">Image attached</span>
+              </div>
+              <button onClick={() => { setAttachedFile(null); setAttachedPreview(null); }} className="p-1 text-brand-text-muted hover:text-brand-text-main cursor-pointer">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
           )}
+
+          {/* Message Input Composer */}
+          <form onSubmit={onSendMessage} className="p-4 border-t border-brand-border/40 bg-brand-bg-secondary/50 backdrop-blur-3xl flex items-center gap-3">
+            <input 
+              type="file" 
+              ref={fileInputRef} 
+              onChange={handleFileSelect} 
+              className="hidden" 
+              accept="image/*,video/*,application/pdf" 
+            />
+
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              className="p-2.5 bg-brand-bg-primary border border-brand-border/60 hover:bg-brand-primary/10 text-brand-text-muted hover:text-brand-text-main rounded-xl transition-all cursor-pointer"
+              title="Attach media or document"
+            >
+              <Paperclip className="w-4 h-4" />
+            </button>
+
+            <button
+              type="button"
+              onClick={toggleVoiceRecording}
+              className={`p-2.5 rounded-xl border transition-all cursor-pointer ${
+                isRecordingVoice
+                  ? 'bg-rose-500 border-rose-600 text-white animate-pulse'
+                  : 'bg-brand-bg-primary border border-brand-border/60 hover:bg-brand-primary/10 text-brand-text-muted hover:text-brand-text-main'
+              }`}
+              title={isRecordingVoice ? 'Stop and send voice note' : 'Record voice note'}
+            >
+              <Mic className="w-4 h-4" />
+            </button>
+
+            {isRecordingVoice ? (
+              <div className="flex-1 bg-rose-500/10 border border-rose-500/20 rounded-xl px-4 py-2 flex items-center justify-between">
+                <span className="text-xs font-bold text-rose-500 animate-pulse flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-rose-500" />
+                  Recording Voice Note... {formatTimer(voiceTimer)}
+                </span>
+                <button type="button" onClick={toggleVoiceRecording} className="text-xs text-rose-500 font-bold underline cursor-pointer">
+                  Send
+                </button>
+              </div>
+            ) : (
+              <input
+                type="text"
+                placeholder={`Message ${selectedThread.name}...`}
+                value={inputText}
+                onChange={(e) => setInputText(e.target.value)}
+                className="flex-1 bg-brand-bg-primary/80 border border-brand-border/60 rounded-xl px-4 py-2.5 text-xs text-brand-text-main outline-none focus:border-brand-primary/60 transition-all placeholder-brand-text-muted shadow-inner"
+              />
+            )}
+
+            <button
+              type="submit"
+              disabled={!inputText.trim() && !attachedFile && !attachedPreview}
+              className="p-2.5 bg-gradient-to-r from-brand-primary to-indigo-600 hover:brightness-110 disabled:opacity-50 text-white rounded-xl shadow-md transition-all cursor-pointer shrink-0"
+            >
+              <Send className="w-4 h-4" />
+            </button>
+          </form>
         </div>
-      </section>
 
-      {/* 3. MIDDLE CHAT STREAM AREA (Flexible 1fr) */}
-      <main className="flex-1 flex flex-col h-full overflow-hidden bg-[#071126]/40 relative border-r border-white/5">
-        <AnimatePresence mode="wait">
-          {!selectedChatId ? (
-            // Animated empty state
-            <motion.div 
-              key="empty"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="flex-1 flex flex-col items-center justify-center p-8 text-center"
-            >
-              <div className="w-20 h-20 rounded-3xl bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400 mb-5 glow-accent">
-                <MessageSquare className="w-10 h-10" />
+        {/* ================= 3. RIGHT CONTACT DETAILS & SHARED MEDIA SIDEBAR (320px - 360px) ================= */}
+        {showRightPanel && (
+          <div className="w-80 lg:w-90 border-l border-brand-border/40 bg-brand-bg-secondary/50 backdrop-blur-3xl p-6 hidden lg:flex flex-col gap-6 overflow-y-auto shrink-0">
+            <div className="flex flex-col items-center text-center">
+              <div className="relative mb-3">
+                <img src={selectedThread.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150'} alt={selectedThread.name} className="w-20 h-20 rounded-full object-cover border-2 border-brand-primary/40 shadow-xl" />
+                {selectedThread.online && (
+                  <span className="absolute bottom-1 right-1 w-4 h-4 rounded-full bg-emerald-500 border-2 border-brand-bg-primary shadow-sm" />
+                )}
               </div>
-              <h2 className="text-base font-extrabold text-white">Select a Conversation</h2>
-              <p className="text-xs text-slate-400 max-w-sm mt-2 leading-relaxed">
-                Collaborate with students, faculty, researchers, and campus communities using secure blockchain attestation channels.
-              </p>
+              <h3 className="text-sm font-display font-bold text-brand-text-main flex items-center gap-1">
+                {selectedThread.name}
+                <ShieldCheck className="w-4 h-4 text-brand-primary" />
+              </h3>
+              <p className="text-xs text-brand-text-muted mt-0.5">{selectedThread.role}</p>
+              <span className="mt-2 px-3 py-1 bg-brand-primary/10 border border-brand-primary/20 text-brand-primary rounded-full text-[10px] font-bold">
+                {selectedThread.dept}
+              </span>
+            </div>
 
-              <div className="grid grid-cols-2 gap-3 mt-6 w-full max-w-xs">
-                <button 
-                  onClick={() => selectConversation(chatThreads[0])}
-                  className="py-2.5 px-4 bg-[#102043]/50 hover:bg-white/[0.04] border border-white/5 rounded-xl text-xs font-bold text-white cursor-pointer transition-colors"
-                >
-                  Start Chat
-                </button>
-                <button 
-                  onClick={() => alert("Simulate Create Group")}
-                  className="py-2.5 px-4 bg-[#102043]/50 hover:bg-white/[0.04] border border-white/5 rounded-xl text-xs font-bold text-white cursor-pointer transition-colors"
-                >
-                  Create Group
-                </button>
-                <button 
-                  onClick={() => alert("Simulate Join Community")}
-                  className="py-2.5 px-4 bg-[#102043]/50 hover:bg-white/[0.04] border border-white/5 rounded-xl text-xs font-bold text-white cursor-pointer transition-colors"
-                >
-                  Join Community
-                </button>
-                <button 
-                  onClick={() => launchMeetingRoom('Consensus review')}
-                  className="py-2.5 px-4 bg-brand-primary text-white rounded-xl text-xs font-bold cursor-pointer hover:brightness-110 transition-all"
-                >
-                  Schedule Meeting
-                </button>
+            {/* Action Shortcuts */}
+            <div className="grid grid-cols-2 gap-2">
+              <button 
+                onClick={() => startCall(selectedThread, 'audio')}
+                className="p-3 bg-brand-bg-primary border border-brand-border/60 hover:border-brand-primary/40 rounded-2xl text-center transition-all cursor-pointer shadow-sm"
+              >
+                <Phone className="w-4 h-4 text-brand-primary mx-auto mb-1" />
+                <span className="text-[11px] font-bold text-brand-text-main block">Audio Call</span>
+              </button>
+              <button 
+                onClick={() => startCall(selectedThread, 'video')}
+                className="p-3 bg-brand-bg-primary border border-brand-border/60 hover:border-brand-primary/40 rounded-2xl text-center transition-all cursor-pointer shadow-sm"
+              >
+                <Video className="w-4 h-4 text-brand-primary mx-auto mb-1" />
+                <span className="text-[11px] font-bold text-brand-text-main block">Video Call</span>
+              </button>
+            </div>
+
+            {/* Shared Media Gallery */}
+            <div>
+              <h4 className="text-xs font-bold text-brand-text-main mb-3 uppercase tracking-wider">Shared Media</h4>
+              <div className="grid grid-cols-3 gap-2">
+                {[
+                  "https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?w=300",
+                  "https://images.unsplash.com/photo-1522071820081-009f0129c71c?w=300",
+                  "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=300"
+                ].map((url, idx) => (
+                  <img key={idx} src={url} alt="" className="w-full aspect-square rounded-xl object-cover border border-brand-border/40 hover:scale-105 transition-all cursor-pointer shadow-sm" />
+                ))}
               </div>
-            </motion.div>
-          ) : (
-            // Chat workspace
-            <motion.div 
-              key="chat-active"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="flex-1 flex flex-col h-full overflow-hidden"
-            >
-              {/* Selected Conversation Header */}
-              <header className="h-[70px] border-b border-white/5 bg-[#0B1736]/40 px-6 flex items-center justify-between z-10 shrink-0">
-                <div className="flex items-center gap-3 min-w-0">
-                  <div className="relative shrink-0">
-                    {selectedChat.type === 'ai' ? (
-                      <div className="w-10 h-10 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center">
-                        <Sparkles className="w-5 h-5 text-brand-primary" />
-                      </div>
-                    ) : selectedChat.type === 'channel' ? (
-                      <div className="w-10 h-10 rounded-xl bg-[#102043] border border-white/5 text-slate-300 flex items-center justify-center">
-                        <Users className="w-5 h-5" />
-                      </div>
-                    ) : (
-                      <img 
-                        src={`https://images.unsplash.com/photo-${selectedChat.id === 'usr_001' ? '1534528741775-53994a69daeb' : (selectedChat.id === 'usr_005' ? '1500648767791-00dcc994a43e' : '1507003211169-0a1dd7228f2d')}?w=150`} 
-                        alt="" 
-                        className="w-10 h-10 rounded-full object-cover border border-white/10" 
-                      />
-                    )}
-                  </div>
-                  <div className="text-left min-w-0">
-                    <h3 className="text-xs font-bold text-white truncate">{selectedChat.name}</h3>
-                    <p className="text-[9px] text-slate-400 mt-0.5 truncate font-semibold">
-                      {selectedChat.role} • {selectedChat.dept}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* ================= 4. REAL-TIME AUDIO & VIDEO CALL OVERLAY MODAL ================= */}
+      <AnimatePresence>
+        {activeCallUser && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-3xl flex items-center justify-center p-4"
+          >
+            <div className="w-full max-w-4xl bg-brand-bg-secondary/90 border border-white/10 rounded-3xl overflow-hidden shadow-2xl flex flex-col relative aspect-video">
+              
+              {/* Header Info */}
+              <div className="p-4 bg-black/50 border-b border-white/10 flex justify-between items-center z-20">
+                <div className="flex items-center gap-3">
+                  <img src={activeCallUser.avatar || 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150'} alt="" className="w-9 h-9 rounded-full object-cover border border-white/20" />
+                  <div>
+                    <h3 className="text-sm font-bold text-white">{activeCallUser.name}</h3>
+                    <p className="text-[10px] text-emerald-400 font-mono font-bold flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+                      {callStatus} • {formatTimer(callTimer)}
                     </p>
                   </div>
                 </div>
-
-                {/* Actions Header Bar */}
-                <div className="flex items-center gap-2">
-                  <button 
-                    onClick={() => alert("Starting secure peer voice call...")}
-                    className="p-2 bg-white/5 hover:bg-white/10 rounded-xl text-slate-300 cursor-pointer transition-colors" 
-                    title="Voice Call"
-                  >
-                    <Phone className="w-4 h-4" />
-                  </button>
-                  <button 
-                    onClick={() => launchMeetingRoom(`Meet: ${selectedChat.name}`)}
-                    className="p-2 bg-white/5 hover:bg-white/10 rounded-xl text-slate-300 cursor-pointer transition-colors" 
-                    title="Video Call"
-                  >
-                    <Video className="w-4 h-4" />
-                  </button>
-                  <button 
-                    onClick={() => alert("Initializing video stream share...")}
-                    className="p-2 bg-white/5 hover:bg-white/10 rounded-xl text-slate-300 cursor-pointer transition-colors" 
-                    title="Screen Share"
-                  >
-                    <Monitor className="w-4 h-4" />
-                  </button>
-                  <button 
-                    onClick={handleRequestControl}
-                    className={`p-2 rounded-xl transition-all cursor-pointer border ${
-                      remoteControlActive 
-                        ? 'bg-rose-500/20 border-rose-500/30 text-rose-400' 
-                        : 'bg-white/5 border-transparent text-slate-300 hover:bg-white/10'
-                    }`}
-                    title="Remote Control"
-                  >
-                    <Terminal className="w-4 h-4" />
-                  </button>
-                  <span className="w-[1px] h-6 bg-white/10 mx-1"></span>
-                  <button className="p-2 hover:bg-white/5 rounded-lg text-slate-400 hover:text-white cursor-pointer">
-                    <MoreVertical className="w-4.5 h-4.5" />
-                  </button>
-                </div>
-              </header>
-
-              {/* Viewport for Remote control if activated */}
-              {remoteControlActive && (
-                <div className="h-[220px] bg-black/40 border-b border-white/5 p-3 flex flex-col shrink-0">
-                  <div className="flex items-center justify-between text-[10px] font-bold text-slate-300 mb-2">
-                    <span className="flex items-center gap-1.5 text-cyan-400">
-                      <Cpu className="w-3.5 h-3.5 animate-pulse" /> Remote Control status: {remoteControlStatus}
-                    </span>
-                    <button 
-                      onClick={handleStopControl}
-                      className="px-2 py-0.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 rounded text-[9px] font-bold border border-rose-500/20 cursor-pointer"
-                    >
-                      Stop Session
-                    </button>
-                  </div>
-                  
-                  {/* Virtual coordinate capture screen */}
-                  <div 
-                    onMouseMove={handleMouseOverScreen}
-                    className="flex-1 rounded-xl bg-black/80 border border-white/5 relative overflow-hidden flex items-center justify-center"
-                    style={{ cursor: 'crosshair' }}
-                  >
-                    <span className="text-[9px] font-mono text-slate-500">Virtual screen viewport (move cursor over to sync)</span>
-                    
-                    {/* Render active coordinates dots */}
-                    {mouseTracePoints.map(dot => (
-                      <div 
-                        key={dot.id}
-                        className="absolute w-2 h-2 bg-cyan-400 rounded-full"
-                        style={{ left: dot.x, top: dot.y }}
-                      >
-                        <span className="absolute left-2.5 top-0 text-[8px] bg-black text-cyan-300 px-1 rounded font-mono border border-cyan-400/20">
-                          X:{dot.x} Y:{dot.y}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Chat Stream message roster scroll area */}
-              <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-4 chat-scroll">
-                {(chatLogs[selectedChatId] || []).map((msg, i) => {
-                  const isSelf = msg.sender === 'Aria Nakamura';
-                  return (
-                    <div key={i} className={`flex ${isSelf ? 'justify-end' : 'justify-start'}`}>
-                      <div className="flex gap-2.5 max-w-[80%] items-start">
-                        {!isSelf && (
-                          <div className="w-7 h-7 rounded-full bg-[#102043] border border-white/5 flex items-center justify-center text-[10px] font-bold text-indigo-400 shrink-0">
-                            {msg.sender.substring(0, 2)}
-                          </div>
-                        )}
-                        <div className="flex flex-col gap-1">
-                          <div className="flex justify-between items-baseline text-[9px] text-slate-500 font-bold px-1">
-                            <span>{msg.sender}</span>
-                            <span>{msg.timestamp}</span>
-                          </div>
-                          
-                          <div className={`p-3 rounded-2xl text-xs text-left leading-relaxed ${
-                            isSelf 
-                              ? 'bg-brand-primary text-white rounded-tr-none' 
-                              : 'bg-[#102043] border border-white/5 text-slate-200 rounded-tl-none'
-                          }`}>
-                            {msg.text.split('\n').map((line, idx) => (
-                              <p key={idx} className={idx > 0 ? 'mt-1' : ''}>{line}</p>
-                            ))}
-
-                            {/* Render attachment blocks */}
-                            {msg.attachments && msg.attachments.map((file, fIdx) => (
-                              <div key={fIdx} className="mt-2.5 p-2 bg-black/20 rounded-xl border border-white/5 flex items-center justify-between text-[10px]">
-                                <span className="font-bold flex items-center gap-1.5 truncate text-slate-200">
-                                  <Paperclip className="w-3.5 h-3.5 text-indigo-400" /> {file.name}
-                                </span>
-                                <span className="text-[8px] text-slate-500 shrink-0 pl-2">{file.size}</span>
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })}
+                <span className="px-3 py-1 bg-white/10 border border-white/10 rounded-full text-xs font-bold text-white uppercase tracking-wider">
+                  {activeCallUser.callMode === 'video' ? 'HD Video Call' : 'Encrypted Voice Call'}
+                </span>
               </div>
 
-              {/* Message Composer Area */}
-              <div className="p-4 border-t border-white/5 bg-[#0B1736]/40 flex flex-col gap-2 shrink-0">
-                {/* Active attachments panel */}
-                {attachmentList.length > 0 && (
-                  <div className="flex gap-2 overflow-x-auto pb-1.5 border-b border-white/5 mb-1 text-[10px]">
-                    {attachmentList.map((file, idx) => (
-                      <div key={idx} className="bg-[#102043] p-1.5 rounded-xl border border-white/5 flex items-center gap-1.5 text-slate-300">
-                        <span>{file.name}</span>
-                        <button 
-                          onClick={() => setAttachmentList(attachmentList.filter((_, i) => i !== idx))}
-                          className="text-rose-400 font-bold hover:text-white"
-                        >
-                          &times;
-                        </button>
+              {/* Call Stream Viewport */}
+              <div className="flex-1 relative bg-slate-950 flex items-center justify-center overflow-hidden">
+                {activeCallUser.callMode === 'video' ? (
+                  <>
+                    <img 
+                      src={activeCallUser.avatar || 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150'} 
+                      alt="" 
+                      className="w-full h-full object-cover filter brightness-90"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/40" />
+
+                    <div className="absolute right-6 bottom-6 w-44 aspect-video bg-black/80 border-2 border-white/20 rounded-2xl overflow-hidden shadow-2xl z-20">
+                      <video ref={localVideoRef} autoPlay playsInline muted className="w-full h-full object-cover" />
+                    </div>
+                  </>
+                ) : (
+                  <div className="flex flex-col items-center text-center p-8">
+                    <div className="relative mb-6">
+                      <div className="w-32 h-32 rounded-full bg-brand-primary/20 border-4 border-brand-primary/40 flex items-center justify-center animate-pulse shadow-[0_0_50px_rgba(79,70,229,0.4)]">
+                        <img src={activeCallUser.avatar || 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150'} alt="" className="w-28 h-28 rounded-full object-cover" />
                       </div>
-                    ))}
+                    </div>
+                    <h2 className="text-2xl font-display font-bold text-white mb-2">{activeCallUser.name}</h2>
+                    <p className="text-xs text-slate-400 mb-6 font-mono">End-to-End Encrypted Audio Stream</p>
+                    
+                    <div className="flex gap-1.5 items-center h-8">
+                      {[40, 70, 30, 90, 60, 100, 50, 80, 30, 60].map((h, i) => (
+                        <span key={i} style={{ height: `${h}%` }} className="w-1.5 bg-brand-primary rounded-full animate-bounce" />
+                      ))}
+                    </div>
                   </div>
                 )}
-
-                <div className="flex items-center gap-3">
-                  {/* Action attachments drop selectors */}
-                  <div className="flex items-center gap-1.5 text-slate-400">
-                    <button 
-                      onClick={() => attachMockFile('research_proposal.pdf')}
-                      className="p-2 hover:bg-white/5 rounded-xl hover:text-white cursor-pointer transition-colors"
-                      title="Upload PDF Files"
-                    >
-                      <Paperclip className="w-4.5 h-4.5" />
-                    </button>
-                    <button 
-                      onClick={() => attachMockFile('sensor_dataset.csv')}
-                      className="p-2 hover:bg-white/5 rounded-xl hover:text-white cursor-pointer transition-colors"
-                      title="Attach Research Data"
-                    >
-                      <ImageIcon className="w-4.5 h-4.5" />
-                    </button>
-                    <button 
-                      onClick={() => alert("Simulate Emoji Tray")}
-                      className="p-2 hover:bg-white/5 rounded-xl hover:text-white cursor-pointer transition-colors"
-                      title="Add Emoji"
-                    >
-                      <Smile className="w-4.5 h-4.5" />
-                    </button>
-                    <button 
-                      onClick={() => {
-                        setComposerText(prev => prev + " 🤖 Aegis AI: [Latency verified at 12ms. block node confirm stable.]");
-                      }}
-                      className="p-2 hover:bg-indigo-500/10 hover:text-brand-primary rounded-xl cursor-pointer transition-colors flex items-center gap-1"
-                      title="AI Copilot Assist"
-                    >
-                      <Sparkles className="w-4.5 h-4.5" />
-                    </button>
-                  </div>
-
-                  {/* Input field */}
-                  <input 
-                    type="text"
-                    placeholder="Type message, press enter to send..."
-                    value={composerText}
-                    onChange={(e) => setComposerText(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
-                    className="flex-1 bg-[#102043] border border-white/5 rounded-[18px] py-3 px-4 text-xs text-white placeholder-slate-500 outline-none focus:border-brand-primary/40 font-semibold"
-                  />
-
-                  {/* CTA Submit Button */}
-                  <button 
-                    onClick={handleSendMessage}
-                    className="w-10 h-10 rounded-[18px] bg-brand-primary hover:brightness-110 text-white flex items-center justify-center cursor-pointer transition-all shrink-0"
-                  >
-                    <Send className="w-4.5 h-4.5" />
-                  </button>
-                </div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </main>
-
-      {/* 4. DETAILS SIDEBAR PANEL (360px) */}
-      <aside className="w-[360px] bg-[#0B1736] border-l border-white/5 flex flex-col h-full overflow-hidden shrink-0 details-panel-sidebar">
-        <div className="p-4 border-b border-white/5 flex items-center justify-between shrink-0">
-          <span className="text-xs font-bold text-white uppercase tracking-wider">Details & Roster</span>
-          <MoreVertical className="w-4 h-4 text-slate-400" />
-        </div>
-
-        <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-4 chat-scroll">
-          {selectedChat ? (
-            <>
-              {/* Profile card summary */}
-              <div className="flex flex-col items-center text-center p-4 bg-[#102043]/30 border border-white/5 rounded-[20px] gap-3">
-                <div className="relative">
-                  {selectedChat.type === 'ai' ? (
-                    <div className="w-16 h-16 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center">
-                      <Sparkles className="w-8 h-8 text-brand-primary" />
-                    </div>
-                  ) : (
-                    <img 
-                      src={`https://images.unsplash.com/photo-${selectedChat.id === 'usr_001' ? '1534528741775-53994a69daeb' : (selectedChat.id === 'usr_005' ? '1500648767791-00dcc994a43e' : '1507003211169-0a1dd7228f2d')}?w=150`} 
-                      alt="" 
-                      className="w-16 h-16 rounded-full object-cover border border-white/10" 
-                    />
-                  )}
-                </div>
-                <div>
-                  <h4 className="text-xs font-extrabold text-white">{selectedChat.name}</h4>
-                  <p className="text-[10px] text-indigo-400 font-bold tracking-wide mt-1 uppercase bg-indigo-500/10 border border-indigo-500/20 px-2 py-0.5 rounded">
-                    {selectedChat.role}
-                  </p>
-                  <p className="text-[9px] text-slate-400 mt-1.5">{selectedChat.dept}</p>
-                </div>
               </div>
 
-              {/* Shared Files list */}
-              <div className="bg-[#102043]/30 border border-white/5 rounded-[20px] p-4 flex flex-col gap-3">
-                <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-wider font-mono">Shared documents</h4>
-                <div className="flex flex-col gap-2 text-[10px] text-slate-300">
-                  {[
-                    { name: 'Consensus_Parameter_Review.pdf', size: '2.4 MB' },
-                    { name: 'Study_Plan_CS202.pdf', size: '1.2 MB' }
-                  ].map((file, idx) => (
-                    <div key={idx} className="p-2.5 bg-black/20 rounded-xl border border-white/5 flex items-center justify-between">
-                      <span className="truncate pr-2">{file.name}</span>
-                      <span className="text-[8px] text-slate-500 shrink-0">{file.size}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Shared Research project ledger files */}
-              <div className="bg-[#102043]/30 border border-white/5 rounded-[20px] p-4 flex flex-col gap-3">
-                <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-wider font-mono">Blockchain Attestations</h4>
-                <div className="flex flex-col gap-2 font-mono text-[9px] text-slate-300">
-                  <div className="p-2.5 bg-black/20 rounded-xl border border-white/5 flex flex-col gap-1 text-left">
-                    <span className="text-emerald-400 font-bold flex items-center gap-1"><ShieldCheck className="w-3.5 h-3.5" /> Identity Hash Verified</span>
-                    <p className="truncate text-slate-500">did:aegis:usr_001</p>
-                  </div>
-                </div>
-              </div>
-
-              {/* Relationship visual graph - Animated nodes diagram */}
-              <div className="bg-[#102043]/30 border border-white/5 rounded-[20px] p-4 flex flex-col gap-3">
-                <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-wider font-mono">Visual Network Nodes Map</h4>
-                
-                {/* SVG node graph mapping Aria to selected chat */}
-                <div className="h-28 bg-black/20 rounded-xl relative border border-white/5 overflow-hidden flex items-center justify-center">
-                  <svg className="w-full h-full absolute inset-0 z-0">
-                    {/* Connecting line */}
-                    <line x1="25%" y1="50%" x2="75%" y2="50%" stroke="rgba(99,102,241,0.4)" strokeWidth="2" strokeDasharray="4,4" />
-                  </svg>
-                  
-                  {/* Local node dot */}
-                  <div className="absolute left-[20%] top-1/2 -translate-y-1/2 flex flex-col items-center z-10">
-                    <div className="w-8 h-8 rounded-full border border-indigo-400 bg-[#102043] flex items-center justify-center text-[9px] font-bold text-white shadow-lg shadow-indigo-900/30">
-                      Aria
-                    </div>
-                  </div>
-
-                  {/* Peer node dot */}
-                  <div className="absolute right-[20%] top-1/2 -translate-y-1/2 flex flex-col items-center z-10">
-                    <div className="w-8 h-8 rounded-full border border-cyan-400 bg-[#071126] flex items-center justify-center text-[9px] font-bold text-cyan-400 shadow-lg shadow-cyan-900/30">
-                      Peer
-                    </div>
-                  </div>
-
-                  {/* Sync status overlay */}
-                  <span className="absolute bottom-2 text-[8px] font-mono text-emerald-400 font-semibold bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">
-                    Consensus verified peer-link active
-                  </span>
-                </div>
-              </div>
-            </>
-          ) : (
-            // Select view default details
-            <div className="text-center py-8 text-slate-500 text-xs">Select a conversation thread to view detail properties.</div>
-          )}
-        </div>
-      </aside>
-
-      {/* 5. VIRTUAL WEBRTC MEETING MODAL INTERCEPT (Simulates Mediasoup call) */}
-      <AnimatePresence>
-        {showMeetingModal && (
-          <div className="fixed inset-0 bg-black/80 backdrop-blur flex items-center justify-center z-[1000] p-4">
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0 }}
-              className="bg-[#0B1736] border border-white/10 rounded-[20px] max-w-lg w-full overflow-hidden shadow-2xl flex flex-col relative"
-            >
-              {/* Meeting Header */}
-              <div className="p-4 border-b border-white/5 flex items-center justify-between bg-black/20">
-                <span className="text-xs font-extrabold text-white tracking-wide uppercase flex items-center gap-1.5">
-                  <Video className="w-4.5 h-4.5 text-cyan-400 animate-pulse" /> Meeting room consensus session
-                </span>
-                <button 
-                  onClick={() => setShowMeetingModal(false)}
-                  className="p-1 hover:bg-white/5 rounded text-slate-400 hover:text-white cursor-pointer"
+              {/* Call Controls Bar */}
+              <div className="p-4 bg-black/70 border-t border-white/10 flex justify-center items-center gap-4 z-20">
+                <button
+                  onClick={() => setIsMuted(!isMuted)}
+                  className={`p-4 rounded-2xl border transition-all cursor-pointer ${
+                    isMuted ? 'bg-rose-500/20 border-rose-500 text-rose-500' : 'bg-white/10 border-white/10 text-white hover:bg-white/20'
+                  }`}
                 >
-                  <X className="w-4 h-4" />
+                  {isMuted ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
+                </button>
+
+                {activeCallUser.callMode === 'video' && (
+                  <button
+                    onClick={() => setIsCamOff(!isCamOff)}
+                    className={`p-4 rounded-2xl border transition-all cursor-pointer ${
+                      isCamOff ? 'bg-rose-500/20 border-rose-500 text-rose-500' : 'bg-white/10 border-white/10 text-white hover:bg-white/20'
+                    }`}
+                  >
+                    {isCamOff ? <VideoOff className="w-5 h-5" /> : <Video className="w-5 h-5" />}
+                  </button>
+                )}
+
+                <button
+                  onClick={endCall}
+                  className="px-8 py-4 bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-2xl shadow-lg transition-all cursor-pointer flex items-center gap-2 text-sm"
+                >
+                  <PhoneOff className="w-5 h-5" />
+                  <span>End Call</span>
                 </button>
               </div>
-
-              {/* Meeting body simulator */}
-              <div className="p-6 flex flex-col gap-4 text-center">
-                <div className="h-44 bg-[#050b1a] rounded-xl relative overflow-hidden border border-white/5 flex flex-col items-center justify-center gap-2">
-                  <div className="flex gap-1.5 items-end mb-2">
-                    <span className="waveform-bar h-8 bg-indigo-500"></span>
-                    <span className="waveform-bar h-12 bg-indigo-500"></span>
-                    <span className="waveform-bar h-6 bg-indigo-500"></span>
-                    <span className="waveform-bar h-10 bg-indigo-500"></span>
-                  </div>
-                  <span className="text-xs font-extrabold text-white">Consensus Peer Audio Room</span>
-                  <span className="text-[9px] text-slate-500 font-mono">Broadcasting WebRTC SDP payload...</span>
-                </div>
-
-                <div className="flex items-center justify-center gap-4">
-                  <button 
-                    onClick={() => {
-                      alert("Attestation certificate signed on Aegis Chain node ledger.");
-                      setShowMeetingModal(false);
-                    }}
-                    className="px-6 py-2.5 bg-brand-primary hover:brightness-110 text-white font-extrabold text-xs rounded-xl shadow-md cursor-pointer"
-                  >
-                    Confirm & Join Securely
-                  </button>
-                  <button 
-                    onClick={() => setShowMeetingModal(false)}
-                    className="px-6 py-2.5 bg-white/5 hover:bg-white/10 border border-white/5 rounded-xl text-xs font-bold text-slate-400 cursor-pointer"
-                  >
-                    Cancel
-                  </button>
-                </div>
-              </div>
-            </motion.div>
-          </div>
+            </div>
+          </motion.div>
         )}
       </AnimatePresence>
-
     </div>
   );
 }
@@ -916,7 +917,7 @@ function MessagesIndexPageContent() {
 export default function MessagesIndexPage() {
   return (
     <ConnectProvider>
-      <MessagesIndexPageContent />
+      <DirectMessengerContent />
     </ConnectProvider>
   );
 }

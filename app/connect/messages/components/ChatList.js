@@ -34,10 +34,10 @@ export default function ChatList({
 
   // Mock list of chat channels/threads
   const chatThreads = [
-    { id: 'ai_copilot', name: 'Aegis AI Copilot', category: 'personal', role: 'System Engine', dept: 'AI Lab', lastMsg: 'I calculated a +12% performance factor improvement...', unread: 0, status: 'online', type: 'ai', pinned: true },
+    { id: 'ai_copilot', name: 'CampusX AI Copilot', category: 'personal', role: 'System Engine', dept: 'AI Lab', lastMsg: 'I calculated a +12% performance factor improvement...', unread: 0, status: 'online', type: 'ai', pinned: true },
     { id: 'usr_001', name: 'Dr. Evelyn Sterling', category: 'personal', role: 'Faculty', dept: 'Computer Science', lastMsg: 'Please submit the consensus draft review by tonight.', unread: 2, status: 'busy', type: 'user', pinned: true },
     { id: 'usr_005', name: 'Carlos Mendez', category: 'personal', role: 'Student', dept: 'Electrical Eng', lastMsg: '🎤 Voice Note (0:04)', unread: 0, status: 'online', type: 'user', typing: true },
-    { id: 'usr_002', name: 'Prof. Marcus Chen', category: 'personal', role: 'Faculty', dept: 'Computer Science', lastMsg: 'The midterms scores are posted to Aegis Chain.', unread: 0, status: 'meeting', type: 'user', meetingActive: true },
+    { id: 'usr_002', name: 'Prof. Marcus Chen', category: 'personal', role: 'Faculty', dept: 'Computer Science', lastMsg: 'The midterms scores are posted to CampusX Chain.', unread: 0, status: 'meeting', type: 'user', meetingActive: true },
     
     { id: 'dept_cs', name: 'CS Department Huddle', category: 'academic', role: 'Official Channel', dept: 'CS Department', lastMsg: 'Dr. Lovelace scheduled a consensus review meeting.', unread: 0, status: 'online', type: 'channel' },
     { id: 'class_cs202', name: 'CS202 - Data Structures', category: 'academic', role: 'Class Group', dept: 'CS Cohort', lastMsg: 'Has anyone downloaded the binary tree prep PDF?', unread: 1, status: 'online', type: 'channel' },

@@ -37,7 +37,7 @@ window.facultyView = (function() {
 
       <!-- Faculty Workload Chart & Visual Overview -->
       <div class="card animate-fade-in delay-2 bg-brand-bg-secondary/40 backdrop-blur-md border border-brand-border/50 p-6 rounded-2xl mb-6">
-        <h3 class="mb-2 font-display text-lg font-bold text-white">Workload Management Dashboard</h3>
+        <h3 class="mb-2 font-display text-lg font-bold text-brand-text-main">Workload Management Dashboard</h3>
         <p class="text-brand-text-muted mb-5 text-[0.85rem]">Maximum weekly teaching limit: 18 hours. Values over 15 hours represent heavy workload.</p>
         <div class="chart-wrapper h-[200px]">
           <canvas id="faculty-workload-chart"></canvas>
@@ -173,7 +173,7 @@ window.facultyView = (function() {
           label: 'Weekly teaching hours',
           data: workloadData,
           backgroundColor: colors,
-          borderColor: 'rgba(255, 255, 255, 0.05)',
+          borderColor: 'rgba(0, 0, 0, 0.05)',
           borderWidth: 1,
           borderRadius: 4
         }]
@@ -186,13 +186,13 @@ window.facultyView = (function() {
         },
         scales: {
           y: {
-            grid: { color: 'rgba(255, 255, 255, 0.05)' },
-            ticks: { color: '#94a3b8' },
+            grid: { color: 'rgba(0, 0, 0, 0.06)' },
+            ticks: { color: '#475569' },
             max: 20
           },
           x: {
             grid: { display: false },
-            ticks: { color: '#94a3b8' }
+            ticks: { color: '#475569' }
           }
         }
       }

@@ -1,3 +1,5 @@
+/* Liquid Glass UI Animations & Fluid Motion */
+
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -25,13 +27,71 @@
     box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.4);
   }
   50% {
-    box-shadow: 0 0 16px 4px rgba(99, 102, 241, 0.15);
+    box-shadow: 0 0 20px 6px rgba(99, 102, 241, 0.25);
   }
 }
 
 @keyframes spin {
   to {
     transform: rotate(360deg);
+  }
+}
+
+/* Liquid Mesh Fluid Floating Animations */
+@keyframes liquidOrbFloat1 {
+  0%, 100% {
+    transform: translate(0, 0) scale(1) rotate(0deg);
+  }
+  33% {
+    transform: translate(40px, -60px) scale(1.15) rotate(120deg);
+  }
+  66% {
+    transform: translate(-30px, 30px) scale(0.9) rotate(240deg);
+  }
+}
+
+@keyframes liquidOrbFloat2 {
+  0%, 100% {
+    transform: translate(0, 0) scale(1) rotate(0deg);
+  }
+  33% {
+    transform: translate(-50px, 40px) scale(0.9) rotate(-120deg);
+  }
+  66% {
+    transform: translate(35px, -45px) scale(1.12) rotate(-240deg);
+  }
+}
+
+@keyframes liquidOrbFloat3 {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(25px, 35px) scale(1.2);
+  }
+}
+
+/* Specular Glass Sheen Sweep */
+@keyframes glassShimmer {
+  0% {
+    transform: translateX(-150%) skewX(-25deg);
+  }
+  100% {
+    transform: translateX(250%) skewX(-25deg);
+  }
+}
+
+/* Glass Pop Entrance */
+@keyframes glassPop {
+  0% {
+    opacity: 0;
+    transform: scale(0.95) translateY(10px);
+    backdrop-filter: blur(0px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    backdrop-filter: blur(24px);
   }
 }
 
@@ -44,12 +104,28 @@
 }
 
 .animate-pulse-glow {
-  animation: pulseGlow 2s infinite ease-in-out;
+  animation: pulseGlow 2.5s infinite cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.animate-glass-pop {
+  animation: glassPop 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.liquid-orb-1 {
+  animation: liquidOrbFloat1 18s ease-in-out infinite;
+}
+
+.liquid-orb-2 {
+  animation: liquidOrbFloat2 22s ease-in-out infinite;
+}
+
+.liquid-orb-3 {
+  animation: liquidOrbFloat3 16s ease-in-out infinite;
 }
 
 /* Page transit styles */
 .page-transition {
-  animation: fadeIn 0.4s ease-out forwards;
+  animation: glassPop 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 /* Stagger delay classes */
@@ -66,6 +142,7 @@
   background-color: var(--accent-emerald);
   border-radius: 50%;
   position: relative;
+  box-shadow: 0 0 10px var(--accent-emerald);
 }
 
 .pulse-dot::after {

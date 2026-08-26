@@ -1,0 +1,20 @@
+# File: campusx_app.kv
+# Declarative layout extensions for CAMPUSX OS.
+# Mostly programmatically defined in main.py for dynamic canvas and graphics operations.
+
+<LoginScreen>:
+    # Styling for screens is implemented in python classes to guarantee cross-platform consistency.
+    canvas.before:
+        Color:
+            rgba: 0.97, 0.98, 0.99, 1 # F8FAFC background
+        Rectangle:
+            pos: self.pos
+            size: self.size
+
+<DashboardScreen>:
+    canvas.before:
+        Color:
+            rgba: 0.97, 0.98, 0.99, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size

@@ -1,23 +1,23 @@
 /* ========================================================================
-   Aegis Connect — Instagram-Style Premium Visual Identity
+   CampusX Connect — Instagram-Style Premium Visual Identity
    ======================================================================== */
 
 :root {
-  --bg-primary: #0a0e1a;
-  --bg-secondary: #121829;
-  --bg-tertiary: #1b233d;
-  --primary: #6366f1;
-  --primary-hover: #4f46e5;
-  --primary-glow: rgba(99, 102, 241, 0.15);
-  --accent-cyan: #06b6d4;
-  --accent-emerald: #10b981;
-  --accent-ruby: #f43f5e;
-  --accent-amber: #f59e0b;
-  --text-main: #f8fafc;
-  --text-muted: #94a3b8;
-  --text-subtle: #64748b;
-  --border: rgba(255, 255, 255, 0.08);
-  --border-focus: rgba(99, 102, 241, 0.4);
+  --bg-primary: #F8FAFC;
+  --bg-secondary: #FFFFFF;
+  --bg-tertiary: #F1F5F9;
+  --primary: #4F46E5;
+  --primary-hover: #4338CA;
+  --primary-glow: rgba(79, 70, 229, 0.1);
+  --accent-cyan: #0891B2;
+  --accent-emerald: #059669;
+  --accent-ruby: #E11D48;
+  --accent-amber: #D97706;
+  --text-main: #0F172A;
+  --text-muted: #475569;
+  --text-subtle: #64748B;
+  --border: rgba(0, 0, 0, 0.08);
+  --border-focus: rgba(79, 70, 229, 0.4);
   --radius-sm: 6px;
   --radius-md: 12px;
   --radius-lg: 20px;
@@ -68,10 +68,10 @@ body.dark-mode {
 
 .forum-sidebar {
   width: 280px;
-  background-color: rgba(18, 24, 41, 0.75);
+  background-color: rgba(255, 255, 255, 0.75);
   border-right: 1px solid var(--border);
   backdrop-filter: blur(12px);
-  box-shadow: 4px 0 30px rgba(0, 0, 0, 0.25);
+  box-shadow: 4px 0 30px rgba(0, 0, 0, 0.05);
   display: flex;
   flex-direction: column;
   padding: 24px;
@@ -124,7 +124,7 @@ body.dark-mode {
 }
 
 .menu-item:hover, .menu-item.active {
-  background-color: rgba(255, 255, 255, 0.04);
+  background-color: rgba(0, 0, 0, 0.04);
   color: var(--text-main);
 }
 
@@ -220,9 +220,9 @@ body.dark-mode {
   padding: 0 40px;
   position: sticky;
   top: 0;
-  background-color: rgba(10, 14, 26, 0.75);
+  background-color: rgba(255, 255, 255, 0.75);
   backdrop-filter: blur(12px);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
   z-index: 90;
 }
 
@@ -370,38 +370,35 @@ body.dark-mode {
   gap: 32px;
 }
 
-.feed-posts-container {
-  flex: 1;
-  max-width: 640px;
+.forum-sidebar {
+  width: 280px;
+  background: var(--glass-bg, rgba(255, 255, 255, 0.65));
+  border-right: 1px solid var(--glass-border, rgba(255, 255, 255, 0.6));
+  backdrop-filter: var(--glass-blur, blur(24px) saturate(190%));
+  box-shadow: 8px 0 32px 0 rgba(0, 0, 0, 0.12), inset -1px 0 1px 0 var(--glass-specular, rgba(255, 255, 255, 0.9));
   display: flex;
   flex-direction: column;
-  gap: 24px;
-}
-
-.feed-sidebar-right {
-  width: 320px;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-@media (max-width: 1024px) {
-  .feed-sidebar-right {
-    display: none;
-  }
+  padding: 24px;
+  position: fixed;
+  height: 100vh;
+  left: 0;
+  top: 0;
+  z-index: 100;
 }
 
 .sidebar-widget {
-  background-color: rgba(18, 24, 41, 0.65);
-  border: 1.5px solid var(--border);
-  border-radius: 20px;
+  background: var(--glass-bg, rgba(255, 255, 255, 0.65));
+  border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.6));
+  border-radius: 24px;
   padding: 20px;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.02);
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: var(--glass-blur, blur(24px) saturate(190%));
+  box-shadow: var(--glass-shadow, 0 12px 40px rgba(31,38,135,0.08)), inset 0 1px 1px 0 var(--glass-specular, rgba(255, 255, 255, 0.8));
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .sidebar-widget:hover {
-  border-color: rgba(99, 102, 241, 0.25);
-  transform: translateY(-1px);
+  border-color: rgba(99, 102, 241, 0.4);
+  transform: translateY(-3px);
+  box-shadow: 0 18px 40px -10px var(--primary-glow, rgba(99,102,241,0.25)), inset 0 1px 1.5px 0 var(--glass-specular, rgba(255, 255, 255, 0.9));
 }
 
 .sidebar-widget h3 {
@@ -482,13 +479,13 @@ body.dark-mode {
 
 /* Post Cards */
 .post-card {
-  background-color: rgba(18, 24, 41, 0.65);
+  background-color: var(--bg-secondary);
   border: 1.5px solid var(--border);
   border-radius: 20px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.02);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05), inset 0 1px 1px rgba(255, 255, 255, 0.6);
   backdrop-filter: blur(10px);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
@@ -517,7 +514,7 @@ body.dark-mode {
   align-items: center;
   justify-content: space-between;
   padding: 14px 16px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  border-bottom: 1px solid var(--border);
 }
 
 .post-creator-info {
@@ -621,12 +618,12 @@ body.dark-mode {
 
 /* Comments Section */
 .post-comments-wrapper {
-  border-top: 1px solid rgba(255, 255, 255, 0.04);
+  border-top: 1px solid var(--border);
   padding: 12px 16px;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  background-color: rgba(255, 255, 255, 0.01);
+  background-color: rgba(0, 0, 0, 0.01);
 }
 
 .comments-scroller {
@@ -659,7 +656,7 @@ body.dark-mode {
 .add-comment-input-form {
   display: flex;
   gap: 12px;
-  border-top: 1px solid rgba(255, 255, 255, 0.04);
+  border-top: 1px solid var(--border);
   padding-top: 10px;
 }
 .add-comment-input-form input {
@@ -736,7 +733,7 @@ body.dark-mode {
 }
 
 .task-card {
-  background-color: rgba(27, 35, 61, 0.65);
+  background-color: var(--bg-tertiary);
   border: 1px solid var(--border);
   border-radius: 12px;
   padding: 16px;
@@ -744,7 +741,7 @@ body.dark-mode {
   flex-direction: column;
   gap: 12px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
 }
 .task-card:hover {
   transform: translateY(-2px);
@@ -768,7 +765,7 @@ body.dark-mode {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-top: 1px solid rgba(255, 255, 255, 0.04);
+  border-top: 1px solid var(--border);
   padding-top: 10px;
   margin-top: 4px;
 }
@@ -790,7 +787,7 @@ body.dark-mode {
 }
 
 .task-status-control-btn {
-  background-color: rgba(255, 255, 255, 0.04);
+  background-color: rgba(0, 0, 0, 0.04);
   border: 1px solid var(--border);
   color: var(--text-main);
   padding: 4px 8px;
@@ -820,12 +817,12 @@ body.dark-mode {
 }
 
 .poll-card {
-  background-color: rgba(18, 24, 41, 0.65);
+  background-color: var(--bg-secondary);
   border: 1.5px solid var(--border);
   border-radius: 20px;
   padding: 24px;
   backdrop-filter: blur(10px);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.02);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05), inset 0 1px 1px rgba(255, 255, 255, 0.6);
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -902,7 +899,7 @@ body.dark-mode {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-top: 1px solid rgba(255, 255, 255, 0.04);
+  border-top: 1px solid var(--border);
   padding-top: 14px;
   font-size: 12px;
   color: var(--text-subtle);
@@ -924,12 +921,12 @@ body.dark-mode {
 
 .contacts-calling-panel {
   width: 300px;
-  background-color: rgba(18, 24, 41, 0.65);
+  background-color: var(--bg-secondary);
   border: 1.5px solid var(--border);
   border-radius: 20px;
   padding: 20px;
   backdrop-filter: blur(10px);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.02);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05), inset 0 1px 1px rgba(255, 255, 255, 0.6);
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -1052,7 +1049,7 @@ body.dark-mode {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(10, 14, 26, 0.95);
+  background-color: rgba(15, 23, 42, 0.95);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1120,7 +1117,7 @@ body.dark-mode {
   display: flex;
   gap: 16px;
   z-index: 12;
-  background-color: rgba(27, 35, 61, 0.8);
+  background-color: rgba(241, 245, 249, 0.8);
   backdrop-filter: blur(10px);
   padding: 12px 24px;
   border-radius: 40px;
@@ -1177,12 +1174,12 @@ body.dark-mode {
 
 .creation-modal-container {
   width: 500px;
-  background-color: rgba(18, 24, 41, 0.85);
+  background-color: var(--bg-secondary);
   border: 1.5px solid var(--border);
   border-radius: 24px;
   backdrop-filter: blur(16px);
   overflow: hidden;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
 }
 
 .modal-header-tabs {
@@ -1305,7 +1302,7 @@ body.dark-mode {
 }
 
 .add-option-field-btn {
-  background-color: rgba(255, 255, 255, 0.04);
+  background-color: rgba(0, 0, 0, 0.04);
   border: 1px solid var(--border);
   color: var(--text-main);
   padding: 8px 16px;

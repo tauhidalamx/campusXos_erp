@@ -1,22 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: aegis-app
+  name: campusx-app
   labels:
-    app: aegis-app
+    app: campusx-app
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: aegis-app
+      app: campusx-app
   template:
     metadata:
       labels:
-        app: aegis-app
+        app: campusx-app
     spec:
       containers:
-        - name: aegis-container
-          image: aegis-app:latest
+        - name: campusx-container
+          image: campusx-app:latest
           imagePullPolicy: Never
           ports:
             - containerPort: 5000
@@ -28,7 +28,7 @@ spec:
             - name: DATABASE_PATH
               value: "/app/uploads/database.sqlite"
           volumeMounts:
-            - name: aegis-storage
+            - name: campusx-storage
               mountPath: /app/uploads
           readinessProbe:
             httpGet:
@@ -42,6 +42,6 @@ spec:
             initialDelaySeconds: 15
             periodSeconds: 20
       volumes:
-        - name: aegis-storage
+        - name: campusx-storage
           persistentVolumeClaim:
-            claimName: aegis-pvc
+            claimName: campusx-pvc

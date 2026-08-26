@@ -159,7 +159,7 @@
             <div class="grid-2">
               <div class="form-group">
                 <label class="form-label">Institution Name</label>
-                <input type="text" class="form-control" value="Aegis Model University">
+                <input type="text" class="form-control" value="CampusX Model University">
               </div>
               <div class="form-group">
                 <label class="form-label">System Time Zone</label>
@@ -262,10 +262,31 @@
 
     // ─── LOGOUT ────────────────────────────────────────────────────
     handleLogout: function() {
-      if (confirm('Are you sure you want to sign out?')) {
-        sessionStorage.removeItem('aegis_erp_session');
-        window.location.href = 'auth.html';
-      }
+      const bodyHTML = `
+        <div style="display: flex; flex-direction: column; align-items: center; text-align: center; gap: 16px; padding: 16px 0;">
+          <div style="width: 48px; height: 48px; border-radius: 50%; background: rgba(244, 63, 94, 0.1); border: 1px solid rgba(244, 63, 94, 0.2); display: flex; align-items: center; justify-content: center; color: var(--accent-ruby, #f43f5e); margin-bottom: 8px; box-shadow: 0 0 15px rgba(244, 63, 94, 0.15);">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          </div>
+          <p style="color: var(--text-muted, #94a3b8); font-size: 0.875rem; line-height: 1.5; margin: 0;">Are you sure you want to sign out of CampusX University ERP?</p>
+        </div>
+      `;
+      const footerHTML = `
+        <button class="btn btn-secondary px-6 py-2 rounded-xl cursor-pointer" onclick="window.App.closeModal()" style="margin-right: 8px;">Cancel</button>
+        <button class="btn btn-primary px-6 py-2 rounded-xl bg-brand-accent-ruby border-brand-accent-ruby text-white cursor-pointer hover:bg-brand-accent-ruby/90" id="logout-confirm-btn">Sign Out</button>
+      `;
+      
+      this.showModal('Sign Out', bodyHTML, footerHTML);
+      
+      // Bind click handler dynamically since elements are in modal
+      setTimeout(() => {
+        const confirmBtn = document.getElementById('logout-confirm-btn');
+        if (confirmBtn) {
+          confirmBtn.addEventListener('click', () => {
+            sessionStorage.removeItem('campusx_erp_session');
+            window.location.href = 'auth.html';
+          });
+        }
+      }, 50);
     },
 
     showQuickActions: function() {
@@ -293,7 +314,7 @@
               <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
               <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
             </svg>
-            <span>Aegis Connect</span>
+            <span>CampusX Connect</span>
           </button>
           <button class="btn btn-primary p-5 flex flex-col items-center gap-2.5 text-center" id="qa-mint-nft">
             <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>

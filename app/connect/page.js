@@ -13,6 +13,7 @@ import ProfileView from './components/ProfileView';
 import EventsView from './components/EventsView';
 import AchievementsView from './components/AchievementsView';
 import BookmarksView from './components/BookmarksView';
+import MessagesView from './components/MessagesView';
 import MobileNav from './components/MobileNav';
 import { Plus, X, FileText, Image, Film, HelpCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -29,6 +30,9 @@ function ConnectPageContent() {
     loadFeed,
     loadTasks,
     loadPolls,
+    addPost,
+    addTask,
+    addPoll,
     users
   } = useConnect();
 
@@ -49,6 +53,7 @@ function ConnectPageContent() {
     if (!currentUser || !postText.trim()) return;
 
     let type = 'text';
+    let mediaUrl = null;
     if (postFile) {
       if (postFile.type === 'application/pdf' || postFile.name.endsWith('.pdf')) {
         type = 'pdf';
@@ -57,31 +62,45 @@ function ConnectPageContent() {
       } else {
         type = 'image';
       }
+      mediaUrl = URL.createObjectURL(postFile);
     }
 
-    const formData = new FormData();
-    formData.append('user_id', currentUser.id);
-    formData.append('content', postText);
-    formData.append('type', type);
-    formData.append('category', postCategory);
-    if (postFile) {
-      formData.append('media', postFile);
-    }
+    const newPost = {
+      id: 'post_' + Date.now().toString(36),
+      user_id: currentUser.id,
+      userName: currentUser.name,
+      userAvatar: currentUser.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
+      userRole: currentUser.role,
+      userDept: currentUser.dept || 'CampusX',
+      content: postText,
+      type: type,
+      category: postCategory,
+      media_url: mediaUrl,
+      created_at: 'Just now',
+      likes_count: 0,
+      comments_count: 0,
+      likes: [],
+      comments: []
+    };
+
+    addPost(newPost);
+    setIsModalOpen(false);
+    setPostText('');
+    setPostFile(null);
 
     try {
-      const res = await fetch('/api/posts', {
-        method: 'POST',
-        body: formData
-      });
-      const data = await res.json();
-      if (data.success) {
-        setIsModalOpen(false);
-        setPostText('');
-        setPostFile(null);
-        loadFeed();
+      const formData = new FormData();
+      formData.append('user_id', currentUser.id);
+      formData.append('content', postText);
+      formData.append('type', type);
+      formData.append('category', postCategory);
+      if (postFile) {
+        formData.append('media', postFile);
       }
+      await fetch('/api/posts', { method: 'POST', body: formData });
+      loadFeed();
     } catch (err) {
-      console.error('Failed to upload post:', err);
+      console.error('Failed to sync post to backend:', err);
     }
   };
 
@@ -89,8 +108,23 @@ function ConnectPageContent() {
     e.preventDefault();
     if (!taskTitle.trim()) return;
 
+    const newTask = {
+      id: 'tsk_' + Date.now().toString(36),
+      title: taskTitle,
+      description: taskDesc,
+      assignee_id: taskAssignee || null,
+      status: 'pending',
+      created_at: 'Just now'
+    };
+
+    addTask(newTask);
+    setIsModalOpen(false);
+    setTaskTitle('');
+    setTaskDesc('');
+    setTaskAssignee('');
+
     try {
-      const res = await fetch('/api/tasks', {
+      await fetch('/api/tasks', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -99,16 +133,9 @@ function ConnectPageContent() {
           assignee_id: taskAssignee || null 
         })
       });
-      const data = await res.json();
-      if (data.success) {
-        setIsModalOpen(false);
-        setTaskTitle('');
-        setTaskDesc('');
-        setTaskAssignee('');
-        loadTasks();
-      }
+      loadTasks();
     } catch (err) {
-      console.error('Failed to create task:', err);
+      console.error('Failed to sync task to backend:', err);
     }
   };
 
@@ -117,8 +144,21 @@ function ConnectPageContent() {
     const cleanOptions = pollOptions.filter(opt => opt.trim() !== '');
     if (!pollQuestion.trim() || cleanOptions.length < 2) return;
 
+    const newPoll = {
+      id: 'poll_' + Date.now().toString(36),
+      question: pollQuestion,
+      options: cleanOptions.map(opt => ({ text: opt, votes: 0 })),
+      total_votes: 0,
+      created_at: 'Just now'
+    };
+
+    addPoll(newPoll);
+    setIsModalOpen(false);
+    setPollQuestion('');
+    setPollOptions(['', '']);
+
     try {
-      const res = await fetch('/api/polls', {
+      await fetch('/api/polls', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
@@ -126,15 +166,9 @@ function ConnectPageContent() {
           options: cleanOptions 
         })
       });
-      const data = await res.json();
-      if (data.success) {
-        setIsModalOpen(false);
-        setPollQuestion('');
-        setPollOptions(['', '']);
-        loadPolls();
-      }
+      loadPolls();
     } catch (err) {
-      console.error('Failed to create poll:', err);
+      console.error('Failed to sync poll to backend:', err);
     }
   };
 
@@ -148,6 +182,8 @@ function ConnectPageContent() {
         return <CommunitiesView />;
       case 'research':
         return <Feed />; // Feed component handles filtering category='research'
+      case 'messages':
+        return <MessagesView />;
       case 'notifications':
         return <NotificationsDrawer />;
       case 'bookmarks':
@@ -164,19 +200,19 @@ function ConnectPageContent() {
   };
 
   return (
-    <div className="min-h-screen bg-[#071126] text-white flex select-none connect-font-inter">
+    <div className="min-h-screen bg-brand-bg-primary text-brand-text-main flex select-none connect-font-inter">
       
       {/* 80px Left Sidebar Navigation */}
       <Sidebar />
 
-      {/* Main Container Wrapper */}
-      <div className="flex-1 flex flex-col pl-20 pb-16 md:pb-0">
+      {/* Main Container Wrapper - Offset by 80px to clear fixed left sidebar */}
+      <div className="flex-1 ml-20 flex flex-col pb-16 md:pb-0 h-screen overflow-hidden">
         
         {/* Core Layout Shell - Side-by-Side Flex Panels */}
-        <main className="w-full max-w-[1440px] mx-auto px-4 py-6 md:py-8 flex gap-8 justify-center min-h-screen">
+        <main className={`w-full mx-auto flex justify-center ${activeView === 'messages' ? 'max-w-full p-2 h-full overflow-hidden' : 'max-w-[1440px] px-4 py-6 md:py-8 min-h-screen gap-8'}`}>
           
           {/* Central Feed/Active tab Workspace */}
-          <div className="flex-1 max-w-[700px] flex justify-center">
+          <div className={`flex-1 flex justify-center min-w-0 ${activeView === 'messages' ? 'w-full max-w-full h-full' : 'max-w-[700px]'}`}>
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeView}
@@ -184,23 +220,23 @@ function ConnectPageContent() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -15 }}
                 transition={{ duration: 0.25, ease: 'easeInOut' }}
-                className="w-full flex justify-center"
+                className="w-full h-full flex justify-center min-w-0"
               >
                 {renderActiveView()}
               </motion.div>
             </AnimatePresence>
           </div>
 
-          {/* Right suggested widgets panel (Desktop only, hidden in profile/communities/explore) */}
-          {activeView !== 'communities' && activeView !== 'profile' && (
+          {/* Right suggested widgets panel (Desktop only, hidden in profile/communities/explore/messages) */}
+          {activeView !== 'communities' && activeView !== 'profile' && activeView !== 'messages' && (
             <RightPanel />
           )}
 
         </main>
       </div>
 
-      {/* Floating Messenger overlays */}
-      <FloatingMessenger />
+      {/* Floating Messenger overlays (Hidden when in full messages view) */}
+      {activeView !== 'messages' && <FloatingMessenger />}
 
       {/* Bottom mobile Nav Bar */}
       <MobileNav />
@@ -318,7 +354,7 @@ function ConnectPageContent() {
                       type="submit" 
                       className="w-full bg-brand-primary hover:bg-brand-primary-hover text-white py-3 rounded-xl text-xs font-bold transition-all shadow-lg mt-2"
                     >
-                      Publish Social Node
+                      Publish Post
                     </button>
                   </form>
                 )}
@@ -341,7 +377,7 @@ function ConnectPageContent() {
                     <div className="flex flex-col gap-1">
                       <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1">Description</span>
                       <textarea
-                        placeholder="Syllabus reviews, milestones, or project goals..."
+                        placeholder="Task details, milestones, or goals..."
                         value={taskDesc}
                         onChange={(e) => setTaskDesc(e.target.value)}
                         className="bg-[#102043] border border-white/5 text-xs text-white p-3 rounded-xl h-20 outline-none"
@@ -366,7 +402,7 @@ function ConnectPageContent() {
                       type="submit" 
                       className="w-full bg-brand-primary hover:bg-brand-primary-hover text-white py-3 rounded-xl text-xs font-bold transition-all shadow-lg mt-2"
                     >
-                      Create Milestone Node
+                      Create Task
                     </button>
                   </form>
                 )}
@@ -379,7 +415,7 @@ function ConnectPageContent() {
                       <input
                         type="text"
                         required
-                        placeholder="e.g. Schedule consensus review for Friday?"
+                        placeholder="e.g. Schedule review for Friday?"
                         value={pollQuestion}
                         onChange={(e) => setPollQuestion(e.target.value)}
                         className="bg-[#102043] border border-white/5 text-xs text-white p-3 rounded-xl outline-none"
@@ -408,7 +444,7 @@ function ConnectPageContent() {
                         onClick={() => setPollOptions([...pollOptions, ''])}
                         className="text-[10px] font-bold text-brand-primary hover:underline text-left self-start mt-1 bg-transparent border-none outline-none"
                       >
-                        + Add Choice option
+                        + Add Option
                       </button>
                     </div>
 
@@ -416,7 +452,7 @@ function ConnectPageContent() {
                       type="submit" 
                       className="w-full bg-brand-primary hover:bg-brand-primary-hover text-white py-3 rounded-xl text-xs font-bold transition-all shadow-lg mt-2"
                     >
-                      Broadcast Campus Poll
+                      Post Poll
                     </button>
                   </form>
                 )}

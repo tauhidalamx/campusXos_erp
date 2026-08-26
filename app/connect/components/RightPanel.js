@@ -28,14 +28,14 @@ export default function RightPanel() {
   ];
 
   const trendingTopics = [
-    { tag: '#AegisConnect', posts: '4.5k posts' },
+    { tag: '#CampusXConnect', posts: '4.5k posts' },
     { tag: '#BlockchainERP', posts: '1.2k posts' },
     { tag: '#QuantumComputing', posts: '890 posts' },
     { tag: '#ThesisPresentation', posts: '540 posts' }
   ];
 
   const careerOpportunities = [
-    { title: 'Research Intern - Deep Learning', company: 'Aegis AI Lab', type: 'Paid' },
+    { title: 'Research Intern - Deep Learning', company: 'CampusX AI Lab', type: 'Paid' },
     { title: 'Associate Software Engineer', company: 'Stripe API Group', type: 'Full-time' }
   ];
 
@@ -58,7 +58,7 @@ export default function RightPanel() {
           <div className="flex flex-col min-w-0">
             <span className="text-sm font-bold text-white truncate">{currentUser.name}</span>
             <span className="text-[11px] font-bold text-slate-500 uppercase tracking-widest mt-0.5">{currentUser.role}</span>
-            <span className="text-[10px] font-medium text-slate-400 truncate mt-0.5">{currentUser.dept || 'Aegis University'}</span>
+            <span className="text-[10px] font-medium text-slate-400 truncate mt-0.5">{currentUser.dept || 'CampusX University'}</span>
           </div>
         </div>
       )}
@@ -195,7 +195,7 @@ export default function RightPanel() {
         <span>Jobs</span>
         <span>Privacy</span>
         <span>Terms</span>
-        <span className="block w-full mt-1.5 font-bold">© 2026 AEGIS CONNECT OPERATING LAYER</span>
+        <span className="block w-full mt-1.5 font-bold">© 2026 CAMPUSX CONNECT OPERATING LAYER</span>
       </div>
 
     </div>

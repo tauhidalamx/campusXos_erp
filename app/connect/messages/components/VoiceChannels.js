@@ -22,7 +22,7 @@ export default function VoiceChannels() {
     { id: 'v_research', name: 'AI Deep Learning Lounge', category: 'RESEARCH', users: ['Prof. Alan Turing'], limit: 12 },
     { id: 'v_class', name: 'CS202 Study Session B', category: 'STUDENT', users: ['Carlos Mendez', 'Zoe Chen', 'Alex Rivera'], limit: 20 },
     { id: 'v_lounge', name: 'General Student Lounge', category: 'CAMPUS', users: [], limit: 30 },
-    { id: 'v_stage', name: 'Aegis Chain Consortium Panel', category: 'STAGE', users: ['Dr. Ada Lovelace'], limit: 100, isStage: true }
+    { id: 'v_stage', name: 'CampusX Chain Consortium Panel', category: 'STAGE', users: ['Dr. Ada Lovelace'], limit: 100, isStage: true }
   ];
 
   const handleJoinVoice = (roomId) => {
@@ -44,7 +44,7 @@ export default function VoiceChannels() {
       <div className="flex justify-between items-center px-1 border-b border-white/5 pb-3">
         <h2 className="text-base font-bold text-white flex items-center gap-2">
           <Volume2 className="w-5 h-5 text-brand-primary" />
-          Aegis Voice Space
+          CampusX Voice Space
         </h2>
         <button className="flex items-center gap-1.5 px-3 py-1.5 bg-brand-primary/10 border border-brand-primary/20 text-brand-primary rounded-xl text-xs font-bold hover:bg-brand-primary hover:text-white transition-all">
           <Plus className="w-3.5 h-3.5" />

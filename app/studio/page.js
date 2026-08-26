@@ -122,7 +122,7 @@ export default function StudioPage() {
           </Link>
           <div>
             <h1 className="text-2xl font-bold tracking-tight bg-gradient-to-r from-white via-indigo-200 to-indigo-400 bg-clip-text text-transparent">
-              AEGIS Studio Automation Builder
+              CAMPUSX Studio Automation Builder
             </h1>
             <p className="text-xs text-slate-400">Low-Code Event-Trigger Node Canvas Workspace</p>
           </div>

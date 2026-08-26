@@ -110,7 +110,7 @@ export function useDIDQuery(userId) {
     async () => {
       await new Promise(resolve => setTimeout(resolve, 200));
       return {
-        did: `did:aegis:${userId || 'unknown'}`,
+        did: `did:campusx:${userId || 'unknown'}`,
         publicKey: '0x8f2d72111d4e414c9e782ba959550b07a9e992b9',
         verified: true,
         credentials: ['UniversityMember', 'AuthorizedCollaborator']

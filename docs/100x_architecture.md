@@ -1,4 +1,4 @@
-# Aegis University Operating System: 100x High-Scale Architecture Specification
+# CampusX University Operating System: 100x High-Scale Architecture Specification
 **Document Version:** 2.0.0-PROD  
 **Scale Target:** 1,000,000+ Concurrent Users  
 **Status:** Approved for Implementation
@@ -45,7 +45,7 @@ The infrastructure is orchestrated using high-availability Kubernetes clusters (
 
 ## 3. Microservice Architecture
 
-Aegis is composed of 14 core services. Each service is fully decoupled, runs in its own container namespace, and implements Hexagonal Architecture.
+CampusX is composed of 14 core services. Each service is fully decoupled, runs in its own container namespace, and implements Hexagonal Architecture.
 
 ```text
 +-----------------------+-----------------------+-----------------------+
@@ -131,7 +131,7 @@ Aggregate states are computed by reading the baseline snapshot and replaying all
 
 ## 8. TensorFlow Architecture
 
-Aegis deploys custom machine learning models to detect student risk and predict placement probability.
+CampusX deploys custom machine learning models to detect student risk and predict placement probability.
 
 * **Model Registry**: Models are packaged, versioned, and stored in an S3-compatible MinIO bucket.
 * **Inference Serving**: Models are hosted using **TensorFlow Serving** pods in the Kubernetes cluster.
@@ -173,7 +173,7 @@ Kubeflow containers manage resource limits independently, deploying isolated pod
 
 ## 11. AI Service Architecture
 
-Aegis implements an **On-Premise Private AI Gateway** that manages requests to self-hosted models (DeepSeek, Llama, Qwen) running on local Ollama clusters.
+CampusX implements an **On-Premise Private AI Gateway** that manages requests to self-hosted models (DeepSeek, Llama, Qwen) running on local Ollama clusters.
 
 * **Load Balancer**: Requests are distributed across a pool of Ollama servers.
 * **Routing Agent**: Prompts are classified at the gateway. Simple queries go to lightweight models (Llama-3-8B), while complex analytics or grading tasks route to larger models (DeepSeek-R1-70B).
@@ -247,7 +247,7 @@ All deployments follow a GitOps workflow:
 
 ## 17. Security Architecture
 
-Aegis uses a **Zero-Trust Network Architecture**:
+CampusX uses a **Zero-Trust Network Architecture**:
 
 * **Identity Verification**: Authentication requires asymmetric RS256 JWT tokens verified via JWKS endpoints, paired with mandatory MFA.
 * **Access Control**: Authorization is managed via Casbin RBAC policies.
@@ -267,10 +267,10 @@ Deployments are active-active across multiple cloud regions:
 
 ## 19. Folder Structure
 
-Aegis is organized as a high-performance monorepo:
+CampusX is organized as a high-performance monorepo:
 
 ```text
-aegis-universe-100x/
+campusx-universe-100x/
 ├── apps/
 │   ├── nextjs-portal/       # Next.js 15 Tailwind Frontend
 │   └── admin-dashboard/     # React Admin Panel

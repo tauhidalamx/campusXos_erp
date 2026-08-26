@@ -29,7 +29,7 @@ window.blockchainView = (function() {
       index: 0,
       timestamp: '2026-01-01T00:00:00Z',
       type: 'GENESIS',
-      data: { message: 'Aegis University Blockchain Genesis Block' },
+      data: { message: 'CampusX University Blockchain Genesis Block' },
       hash: '0x0000000000000000000000000000000000000000',
       prevHash: '0x0000000000000000000000000000000000000000',
       nonce: 0,
@@ -88,7 +88,7 @@ window.blockchainView = (function() {
       WALLETS[s.id] = {
         address: generateHash(s.id + s.name).slice(0, 42),
         balance: parseFloat((Math.random() * 2.5 + 0.01).toFixed(4)),
-        network: 'Aegis EduChain (Testnet)',
+        network: 'CampusX EduChain (Testnet)',
         certificates: CERTIFICATES.filter(c => c.studentId === s.id).length
       };
     });
@@ -249,7 +249,7 @@ window.blockchainView = (function() {
         <!-- Student Wallets -->
         <div class="card">
           <h3 class="mb-4 font-display text-lg font-semibold">Student Credential Wallets</h3>
-          <p class="text-brand-text-muted text-xs mb-4">Aegis EduChain Testnet — Each student receives a decentralized identity wallet upon enrollment.</p>
+          <p class="text-brand-text-muted text-xs mb-4">CampusX EduChain Testnet — Each student receives a decentralized identity wallet upon enrollment.</p>
           <div class="flex flex-col gap-3 max-h-[330px] overflow-y-auto pr-1">
             ${window.UniversityDB.getStudents().map(stu => {
               const w = WALLETS[stu.id];
@@ -277,7 +277,7 @@ window.blockchainView = (function() {
       <!-- Smart Contract Simulation -->
       <div class="card animate-fade-in delay-4 mt-6">
         <h3 class="mb-2 font-display text-lg font-semibold">Smart Contract — Fee Payment Gateway</h3>
-        <p class="text-brand-text-muted text-xs mb-5">Execute a simulated on-chain fee transaction through the Aegis University smart contract.</p>
+        <p class="text-brand-text-muted text-xs mb-5">Execute a simulated on-chain fee transaction through the CampusX University smart contract.</p>
         <div class="grid grid-cols-1 md:grid-cols-[1fr_1fr_1fr_auto] gap-4 items-end">
           <div class="form-group mb-0">
             <label class="form-label">Student Wallet</label>
@@ -357,12 +357,12 @@ window.blockchainView = (function() {
         },
         scales: {
           y: {
-            grid: { color: 'rgba(255,255,255,0.05)' },
-            ticks: { color: '#94a3b8' }
+            grid: { color: 'rgba(0,0,0,0.06)' },
+            ticks: { color: '#475569' }
           },
           x: {
             grid: { display: false },
-            ticks: { color: '#94a3b8' }
+            ticks: { color: '#475569' }
           }
         }
       }
@@ -411,7 +411,7 @@ window.blockchainView = (function() {
     const courseOpts = courses.map(c => `<option value="${c.code} - ${c.title}">${c.code} - ${c.title}</option>`).join('');
 
     const bodyHTML = `
-      <p class="text-brand-text-muted text-sm mb-5">Mint a new verifiable credential NFT to the Aegis EduChain. This certificate becomes permanently immutable once confirmed.</p>
+      <p class="text-brand-text-muted text-sm mb-5">Mint a new verifiable credential NFT to the CampusX EduChain. This certificate becomes permanently immutable once confirmed.</p>
       <div class="form-group">
         <label class="form-label">Student</label>
         <select class="form-control" id="mint-student">${stuOpts}</select>
@@ -504,7 +504,7 @@ window.blockchainView = (function() {
   // ─── VERIFY CERTIFICATE MODAL ────────────────────────────────────
   function openVerifyModal() {
     const bodyHTML = `
-      <p class="text-brand-text-muted text-sm mb-5">Enter a transaction hash or student ID to verify the authenticity of a certificate on the Aegis EduChain.</p>
+      <p class="text-brand-text-muted text-sm mb-5">Enter a transaction hash or student ID to verify the authenticity of a certificate on the CampusX EduChain.</p>
       <div class="form-group">
         <label class="form-label">Transaction Hash or Student ID</label>
         <input type="text" class="form-control" id="verify-input" placeholder="e.g. 0x... or STU001">
@@ -543,7 +543,7 @@ window.blockchainView = (function() {
               <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="var(--color-brand-accent-ruby)" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
               <strong class="text-brand-accent-ruby">Not Found</strong>
             </div>
-            <p class="text-xs text-brand-text-muted">No matching certificates found on the Aegis EduChain for this query. The credential may be invalid or not yet minted.</p>
+            <p class="text-xs text-brand-text-muted">No matching certificates found on the CampusX EduChain for this query. The credential may be invalid or not yet minted.</p>
           </div>
         `;
         return;
@@ -631,7 +631,7 @@ window.blockchainView = (function() {
           </div>
           <div class="grid grid-cols-2 gap-2 text-sm">
             <div><span class="text-brand-text-muted">From:</span> <strong>${stu.name}</strong></div>
-            <div><span class="text-brand-text-muted">To:</span> <strong>Aegis University Treasury</strong></div>
+            <div><span class="text-brand-text-muted">To:</span> <strong>CampusX University Treasury</strong></div>
             <div><span class="text-brand-text-muted">Amount:</span> <strong class="text-brand-accent-cyan">${amount} ETH</strong> <span class="text-brand-text-subtle">(~$${usdEquiv})</span></div>
             <div><span class="text-brand-text-muted">Gas Used:</span> <strong>${gas.toLocaleString()} Wei</strong></div>
             <div><span class="text-brand-text-muted">Block:</span> <strong class="text-brand-primary">#${block.index}</strong></div>

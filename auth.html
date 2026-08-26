@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sign In — Aegis University ERP</title>
-  <meta name="description" content="Sign in to the Aegis University ERP — the next-generation campus management platform.">
+  <title>Sign In — CampusX University ERP</title>
+  <meta name="description" content="Sign in to the CampusX University ERP — the next-generation campus management platform.">
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,12 +14,16 @@
   <!-- Auth Styles -->
   <link rel="stylesheet" href="styles/main.css">
   <link rel="stylesheet" href="styles/auth.css">
-
-  <!-- TensorFlow.js for in-browser machine learning forecasting -->
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js"></script>
 </head>
-<body class="bg-brand-bg-primary text-brand-text-main font-sans min-h-screen flex items-center justify-center p-4">
-  <div class="auth-container w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 min-h-[700px] bg-brand-bg-secondary border border-brand-border rounded-3xl overflow-hidden shadow-2xl relative">
+<body class="bg-brand-bg-primary text-brand-text-main font-sans min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
+  <!-- Ambient Liquid Mesh Glowing Background Orbs -->
+  <div class="liquid-mesh-bg">
+    <div class="liquid-orb liquid-orb-cyan liquid-orb-1"></div>
+    <div class="liquid-orb liquid-orb-indigo liquid-orb-2"></div>
+    <div class="liquid-orb liquid-orb-violet liquid-orb-3"></div>
+  </div>
+
+  <div class="auth-container w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 min-h-[700px] bg-brand-bg-secondary border border-brand-border rounded-3xl overflow-hidden shadow-2xl relative z-10 backdrop-blur-2xl">
 
     <!-- ============================================================
          LEFT — Brand Panel
@@ -41,7 +45,7 @@
           </svg>
         </div>
 
-        <h1 class="brand-title text-2xl font-bold tracking-tight text-white font-display mb-2">AEGIS UNIVERSITY</h1>
+        <h1 class="brand-title text-2xl font-bold tracking-tight text-brand-text-main font-display mb-2">CAMPUSX UNIVERSITY</h1>
         <p class="brand-tagline text-brand-text-muted text-sm mb-12">Next-Generation Campus Management Platform</p>
 
         <!-- Feature highlights -->
@@ -54,7 +58,7 @@
               </svg>
             </div>
             <div class="feature-text flex flex-col">
-              <strong class="text-sm font-semibold text-white">Smart Analytics</strong>
+              <strong class="text-sm font-semibold text-brand-text-main">Smart Analytics</strong>
               <span class="text-xs text-brand-text-muted mt-1">AI-powered insights for academic excellence</span>
             </div>
           </div>
@@ -66,7 +70,7 @@
               </svg>
             </div>
             <div class="feature-text flex flex-col">
-              <strong class="text-sm font-semibold text-white">Secure Records</strong>
+              <strong class="text-sm font-semibold text-brand-text-main">Secure Records</strong>
               <span class="text-xs text-brand-text-muted mt-1">Enterprise-grade data protection & encryption</span>
             </div>
           </div>
@@ -77,7 +81,7 @@
               </svg>
             </div>
             <div class="feature-text flex flex-col">
-              <strong class="text-sm font-semibold text-white">Real-time Tracking</strong>
+              <strong class="text-sm font-semibold text-brand-text-main">Real-time Tracking</strong>
               <span class="text-xs text-brand-text-muted mt-1">Live attendance, grades & financial dashboards</span>
             </div>
           </div>
@@ -98,24 +102,24 @@
             <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"/>
           </svg>
         </div>
-        <h1 class="brand-title text-xl font-bold tracking-tight text-white font-display">AEGIS UNIVERSITY</h1>
+        <h1 class="brand-title text-xl font-bold tracking-tight text-brand-text-main font-display">CAMPUSX UNIVERSITY</h1>
       </div>
 
       <!-- Tabs -->
       <div class="auth-tabs flex gap-4 border-b border-brand-border pb-4 mb-8">
-        <button class="auth-tab active text-sm font-semibold text-brand-text-muted pb-2 border-b-2 border-transparent transition-all hover:text-white cursor-pointer" data-tab="signin" type="button">Sign In</button>
-        <button class="auth-tab text-sm font-semibold text-brand-text-muted pb-2 border-b-2 border-transparent transition-all hover:text-white cursor-pointer" data-tab="signup" type="button">Sign Up</button>
+        <button class="auth-tab active text-sm font-semibold text-brand-text-muted pb-2 border-b-2 border-transparent transition-all hover:text-brand-text-main cursor-pointer" data-tab="signin" type="button">Sign In</button>
+        <button class="auth-tab text-sm font-semibold text-brand-text-muted pb-2 border-b-2 border-transparent transition-all hover:text-brand-text-main cursor-pointer" data-tab="signup" type="button">Sign Up</button>
       </div>
 
       <!-- ==================== SIGN IN ==================== -->
       <div class="auth-form-container" id="signin-form">
-        <h2 class="text-2xl font-bold text-white font-display mb-1">Welcome Back</h2>
+        <h2 class="text-2xl font-bold text-brand-text-main font-display mb-1">Welcome Back</h2>
         <p class="text-sm text-brand-text-muted mb-6">Sign in to access your campus portal</p>
 
         <form id="signin-form-el" novalidate autocomplete="on">
           <!-- Email -->
           <div class="auth-input-group relative mb-5">
-            <input type="email" id="signin-email" required placeholder=" " autocomplete="email" class="w-full bg-brand-bg-tertiary border border-brand-border rounded-xl px-4 py-3 pl-11 text-sm text-white outline-none focus:border-brand-primary transition-all">
+            <input type="email" id="signin-email" required placeholder=" " autocomplete="email" class="w-full bg-brand-bg-tertiary border border-brand-border rounded-xl px-4 py-3 pl-11 text-sm text-brand-text-main outline-none focus:border-brand-primary transition-all">
             <label for="signin-email" class="absolute left-11 top-3.5 text-sm text-brand-text-muted pointer-events-none transition-all">Email Address</label>
             <svg class="input-icon absolute left-4 top-3.5 w-5 h-5 text-brand-text-subtle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
@@ -125,9 +129,9 @@
 
           <!-- Password -->
           <div class="auth-input-group relative mb-5">
-            <input type="password" id="signin-password" required placeholder=" " autocomplete="current-password" class="w-full bg-brand-bg-tertiary border border-brand-border rounded-xl px-4 py-3 pr-11 text-sm text-white outline-none focus:border-brand-primary transition-all">
+            <input type="password" id="signin-password" required placeholder=" " autocomplete="current-password" class="w-full bg-brand-bg-tertiary border border-brand-border rounded-xl px-4 py-3 pr-11 text-sm text-brand-text-main outline-none focus:border-brand-primary transition-all">
             <label for="signin-password" class="absolute left-4 top-3.5 text-sm text-brand-text-muted pointer-events-none transition-all">Password</label>
-            <button type="button" class="password-toggle absolute right-4 top-3.5 text-brand-text-subtle hover:text-white cursor-pointer" data-target="signin-password" aria-label="Toggle password visibility">
+            <button type="button" class="password-toggle absolute right-4 top-3.5 text-brand-text-subtle hover:text-brand-text-main cursor-pointer" data-target="signin-password" aria-label="Toggle password visibility">
               <svg class="eye-open w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
                 <circle cx="12" cy="12" r="3"/>
@@ -190,17 +194,17 @@
         <!-- Demo credentials -->
         <div class="auth-demo-info mt-6 p-4 bg-brand-bg-tertiary rounded-xl border border-brand-border">
           <p class="text-xs font-bold uppercase tracking-wider text-brand-text-muted mb-3">Demo Credentials (Click to fill)</p>
-          <div class="demo-cred flex items-center justify-between p-2 rounded-lg hover:bg-brand-bg-secondary transition-all cursor-pointer mb-2" onclick="document.getElementById('signin-email').value='admin@aegis.edu';document.getElementById('signin-password').value='admin123';document.getElementById('signin-email').dispatchEvent(new Event('input'));document.getElementById('signin-password').dispatchEvent(new Event('input'));" title="Click to fill">
+          <div class="demo-cred flex items-center justify-between p-2 rounded-lg hover:bg-brand-bg-secondary transition-all cursor-pointer mb-2" onclick="document.getElementById('signin-email').value='admin@campusx.edu';document.getElementById('signin-password').value='admin123';document.getElementById('signin-email').dispatchEvent(new Event('input'));document.getElementById('signin-password').dispatchEvent(new Event('input'));" title="Click to fill">
             <span class="role-badge admin text-xs font-semibold px-2 py-0.5 rounded bg-brand-accent-ruby/20 text-brand-accent-ruby">Admin</span>
-            <code class="text-xs text-brand-text-main">admin@aegis.edu / admin123</code>
+            <code class="text-xs text-brand-text-main">admin@campusx.edu / admin123</code>
           </div>
-          <div class="demo-cred flex items-center justify-between p-2 rounded-lg hover:bg-brand-bg-secondary transition-all cursor-pointer mb-2" onclick="document.getElementById('signin-email').value='faculty@aegis.edu';document.getElementById('signin-password').value='faculty123';document.getElementById('signin-email').dispatchEvent(new Event('input'));document.getElementById('signin-password').dispatchEvent(new Event('input'));" title="Click to fill">
+          <div class="demo-cred flex items-center justify-between p-2 rounded-lg hover:bg-brand-bg-secondary transition-all cursor-pointer mb-2" onclick="document.getElementById('signin-email').value='faculty@campusx.edu';document.getElementById('signin-password').value='faculty123';document.getElementById('signin-email').dispatchEvent(new Event('input'));document.getElementById('signin-password').dispatchEvent(new Event('input'));" title="Click to fill">
             <span class="role-badge faculty text-xs font-semibold px-2 py-0.5 rounded bg-brand-accent-cyan/20 text-brand-accent-cyan">Faculty</span>
-            <code class="text-xs text-brand-text-main">faculty@aegis.edu / faculty123</code>
+            <code class="text-xs text-brand-text-main">faculty@campusx.edu / faculty123</code>
           </div>
-          <div class="demo-cred flex items-center justify-between p-2 rounded-lg hover:bg-brand-bg-secondary transition-all cursor-pointer" onclick="document.getElementById('signin-email').value='student@aegis.edu';document.getElementById('signin-password').value='student123';document.getElementById('signin-email').dispatchEvent(new Event('input'));document.getElementById('signin-password').dispatchEvent(new Event('input'));" title="Click to fill">
+          <div class="demo-cred flex items-center justify-between p-2 rounded-lg hover:bg-brand-bg-secondary transition-all cursor-pointer" onclick="document.getElementById('signin-email').value='student@campusx.edu';document.getElementById('signin-password').value='student123';document.getElementById('signin-email').dispatchEvent(new Event('input'));document.getElementById('signin-password').dispatchEvent(new Event('input'));" title="Click to fill">
             <span class="role-badge student text-xs font-semibold px-2 py-0.5 rounded bg-brand-accent-emerald/20 text-brand-accent-emerald">Student</span>
-            <code class="text-xs text-brand-text-main">student@aegis.edu / student123</code>
+            <code class="text-xs text-brand-text-main">student@campusx.edu / student123</code>
           </div>
         </div>
 
@@ -230,25 +234,25 @@
 
       <!-- ==================== SIGN UP ==================== -->
       <div class="auth-form-container" id="signup-form" style="display:none">
-        <h2 class="text-2xl font-bold text-white font-display mb-1">Create Account</h2>
-        <p class="text-sm text-brand-text-muted mb-6">Join the Aegis University portal</p>
+        <h2 class="text-2xl font-bold text-brand-text-main font-display mb-1">Create Account</h2>
+        <p class="text-sm text-brand-text-muted mb-6">Join the CampusX University portal</p>
 
         <form id="signup-form-el" novalidate autocomplete="on">
           <!-- Full Name -->
           <div class="auth-input-group relative mb-5">
-            <input type="text" id="signup-name" required placeholder=" " autocomplete="name" class="w-full bg-brand-bg-tertiary border border-brand-border rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-brand-primary transition-all">
+            <input type="text" id="signup-name" required placeholder=" " autocomplete="name" class="w-full bg-brand-bg-tertiary border border-brand-border rounded-xl px-4 py-3 text-sm text-brand-text-main outline-none focus:border-brand-primary transition-all">
             <label for="signup-name" class="absolute left-4 top-3.5 text-sm text-brand-text-muted pointer-events-none transition-all">Full Name</label>
           </div>
 
           <!-- Email -->
           <div class="auth-input-group relative mb-5">
-            <input type="email" id="signup-email" required placeholder=" " autocomplete="email" class="w-full bg-brand-bg-tertiary border border-brand-border rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-brand-primary transition-all">
+            <input type="email" id="signup-email" required placeholder=" " autocomplete="email" class="w-full bg-brand-bg-tertiary border border-brand-border rounded-xl px-4 py-3 text-sm text-brand-text-main outline-none focus:border-brand-primary transition-all">
             <label for="signup-email" class="absolute left-4 top-3.5 text-sm text-brand-text-muted pointer-events-none transition-all">Email Address</label>
           </div>
 
           <!-- Role selector -->
           <div class="auth-input-group relative mb-5">
-            <select id="signup-role" class="w-full bg-brand-bg-tertiary border border-brand-border rounded-xl px-4 py-3 text-sm text-white outline-none appearance-none focus:border-brand-primary transition-all">
+            <select id="signup-role" class="w-full bg-brand-bg-tertiary border border-brand-border rounded-xl px-4 py-3 text-sm text-brand-text-main outline-none appearance-none focus:border-brand-primary transition-all">
               <option value="student">Student</option>
               <option value="faculty">Faculty Member</option>
               <option value="admin">Administrator</option>
@@ -261,9 +265,9 @@
 
           <!-- Password -->
           <div class="auth-input-group relative mb-5">
-            <input type="password" id="signup-password" required placeholder=" " autocomplete="new-password" class="w-full bg-brand-bg-tertiary border border-brand-border rounded-xl px-4 py-3 pr-11 text-sm text-white outline-none focus:border-brand-primary transition-all">
+            <input type="password" id="signup-password" required placeholder=" " autocomplete="new-password" class="w-full bg-brand-bg-tertiary border border-brand-border rounded-xl px-4 py-3 pr-11 text-sm text-brand-text-main outline-none focus:border-brand-primary transition-all">
             <label for="signup-password" class="absolute left-4 top-3.5 text-sm text-brand-text-muted pointer-events-none transition-all">Password</label>
-            <button type="button" class="password-toggle absolute right-4 top-3.5 text-brand-text-subtle hover:text-white cursor-pointer" data-target="signup-password" aria-label="Toggle password visibility">
+            <button type="button" class="password-toggle absolute right-4 top-3.5 text-brand-text-subtle hover:text-brand-text-main cursor-pointer" data-target="signup-password" aria-label="Toggle password visibility">
               <svg class="eye-open w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
                 <circle cx="12" cy="12" r="3"/>
@@ -283,7 +287,7 @@
 
           <!-- Confirm Password -->
           <div class="auth-input-group relative mb-5">
-            <input type="password" id="signup-confirm" required placeholder=" " autocomplete="new-password" class="w-full bg-brand-bg-tertiary border border-brand-border rounded-xl px-4 py-3 text-sm text-white outline-none focus:border-brand-primary transition-all">
+            <input type="password" id="signup-confirm" required placeholder=" " autocomplete="new-password" class="w-full bg-brand-bg-tertiary border border-brand-border rounded-xl px-4 py-3 text-sm text-brand-text-main outline-none focus:border-brand-primary transition-all">
             <label for="signup-confirm" class="absolute left-4 top-3.5 text-sm text-brand-text-muted pointer-events-none transition-all">Confirm Password</label>
           </div>
 
@@ -309,7 +313,7 @@
 
       <!-- Footer -->
       <div class="auth-footer text-center mt-8 text-xs text-brand-text-subtle">
-        <p>&copy; 2026 Aegis University. All rights reserved.</p>
+        <p>&copy; 2026 CampusX University. All rights reserved.</p>
       </div>
     </div>
   </div>

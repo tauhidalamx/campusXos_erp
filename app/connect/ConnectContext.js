@@ -27,9 +27,9 @@ export function ConnectProvider({ children }) {
   // Sharing states
   const [sharingPostId, setSharingPostId] = useState(null);
 
-  // Discord Style Communities
-  const [activeCommunityId, setActiveCommunityId] = useState('dept_cs'); // 'dept_cs', 'ai_res', 'blockchain', etc.
-  const [activeCommunityTab, setActiveCommunityTab] = useState('chat'); // 'chat' | 'resources' | 'members'
+  // Communities
+  const [activeCommunityId, setActiveCommunityId] = useState('dept_cs');
+  const [activeCommunityTab, setActiveCommunityTab] = useState('chat');
   const [activeCommunityChannel, setActiveCommunityChannel] = useState('general');
 
   // Notifications
@@ -41,18 +41,30 @@ export function ConnectProvider({ children }) {
     { id: 'n5', type: 'placement', text: 'Placement Cell uploaded a new opportunity at Meta.', userAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150', time: '2 days ago', unread: false }
   ]);
 
-  // Floating Messenger States
+  // Floating Messenger & Real-Time Direct Messaging
   const [messengerOpen, setMessengerOpen] = useState(false);
-  const [activeChatChannel, setActiveChatChannel] = useState('channel_general'); // channel_general, ai_chat, user_id
+  const [activeChatChannel, setActiveChatChannel] = useState('usr_001'); // 'usr_001', 'usr_002', 'usr_005', 'ai_chat', 'channel_general'
   const [chatSearchQuery, setChatSearchQuery] = useState('');
   const [chatInput, setChatInput] = useState('');
+  
+  // Real-time Chat Logs per Peer Channel with explicit senderId & status
   const [chatMessages, setChatMessages] = useState({
     'channel_general': [
-      { id: 'm1', senderName: 'Dr. Raymond Park', senderAvatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150', text: 'Welcome to the Aegis Connect central communications channel.', time: '10:15 AM', reactions: { '👍': 4, '🔥': 2 }, read: true },
-      { id: 'm2', senderName: 'Aria Nakamura', senderAvatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150', text: 'Has anyone downloaded the CS202 guidelines?', time: '10:18 AM', reactions: { '🙌': 2 }, read: true }
+      { id: 'm1', senderId: 'usr_001', senderName: 'Dr. Raymond Park', senderAvatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150', text: 'Welcome to the CampusX Connect central communications channel.', time: '10:15 AM', reactions: { '👍': 4, '🔥': 2 }, read: true },
+      { id: 'm2', senderId: 'usr_003', senderName: 'Aria Nakamura', senderAvatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150', text: 'Has anyone downloaded the CS202 guidelines?', time: '10:18 AM', reactions: { '🙌': 2 }, read: true }
     ],
     'ai_chat': [
-      { id: 'aim1', senderName: 'Aegis AI Bot', senderAvatar: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=150', text: 'Hello! I am your research assistant. Ask me anything about university ledgers or citation details.', time: 'Just now', read: true }
+      { id: 'aim1', senderId: 'ai_bot', senderName: 'CampusX AI Bot', senderAvatar: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=150', text: 'Hello! I am your research assistant. Ask me anything about university ledgers or citation details.', time: 'Just now', read: true }
+    ],
+    'usr_001': [
+      { id: 'p1_1', senderId: 'usr_001', senderName: 'Dr. Raymond Park', senderAvatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150', text: 'Hi! Let me know when you review the consensus audit draft for the CS department.', time: '10:00 AM', read: true },
+      { id: 'p1_2', senderId: 'usr_001', senderName: 'Dr. Raymond Park', senderAvatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150', text: 'Please submit the final review by tonight.', time: '10:30 AM', read: true }
+    ],
+    'usr_002': [
+      { id: 'p2_1', senderId: 'usr_002', senderName: 'Dr. Evelyn Sterling', senderAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150', text: 'The midterm scores are posted to CampusX Chain ledger.', time: 'Yesterday', read: true }
+    ],
+    'usr_005': [
+      { id: 'p5_1', senderId: 'usr_005', senderName: 'Carlos Mendez', senderAvatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150', text: 'Hey! Ready for the AI lab project discussion?', time: '9:15 AM', read: true }
     ]
   });
 
@@ -74,19 +86,20 @@ export function ConnectProvider({ children }) {
   // Load Session User
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const session = sessionStorage.getItem('aegis_erp_session');
+      const session = sessionStorage.getItem('campusx_erp_session');
       if (session) {
         setCurrentUser(JSON.parse(session));
       } else {
-        // Fallback demo user
-        setCurrentUser({
-          id: 'usr_003',
-          name: 'Aria Nakamura',
-          role: 'student',
-          email: 'student@aegis.edu',
-          avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150',
+        const defaultUser = {
+          id: 'usr_admin',
+          name: 'Dr. Alex Vance',
+          role: 'admin',
+          email: 'admin@campusx.edu',
+          avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
           dept: 'Computer Science'
-        });
+        };
+        sessionStorage.setItem('campusx_erp_session', JSON.stringify(defaultUser));
+        setCurrentUser(defaultUser);
       }
     }
   }, []);
@@ -179,7 +192,6 @@ export function ConnectProvider({ children }) {
       });
       const data = await res.json();
       
-      // Local state toggle update
       setPosts(prev => prev.map(post => {
         if (post.id === postId) {
           const currentLikes = post.likes || [];
@@ -233,7 +245,7 @@ export function ConnectProvider({ children }) {
     setSummarizingPostId(postId);
 
     setTimeout(() => {
-      const summaryContent = `🤖 **Aegis AI Research Summary**:\n\n` +
+      const summaryContent = `🤖 **CampusX AI Research Summary**:\n\n` +
         `• **Context**: Highlights core developments of university network parameters.\n` +
         `• **Action Item**: Immediate updates to collaborative channels are recommended.\n` +
         `• **Metric Projections**: Calculations indicate a potential +12% efficiency index increase.`;
@@ -246,44 +258,156 @@ export function ConnectProvider({ children }) {
     }, 1200);
   };
 
-  // Chat Send Message
-  const handleChatSend = () => {
-    if (!chatInput.trim() || !currentUser) return;
+  // Dynamic peer replies dictionary
+  const peerReplies = {
+    'usr_001': "Received! I am reviewing your message and updating the consensus record on CampusX Chain right now.",
+    'usr_002': "Thanks for reaching out. I'll inspect the lab report parameters and get back to you shortly.",
+    'usr_005': "Awesome! Let's connect on the real-time video call whenever you are ready.",
+    'ai_chat': "🤖 **CampusX AI Copilot**:\nProcessed your query. The parameters have been verified against university records with +12% efficiency.",
+    'default': "Got it! Thanks for connecting. I'll reply to your message in a moment."
+  };
+
+  const handleChatSend = (customText = null, mediaUrl = null, mediaType = null) => {
+    const textToSend = customText || chatInput;
+    if ((!textToSend || !textToSend.trim()) && !mediaUrl) return;
+    if (!currentUser) return;
+
+    const myId = currentUser.id || 'usr_me';
     const msgId = 'm_' + Date.now();
+    const nowStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
     const newMsg = {
       id: msgId,
-      senderName: currentUser.name,
+      senderId: myId,
+      receiverId: activeChatChannel,
+      senderName: currentUser.name || 'You',
       senderAvatar: currentUser.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
-      text: chatInput,
-      time: 'Just now',
+      text: textToSend ? textToSend.trim() : '',
+      mediaUrl: mediaUrl,
+      mediaType: mediaType,
+      time: nowStr,
       reactions: {},
-      read: false
+      read: true,
+      status: 'sent'
     };
 
     setChatMessages(prev => ({
       ...prev,
       [activeChatChannel]: [...(prev[activeChatChannel] || []), newMsg]
     }));
-    setChatInput('');
-
-    // AI bot reply triggers
-    if (activeChatChannel === 'ai_chat') {
-      setTimeout(() => {
-        const replyMsg = {
-          id: 'ai_m_' + Date.now(),
-          senderName: 'Aegis AI Bot',
-          senderAvatar: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=150',
-          text: `🤖 **Aegis RAG Insights**:\nParsed your request regarding general university queries. If you need details about students, faculty workloads, or grades, please specify the courses or department name.`,
-          time: 'Just now',
-          reactions: {},
-          read: true
-        };
-        setChatMessages(prev => ({
-          ...prev,
-          [activeChatChannel]: [...(prev[activeChatChannel] || []), replyMsg]
-        }));
-      }, 1000);
+    
+    if (!customText) {
+      setChatInput('');
     }
+
+    // Trigger realistic real-time response from target peer
+    const peerChannel = activeChatChannel;
+    setTimeout(() => {
+      let replyText = peerReplies[peerChannel] || peerReplies['default'];
+      let replySenderName = 'Peer';
+      let replyAvatar = 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150';
+
+      if (peerChannel === 'usr_001') {
+        replySenderName = 'Dr. Raymond Park';
+        replyAvatar = 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150';
+      } else if (peerChannel === 'usr_002') {
+        replySenderName = 'Dr. Evelyn Sterling';
+        replyAvatar = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150';
+      } else if (peerChannel === 'usr_005') {
+        replySenderName = 'Carlos Mendez';
+        replyAvatar = 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150';
+      } else if (peerChannel === 'ai_chat') {
+        replySenderName = 'CampusX AI Bot';
+        replyAvatar = 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=150';
+      }
+
+      const replyMsg = {
+        id: 'reply_' + Date.now(),
+        senderId: peerChannel,
+        receiverId: myId,
+        senderName: replySenderName,
+        senderAvatar: replyAvatar,
+        text: replyText,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        reactions: {},
+        read: true,
+        status: 'delivered'
+      };
+
+      setChatMessages(prev => ({
+        ...prev,
+        [peerChannel]: [...(prev[peerChannel] || []), replyMsg]
+      }));
+    }, 1200);
+  };
+
+  const handleToggleReaction = (channelId, msgId, emoji) => {
+    setChatMessages(prev => {
+      const channelMsgs = prev[channelId] || [];
+      const updated = channelMsgs.map(m => {
+        if (m.id === msgId) {
+          const currentCount = (m.reactions && m.reactions[emoji]) || 0;
+          const newReactions = { ...(m.reactions || {}) };
+          if (currentCount > 0) {
+            delete newReactions[emoji];
+          } else {
+            newReactions[emoji] = 1;
+          }
+          return { ...m, reactions: newReactions };
+        }
+        return m;
+      });
+      return { ...prev, [channelId]: updated };
+    });
+  };
+
+  const handleDeleteMessage = (channelId, msgId) => {
+    setChatMessages(prev => ({
+      ...prev,
+      [channelId]: (prev[channelId] || []).filter(m => m.id !== msgId)
+    }));
+  };
+
+  const handlePinMessage = (channelId, msgId) => {
+    setChatMessages(prev => {
+      const channelMsgs = prev[channelId] || [];
+      const updated = channelMsgs.map(m => {
+        if (m.id === msgId) {
+          return { ...m, pinned: !m.pinned };
+        }
+        return m;
+      });
+      return { ...prev, [channelId]: updated };
+    });
+  };
+
+  const addPost = (post) => {
+    setPosts(prev => [post, ...prev]);
+  };
+
+  const addTask = (task) => {
+    setTasks(prev => [task, ...prev]);
+  };
+
+  const addPoll = (poll) => {
+    setPolls(prev => [poll, ...prev]);
+  };
+
+  const addStory = (story) => {
+    setAllStories(prev => [story, ...prev]);
+  };
+
+  const startCall = (user, mode = 'video') => {
+    setActiveCallUser({ ...user, callMode: mode });
+    setCallStatus('Ringing');
+    setTimeout(() => {
+      setCallStatus('Connected');
+    }, 1500);
+  };
+
+  const endCall = () => {
+    setCallStatus('Disconnected');
+    setActiveCallUser(null);
   };
 
   return (
@@ -296,9 +420,16 @@ export function ConnectProvider({ children }) {
       posts,
       tasks,
       polls,
+      addPost,
+      addTask,
+      addPoll,
+      addStory,
       loadFeed,
+      loadUsers,
       loadTasks,
       loadPolls,
+      startCall,
+      endCall,
       
       activeSubFeed,
       setActiveSubFeed,
@@ -336,6 +467,9 @@ export function ConnectProvider({ children }) {
       chatMessages,
       setChatMessages,
       handleChatSend,
+      handleToggleReaction,
+      handleDeleteMessage,
+      handlePinMessage,
       
       activeCallUser,
       setActiveCallUser,

@@ -110,7 +110,7 @@ export default function CompliancePage() {
           </Link>
           <div>
             <h1 className="text-2xl font-bold tracking-tight bg-gradient-to-r from-white via-indigo-200 to-indigo-400 bg-clip-text text-transparent">
-              AEGIS Governance & Compliance Console
+              CAMPUSX Governance & Compliance Console
             </h1>
             <p className="text-xs text-slate-400">Regulatory policies database, active compliance audits & ethics checklists</p>
           </div>

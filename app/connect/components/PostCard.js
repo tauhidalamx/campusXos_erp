@@ -180,7 +180,7 @@ export default function PostCard({ post }) {
             <div className="p-4 bg-brand-primary/5 border border-brand-primary/20 rounded-2xl text-left">
               <div className="flex items-center gap-2 mb-2 text-brand-primary">
                 <Sparkles className="w-4 h-4 text-brand-primary" />
-                <span className="text-[11px] font-bold uppercase tracking-wider">Aegis AI Digest</span>
+                <span className="text-[11px] font-bold uppercase tracking-wider">CampusX AI Digest</span>
               </div>
               <div className="text-xs text-white/80 leading-relaxed whitespace-pre-wrap font-medium">
                 {aiSummaries[post.id]}

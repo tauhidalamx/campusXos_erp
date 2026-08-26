@@ -38,7 +38,7 @@ export default function VideoMeet({ roomName, onLeaveMeeting }) {
     "Dr. Sterling: Let's make sure the transcript validations are verified.",
     "Prof. Chen: I verified the BIP-39 HD keys for all students in the class group.",
     "Aria Nakamura: I synced the CS202 binary trees and pushed logs to the consortium node.",
-    "Dr. Sterling: Excellent. I will finalize and sign this session on the Aegis Chain."
+    "Dr. Sterling: Excellent. I will finalize and sign this session on the CampusX Chain."
   ];
 
   useEffect(() => {
@@ -331,7 +331,7 @@ export default function VideoMeet({ roomName, onLeaveMeeting }) {
                   }`}
                 >
                   <ShieldCheck className="w-4 h-4" />
-                  <span>{blockchainLoading ? 'Signing Ledger...' : 'Verify on Aegis Chain'}</span>
+                  <span>{blockchainLoading ? 'Signing Ledger...' : 'Verify on CampusX Chain'}</span>
                 </button>
               ) : (
                 <div className="p-3 bg-emerald-500/5 border border-emerald-500/20 rounded-2xl flex flex-col gap-2 text-left">

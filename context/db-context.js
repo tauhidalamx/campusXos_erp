@@ -18,14 +18,14 @@ export function DbProvider({ children }) {
     const loadDbData = () => {
       const db = window.UniversityDB;
       if (db) {
-        setStudents([...db.getStudents()]);
-        setFaculty([...db.getFaculty()]);
-        setCourses([...db.getCourses()]);
-        setTransactions([...db.getTransactions()]);
-        setExams([...db.getExams()]);
-        setAnnouncements([...db.getAnnouncements()]);
-        setActivities([...db.getActivities()]);
-        setDepartments([...db.getDepartments()]);
+        setStudents([...(db.getStudents?.() || [])]);
+        setFaculty([...(db.getFaculty?.() || [])]);
+        setCourses([...(db.getCourses?.() || [])]);
+        setTransactions([...(db.getTransactions?.() || [])]);
+        setExams([...(db.getExams?.() || [])]);
+        setAnnouncements([...(db.getAnnouncements?.() || [])]);
+        setActivities([...(db.getActivities?.() || [])]);
+        setDepartments([...(db.getDepartments?.() || [])]);
         return true;
       }
       return false;
@@ -107,6 +107,136 @@ export function DbProvider({ children }) {
     });
   };
 
+  const addFaculty = (fac) => {
+    setFaculty(prev => {
+      const next = [...prev, fac];
+      if (typeof window !== 'undefined' && window.UniversityDB) {
+        window.UniversityDB.addFaculty(fac);
+      }
+      return next;
+    });
+  };
+
+  const updateFaculty = (id, updatedData) => {
+    setFaculty(prev => {
+      const next = prev.map(f => f.id === id ? { ...f, ...updatedData } : f);
+      if (typeof window !== 'undefined' && window.UniversityDB) {
+        window.UniversityDB.updateFaculty(id, updatedData);
+      }
+      return next;
+    });
+  };
+
+  const deleteFaculty = (id) => {
+    setFaculty(prev => {
+      const next = prev.filter(f => f.id !== id);
+      if (typeof window !== 'undefined' && window.UniversityDB) {
+        window.UniversityDB.deleteFaculty(id);
+      }
+      return next;
+    });
+  };
+
+  const addCourse = (crs) => {
+    setCourses(prev => {
+      const next = [...prev, crs];
+      if (typeof window !== 'undefined' && window.UniversityDB) {
+        window.UniversityDB.addCourse(crs);
+      }
+      return next;
+    });
+  };
+
+  const updateCourse = (code, updatedData) => {
+    setCourses(prev => {
+      const next = prev.map(c => c.code === code ? { ...c, ...updatedData } : c);
+      if (typeof window !== 'undefined' && window.UniversityDB) {
+        window.UniversityDB.updateCourse(code, updatedData);
+      }
+      return next;
+    });
+  };
+
+  const deleteCourse = (code) => {
+    setCourses(prev => {
+      const next = prev.filter(c => c.code !== code);
+      if (typeof window !== 'undefined' && window.UniversityDB) {
+        window.UniversityDB.deleteCourse(code);
+      }
+      return next;
+    });
+  };
+
+  const addExam = (ex) => {
+    setExams(prev => {
+      const next = [...prev, ex];
+      if (typeof window !== 'undefined' && window.UniversityDB) {
+        window.UniversityDB.addExam(ex);
+      }
+      return next;
+    });
+  };
+
+  const updateExam = (code, updatedData) => {
+    setExams(prev => {
+      const next = prev.map(e => e.code === code ? { ...e, ...updatedData } : e);
+      if (typeof window !== 'undefined' && window.UniversityDB) {
+        window.UniversityDB.updateExam(code, updatedData);
+      }
+      return next;
+    });
+  };
+
+  const deleteExam = (code) => {
+    setExams(prev => {
+      const next = prev.filter(e => e.code !== code);
+      if (typeof window !== 'undefined' && window.UniversityDB) {
+        window.UniversityDB.deleteExam(code);
+      }
+      return next;
+    });
+  };
+
+  const addDepartment = (dept) => {
+    setDepartments(prev => {
+      const next = [...prev, dept];
+      if (typeof window !== 'undefined' && window.UniversityDB) {
+        window.UniversityDB.addDepartment(dept);
+      }
+      return next;
+    });
+  };
+
+  const updateDepartment = (code, updatedData) => {
+    setDepartments(prev => {
+      const next = prev.map(d => d.code === code ? { ...d, ...updatedData } : d);
+      if (typeof window !== 'undefined' && window.UniversityDB) {
+        window.UniversityDB.updateDepartment(code, updatedData);
+      }
+      return next;
+    });
+  };
+
+  const deleteDepartment = (code) => {
+    setDepartments(prev => {
+      const next = prev.filter(d => d.code !== code);
+      if (typeof window !== 'undefined' && window.UniversityDB) {
+        window.UniversityDB.deleteDepartment(code);
+      }
+      return next;
+    });
+  };
+
+  const addActivity = (act) => {
+    setActivities(prev => {
+      const next = [act, ...prev];
+      if (typeof window !== 'undefined' && window.UniversityDB) {
+        window.UniversityDB.addActivity(act);
+      }
+      return next;
+    });
+  };
+
   return (
     <DbContext.Provider value={{
       students,
@@ -120,9 +250,22 @@ export function DbProvider({ children }) {
       addStudent,
       updateStudent,
       deleteStudent,
+      addFaculty,
+      updateFaculty,
+      deleteFaculty,
+      addCourse,
+      updateCourse,
+      deleteCourse,
+      addExam,
+      updateExam,
+      deleteExam,
+      addDepartment,
+      updateDepartment,
+      deleteDepartment,
       addTransaction,
       addAnnouncement,
-      deleteAnnouncement
+      deleteAnnouncement,
+      addActivity
     }}>
       {children}
     </DbContext.Provider>

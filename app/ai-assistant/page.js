@@ -36,7 +36,7 @@ export default function AIAssistantPage() {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const session = sessionStorage.getItem('aegis_erp_session');
+      const session = sessionStorage.getItem('campusx_erp_session');
       if (session) {
         setCurrentUser(JSON.parse(session));
       }

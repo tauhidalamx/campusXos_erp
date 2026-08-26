@@ -24,7 +24,7 @@ export default function CareerPage() {
     name: 'Aria Nakamura',
     education: 'B.Tech in Computer Science',
     skills: 'React, Node.js, Python, TensorFlow, Solidity',
-    experience: 'Software Engineering Intern at Aegis Labs'
+    experience: 'Software Engineering Intern at CampusX Labs'
   });
 
   const [careerType, setCareerType] = useState('CS'); // CS, Engineering, Finance
@@ -98,7 +98,7 @@ export default function CareerPage() {
           </Link>
           <div>
             <h1 className="text-2xl font-bold tracking-tight bg-gradient-to-r from-white via-indigo-200 to-indigo-400 bg-clip-text text-transparent">
-              AEGIS Career Pathfinder Desk
+              CAMPUSX Career Pathfinder Desk
             </h1>
             <p className="text-xs text-slate-400">AI Resume Diagnostics, Skills Gap Assessment & Live Interview Simulator</p>
           </div>

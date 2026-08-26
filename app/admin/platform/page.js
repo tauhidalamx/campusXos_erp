@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { ToggleLeft, Key, Settings, BarChart2, ShieldCheck, CreditCard, Users, Landmark, Plus, Trash2, ShieldAlert } from 'lucide-react';
 
-export default function PlatformAdminDashboard() {
+function PlatformAdminDashboardContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const activeTab = searchParams.get('tab') || 'overview';
@@ -14,9 +14,9 @@ export default function PlatformAdminDashboard() {
 
   // Initial State Data
   const [keys, setKeys] = useState([
-    { id: 'key_1', client: 'Model University (ERP Portal)', key: 'aegis_pk_live_f843g...', type: 'Publishable', status: 'Active' },
-    { id: 'key_2', client: 'Aegis Web3 Validator Node', key: 'aegis_sk_live_29kd9...', type: 'Secret', status: 'Active' },
-    { id: 'key_3', client: 'Aegis Connect WebRTC Service', key: 'aegis_sk_live_83jc1...', type: 'Secret', status: 'Active' }
+    { id: 'key_1', client: 'Model University (ERP Portal)', key: 'campusx_pk_live_f843g...', type: 'Publishable', status: 'Active' },
+    { id: 'key_2', client: 'CampusX Web3 Validator Node', key: 'campusx_sk_live_29kd9...', type: 'Secret', status: 'Active' },
+    { id: 'key_3', client: 'CampusX Connect WebRTC Service', key: 'campusx_sk_live_83jc1...', type: 'Secret', status: 'Active' }
   ]);
   const [integrations, setIntegrations] = useState([
     { id: 'int_1', name: 'Google SSO Authentication', type: 'OAuth 2.0', status: 'Enabled' },
@@ -25,16 +25,16 @@ export default function PlatformAdminDashboard() {
     { id: 'int_4', name: 'Ethereum/Polygon RPC Node', type: 'JSON-RPC WebSockets', status: 'Disabled' }
   ]);
   const [tenants, setTenants] = useState([
-    { id: 'ten_1', name: 'Model University', domain: 'model.aegis.edu', plan: 'Enterprise Suite', status: 'Active', members: 4200, billingCycle: 'Monthly' },
-    { id: 'ten_2', name: 'Aegis Sports Academy', domain: 'sports.aegis.edu', plan: 'Sports Custom', status: 'Active', members: 850, billingCycle: 'Annual' },
-    { id: 'ten_3', name: 'Aegis Medical School', domain: 'med.aegis.edu', plan: 'Enterprise Suite', status: 'Active', members: 1200, billingCycle: 'Monthly' },
-    { id: 'ten_4', name: 'Aegis Web3 Consortium', domain: 'web3.aegis.edu', plan: 'Core Dev Platform', status: 'Active', members: 310, billingCycle: 'Annual' },
-    { id: 'ten_5', name: 'Aegis Engineering Institute', domain: 'eng.aegis.edu', plan: 'Pro Tier', status: 'Pending Setup', members: 0, billingCycle: 'Monthly' }
+    { id: 'ten_1', name: 'Model University', domain: 'model.campusx.edu', plan: 'Enterprise Suite', status: 'Active', members: 4200, billingCycle: 'Monthly' },
+    { id: 'ten_2', name: 'CampusX Sports Academy', domain: 'sports.campusx.edu', plan: 'Sports Custom', status: 'Active', members: 850, billingCycle: 'Annual' },
+    { id: 'ten_3', name: 'CampusX Medical School', domain: 'med.campusx.edu', plan: 'Enterprise Suite', status: 'Active', members: 1200, billingCycle: 'Monthly' },
+    { id: 'ten_4', name: 'CampusX Web3 Consortium', domain: 'web3.campusx.edu', plan: 'Core Dev Platform', status: 'Active', members: 310, billingCycle: 'Annual' },
+    { id: 'ten_5', name: 'CampusX Engineering Institute', domain: 'eng.campusx.edu', plan: 'Pro Tier', status: 'Pending Setup', members: 0, billingCycle: 'Monthly' }
   ]);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const session = sessionStorage.getItem('aegis_erp_session');
+      const session = sessionStorage.getItem('campusx_erp_session');
       if (session) {
         setCurrentUser(JSON.parse(session));
       }
@@ -340,5 +340,13 @@ export default function PlatformAdminDashboard() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function PlatformAdminDashboard() {
+  return (
+    <Suspense fallback={<div className="text-white text-center py-10">Loading Platform Dashboard...</div>}>
+      <PlatformAdminDashboardContent />
+    </Suspense>
   );
 }

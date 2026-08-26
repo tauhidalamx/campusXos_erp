@@ -104,7 +104,7 @@ export default function AdmissionsPage() {
 
     setTimeout(() => {
       setPaymentLoading(false);
-      setPaymentStatus('Tuition payment of $' + paymentAmount + ' processed successfully via Aegis Merchant Nodes!');
+      setPaymentStatus('Tuition payment of $' + paymentAmount + ' processed successfully via CampusX Merchant Nodes!');
     }, 1800);
   };
 
@@ -118,7 +118,7 @@ export default function AdmissionsPage() {
           </Link>
           <div>
             <h1 className="text-2xl font-bold tracking-tight bg-gradient-to-r from-white via-indigo-200 to-indigo-400 bg-clip-text text-transparent">
-              AEGIS Admissions Platform
+              CAMPUSX Admissions Platform
             </h1>
             <p className="text-xs text-slate-400">Student Enrollment funnels, document verification desk & billing node gateway</p>
           </div>

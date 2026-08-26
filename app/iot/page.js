@@ -104,7 +104,7 @@ export default function IotPage() {
           </Link>
           <div>
             <h1 className="text-2xl font-bold tracking-tight bg-gradient-to-r from-white via-indigo-200 to-indigo-400 bg-clip-text text-transparent">
-              AEGIS Smart Campus IoT Hub
+              CAMPUSX Smart Campus IoT Hub
             </h1>
             <p className="text-xs text-slate-400">RFID Attendance Registry, Computer Vision Counters & Parking Node Telemetry</p>
           </div>

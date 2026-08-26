@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: aegis-service
+  name: campusx-service
 spec:
   type: LoadBalancer
   selector:
-    app: aegis-app
+    app: campusx-app
   ports:
     - protocol: TCP
       port: 5000

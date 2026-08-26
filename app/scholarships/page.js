@@ -10,7 +10,7 @@ export default function ScholarshipsPage() {
 
   // Available Schemes
   const schemes = [
-    { id: 'SCH-01', name: 'Aegis Academic Merit Fellowship', amount: '$5,000 / Sem', eligibility: 'CGPA > 9.50', deadline: '2026-07-15', status: 'Open' },
+    { id: 'SCH-01', name: 'CampusX Academic Merit Fellowship', amount: '$5,000 / Sem', eligibility: 'CGPA > 9.50', deadline: '2026-07-15', status: 'Open' },
     { id: 'SCH-02', name: 'STEM Excellence Scholarship', amount: '$3,500 / Sem', eligibility: 'CS / Eng Majors only', deadline: '2026-08-01', status: 'Open' },
     { id: 'SCH-03', name: 'Need-based Tuition Subsidy', amount: 'Up to 100% tuition', eligibility: 'Annual Income < $50k', deadline: '2026-07-20', status: 'Open' },
     { id: 'SCH-04', name: 'Dean Research Fellowship Grant', amount: '$4,000 / Sem', eligibility: 'Publications active', deadline: '2026-06-30', status: 'Closing Soon' }
@@ -18,18 +18,18 @@ export default function ScholarshipsPage() {
 
   // Dummy Application Database
   const [applications, setApplications] = useState([
-    { id: 'APP-101', studentName: 'Aarav Mehta', scheme: 'Aegis Academic Merit Fellowship', appliedDate: '2026-06-08', amount: '$5,000 / Sem', status: 'Approved' },
+    { id: 'APP-101', studentName: 'Aarav Mehta', scheme: 'CampusX Academic Merit Fellowship', appliedDate: '2026-06-08', amount: '$5,000 / Sem', status: 'Approved' },
     { id: 'APP-102', studentName: 'Priya Nair', scheme: 'STEM Excellence Scholarship', appliedDate: '2026-06-09', amount: '$3,500 / Sem', status: 'Pending' },
     { id: 'APP-103', studentName: 'Kabir Sen', scheme: 'Need-based Tuition Subsidy', appliedDate: '2026-06-10', amount: 'Up to 100% tuition', status: 'Pending' }
   ]);
 
   const [newApplication, setNewApplication] = useState({
-    scheme: 'Aegis Academic Merit Fellowship', statement: ''
+    scheme: 'CampusX Academic Merit Fellowship', statement: ''
   });
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const session = sessionStorage.getItem('aegis_erp_session');
+      const session = sessionStorage.getItem('campusx_erp_session');
       if (session) {
         setCurrentUser(JSON.parse(session));
       }
@@ -60,7 +60,7 @@ export default function ScholarshipsPage() {
       status: 'Pending'
     };
     setApplications([app, ...applications]);
-    setNewApplication({ scheme: 'Aegis Academic Merit Fellowship', statement: '' });
+    setNewApplication({ scheme: 'CampusX Academic Merit Fellowship', statement: '' });
     setShowApplyModal(false);
     alert('Scholarship application submitted to financial office registry!');
   };

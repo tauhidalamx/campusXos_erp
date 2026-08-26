@@ -26,7 +26,7 @@ export default function SocPage() {
   const [threatLevel, setThreatLevel] = useState('Normal'); // Normal, Elevated, Critical
   const [realtimeLogs, setRealtimeLogs] = useState([
     { id: 1, time: '20:42:01', msg: 'System integrity checker: ALL NODES COMPLIANT', type: 'info' },
-    { id: 2, time: '20:42:04', msg: 'Core API Gateway processed authentication payload for registrar@aegis.demo', type: 'info' },
+    { id: 2, time: '20:42:04', msg: 'Core API Gateway processed authentication payload for registrar@campusx.demo', type: 'info' },
     { id: 3, time: '20:42:08', msg: 'Port scan alert: 12 attempts blocked on firewall boundary 10.0.1.25', type: 'warn' }
   ]);
   const [firewallPorts, setFirewallPorts] = useState([
@@ -135,7 +135,7 @@ export default function SocPage() {
           </Link>
           <div>
             <h1 className="text-2xl font-bold tracking-tight bg-gradient-to-r from-white via-indigo-200 to-indigo-400 bg-clip-text text-transparent">
-              AEGIS Cyber Security Center (SOC)
+              CAMPUSX Cyber Security Center (SOC)
             </h1>
             <p className="text-xs text-slate-400">Intrusion Prevention system & Live Threat Assessment Hub</p>
           </div>

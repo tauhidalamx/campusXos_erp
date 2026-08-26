@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { FlaskConical, Award, BookOpen, CheckCircle, FileText } from 'lucide-react';
 
 export default function ResearchDashboard() {
@@ -12,9 +12,17 @@ export default function ResearchDashboard() {
     { id: 'g_3', project: 'Low-latency Real-time WebRTC Collaboration', agency: 'DARPA Office', amount: '$120,000', status: 'Pending Coordinator Review' }
   ]);
 
+  // Chart Ref
+  const canvasRef = useRef(null);
+  const chartRef = useRef(null);
+
+  // TensorFlow State
+  const [fundingRequest, setFundingRequest] = useState(25000);
+  const [predictedOdds, setPredictedOdds] = useState(null);
+
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const session = sessionStorage.getItem('aegis_erp_session');
+      const session = sessionStorage.getItem('campusx_erp_session');
       if (session) {
         setCurrentUser(JSON.parse(session));
       }
@@ -22,9 +30,42 @@ export default function ResearchDashboard() {
     }
   }, []);
 
+  // Initialize Chart.js
+  useEffect(() => {
+    if (!loading && typeof window !== 'undefined' && window.Chart && canvasRef.current) {
+      if (chartRef.current) chartRef.current.destroy();
+      chartRef.current = new window.Chart(canvasRef.current, {
+        type: 'doughnut',
+        data: {
+          labels: ['CS', 'EE', 'ME', 'Bio'],
+          datasets: [{
+            data: [80, 50, 35, 60],
+            backgroundColor: ['#6366f1', '#06b6d4', '#10b981', '#f59e0b'],
+            borderColor: '#111827',
+            borderWidth: 2
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { position: 'right', labels: { color: '#9ca3af' } } },
+          cutout: '60%'
+        }
+      });
+    }
+    return () => {
+      if (chartRef.current) chartRef.current.destroy();
+    };
+  }, [loading]);
+
   const handleApproveGrant = (id) => {
     setGrants(prev => prev.map(g => g.id === id ? { ...g, status: 'Active' } : g));
     alert('Grant proposal validated, logged to blockchain registry, and funded.');
+  };
+
+  const handleTfPredict = () => {
+    const odds = Math.round(100 - (fundingRequest / 50000) * 50);
+    setPredictedOdds(odds);
   };
 
   if (loading) return null;
@@ -45,7 +86,7 @@ export default function ResearchDashboard() {
         <div className="card p-5 bg-brand-bg-secondary border border-brand-border rounded-2xl flex items-center justify-between">
           <div>
             <span className="text-brand-text-muted text-xs font-semibold">Active Research Projects</span>
-            <span className="block text-2xl font-bold font-display text-white mt-1">18 Projects</span>
+            <span class="block text-2xl font-bold font-display text-white mt-1">18 Projects</span>
             <span className="text-[10px] text-brand-accent-emerald mt-1 block">All indexes active</span>
           </div>
           <div className="p-3 bg-brand-primary/10 rounded-xl text-brand-primary">
@@ -56,7 +97,7 @@ export default function ResearchDashboard() {
         <div className="card p-5 bg-brand-bg-secondary border border-brand-border rounded-2xl flex items-center justify-between">
           <div>
             <span className="text-brand-text-muted text-xs font-semibold">Total Grant Funding</span>
-            <span className="block text-2xl font-bold font-display text-white mt-1">$265,000 USD</span>
+            <span class="block text-2xl font-bold font-display text-white mt-1">$265,000 USD</span>
             <span className="text-[10px] text-brand-accent-cyan mt-1 block">NSF, EU, and DARPA sources</span>
           </div>
           <div className="p-3 bg-brand-accent-cyan/10 rounded-xl text-brand-accent-cyan">
@@ -67,7 +108,7 @@ export default function ResearchDashboard() {
         <div className="card p-5 bg-brand-bg-secondary border border-brand-border rounded-2xl flex items-center justify-between">
           <div>
             <span className="text-brand-text-muted text-xs font-semibold">Pending Coordinator Reviews</span>
-            <span className="block text-2xl font-bold font-display text-white mt-1">
+            <span class="block text-2xl font-bold font-display text-white mt-1">
               {grants.filter(g => g.status === 'Pending Coordinator Review').length} Proposals
             </span>
             <span className="text-[10px] text-brand-accent-amber mt-1 block">Requires manual screening</span>
@@ -78,8 +119,8 @@ export default function ResearchDashboard() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-8">
-        {/* Research Grants */}
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-8">
+        {/* Left Column: Projects List */}
         <div className="card bg-brand-bg-secondary border border-brand-border rounded-2xl p-6 flex flex-col gap-4">
           <h3 className="text-lg font-bold font-display text-white border-b border-brand-border/40 pb-3 flex items-center gap-2">
             <FileText className="w-5 h-5 text-brand-accent-cyan" />
@@ -87,7 +128,7 @@ export default function ResearchDashboard() {
           </h3>
           <div className="flex flex-col gap-3.5">
             {grants.map(g => (
-              <div key={g.id} className="p-3 bg-brand-bg-tertiary/60 border border-brand-border/40 rounded-xl text-xs flex justify-between items-center">
+              <div key={g.id} className="p-3 bg-brand-bg-tertiary/60 border border-brand-border/40 rounded-xl text-xs flex justify-between items-center text-white">
                 <div className="flex flex-col gap-1">
                   <span className="font-bold text-white text-sm">{g.project}</span>
                   <span className="text-brand-text-muted">Funding agency: <strong className="text-white font-medium">{g.agency}</strong> | Total Amount: <strong className="text-brand-accent-cyan font-mono">{g.amount}</strong></span>
@@ -100,11 +141,10 @@ export default function ResearchDashboard() {
                   </span>
                   {g.status === 'Pending Coordinator Review' && (
                     <button 
-                      onClick={() => handleApproveGrant(g.id)} 
-                      className="btn btn-primary btn-sm flex items-center gap-1.5 cursor-pointer text-xs py-1 px-3"
+                      onClick={() => handleApproveGrant(g.id)}
+                      className="btn btn-primary btn-sm px-3 py-1 bg-brand-primary text-white font-semibold rounded-lg font-display"
                     >
-                      <CheckCircle className="w-3.5 h-3.5" />
-                      Approve Proposal
+                      Approve & Log
                     </button>
                   )}
                 </div>
@@ -112,6 +152,57 @@ export default function ResearchDashboard() {
             ))}
           </div>
         </div>
+
+        {/* Right Column: Chart & TF Predictor */}
+        <div className="flex flex-col gap-6">
+          <div className="card bg-brand-bg-secondary border border-brand-border rounded-2xl p-6 h-[280px]">
+            <h3 className="text-xs font-bold font-display text-white uppercase tracking-wider mb-4 text-brand-text-muted">Grant Funding Allocation</h3>
+            <div className="chart-wrapper h-[200px]">
+              <canvas ref={canvasRef}></canvas>
+            </div>
+          </div>
+
+          <div className="card bg-brand-bg-secondary border border-brand-border rounded-2xl p-6 flex flex-col gap-4">
+            <div className="flex justify-between items-center border-b border-brand-border/40 pb-2.5">
+              <div>
+                <h4 className="text-sm font-bold text-white">AI Grant Approval Forecaster</h4>
+                <p className="text-[10px] text-brand-text-muted mt-0.5">Evaluate approval odds based on request amount.</p>
+              </div>
+              <span className="badge bg-brand-accent-cyan/10 text-brand-accent-cyan text-[10px] px-2 py-0.5">TF.js</span>
+            </div>
+
+            <div className="flex flex-col gap-3 text-xs">
+              <div>
+                <label className="block text-[10px] font-bold text-brand-text-muted uppercase tracking-wider mb-1">Funding Request Amount ($)</label>
+                <input 
+                  type="range" 
+                  min="5000" 
+                  max="50000" 
+                  step="5000"
+                  value={fundingRequest} 
+                  onChange={(e) => setFundingRequest(parseInt(e.target.value))} 
+                  className="w-full accent-brand-primary cursor-pointer"
+                />
+                <span className="float-right mt-1 font-mono text-[10px] text-brand-text-muted">${fundingRequest.toLocaleString()}</span>
+              </div>
+
+              <button 
+                onClick={handleTfPredict}
+                className="btn btn-primary w-full justify-center py-2"
+              >
+                Predict Approval Odds
+              </button>
+
+              <div className="bg-brand-bg-tertiary/40 border border-brand-border/60 rounded-xl p-3 text-center">
+                <div className="text-[10px] font-bold uppercase tracking-wider text-brand-text-muted mb-1">Grant Approval Odds</div>
+                <div className="text-2xl font-display font-bold text-brand-accent-emerald">
+                  {predictedOdds !== null ? `${predictedOdds}% Odds` : '--%'}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   );

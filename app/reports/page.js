@@ -13,7 +13,7 @@ export default function ReportsPage() {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const session = sessionStorage.getItem('aegis_erp_session');
+      const session = sessionStorage.getItem('campusx_erp_session');
       if (session) {
         setCurrentUser(JSON.parse(session));
       }
@@ -86,7 +86,7 @@ export default function ReportsPage() {
       if (chartRef1.current) chartRef1.current.destroy();
       if (chartRef2.current) chartRef2.current.destroy();
     };
-  }, []);
+  }, [currentUser]);
 
   if (!currentUser || currentUser.role !== 'admin') {
     return (

@@ -1,23 +1,21 @@
-# Aegis University ERP Platform: 10x Architectural Design Blueprint
-**Document Version:** 1.0.0-PROD  
-**Authors:** ex-Google/Meta/Stripe/AWS Principal Architecture Group  
-**Classification:** Enterprise System Specification
+# CampusX University ERP Platform: Architecture & System Design
 
 ---
 
-## Executive Summary & Design Philosophy
-Traditional academic ERP systems are slow, monolithic, and struggle under heavy load (e.g., during course registration or exam result releases). Aegis University ERP is architected from the ground up as a **10x Scale Operating System** for global universities. It is designed to handle:
-* **100,000+ Active Concurrent Students**
-* **20,000+ Active Faculty & Staff**
-* **Multi-Campus, Multi-University, Multi-Tenant SaaS topologies**
-* **Sub-100ms API response latency, real-time sync, and offline-first edge operations**
+## Executive Summary & System Overview
+
+Traditional university systems often slow down during peak usage times such as course registration or exam results release. CampusX University ERP is built from the ground up for high reliability and scale. Key design targets include:
+
+* Support for **100,000+ active students** and **20,000+ faculty and staff**
+* Multi-campus and multi-tenant support
+* Fast API response times, real-time sync, and offline-first capabilities
 
 ---
 
 ## 1. Product Architecture
 
 ### High-Level Topology
-The Aegis platform operates on a **Shared-Nothing, Cloud-Native, Multi-Tenant SaaS Topology**. It isolates tenants logically at the API layer while utilizing dedicated compute resources at the regional level.
+CampusX uses a multi-tenant cloud architecture that isolates tenant data cleanly at the API and database layers:
 
 ```mermaid
 graph TD
@@ -32,7 +30,7 @@ graph TD
 ```
 
 ### Tenant Routing Strategy
-1. **Dynamic CNAME & Subdomain Resolution**: Host headers are parsed at the edge proxy (e.g., `mit.aegis.edu` or `custom-domain.com`).
+1. **Dynamic CNAME & Subdomain Resolution**: Host headers are parsed at the edge proxy (e.g., `mit.campusx.edu` or `custom-domain.com`).
 2. **Context Injection**: The reverse proxy injects the `X-Tenant-ID` header into the incoming request context based on an edge lookup table cached in Redis.
 3. **Onboarding Pipeline**: New tenants are provisioned via a Kubernetes Job that creates their schema/database, mints namespace namespaces, initializes Meilisearch indices, and sets up OAuth configurations.
 
@@ -174,7 +172,7 @@ Used for high-throughput inner-service communication during semester result publ
 ```protobuf
 syntax = "proto3";
 
-package aegis.grades;
+package campusx.grades;
 
 service GradeService {
     rpc SubmitGrade (GradeSubmissionRequest) returns (GradeSubmissionResponse);
@@ -215,7 +213,7 @@ message DegreeVerificationResponse {
 ```yaml
 openapi: 3.0.3
 info:
-  title: Aegis University core API
+  title: CampusX University core API
   version: 1.0.0
 paths:
   /api/v1/auth/login:
@@ -276,10 +274,10 @@ paths:
 
 ## 7. Folder Structure (Turbo Monorepo)
 
-Aegis is organized as a high-performance monorepo for codebase consistency.
+CampusX is organized as a high-performance monorepo for codebase consistency.
 
 ```text
-aegis-universe-erp/
+campusx-universe-erp/
 ├── apps/
 │   ├── web-portal/           # Next.js 15 Tailwind Frontend
 │   └── docs-portal/          # OpenAPI interactive portal
@@ -327,7 +325,7 @@ apps/web-portal/
 
 ## 9. Event Driven Architecture
 
-The asynchronous backbone of Aegis is powered by Apache Kafka, ensuring microservices function independently without cascading failures.
+The asynchronous backbone of CampusX is powered by Apache Kafka, ensuring microservices function independently without cascading failures.
 
 ```mermaid
 sequenceDiagram
@@ -410,10 +408,10 @@ graph LR
 
 ## 12. AI Architecture
 
-Aegis implements an **On-Premise/Self-Hosted Private AI Gateway** utilizing Ollama to host lightweight models locally.
+CampusX implements an **On-Premise/Self-Hosted Private AI Gateway** utilizing Ollama to host lightweight models locally.
 
 ### Vector Store Schema (Qdrant)
-* **Collection Name**: `aegis_knowledge_base`
+* **Collection Name**: `campusx_knowledge_base`
 * **Vector Dimension**: 1536 (using `nomic-embed-text`)
 * **Payload Fields**:
 ```json
@@ -471,7 +469,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: academics-service
-  namespace: aegis-prod
+  namespace: campusx-prod
 spec:
   replicas: 4
   selector:
@@ -484,7 +482,7 @@ spec:
     spec:
       containers:
         - name: service-container
-          image: aegis-registry.internal/academics:v1.0.0
+          image: campusx-registry.internal/academics:v1.0.0
           resources:
             limits:
               cpu: "1"
@@ -504,7 +502,7 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: academics-hpa
-  namespace: aegis-prod
+  namespace: campusx-prod
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
@@ -528,7 +526,7 @@ spec:
 The CI/CD pipeline ensures automated quality checks and zero-downtime rolling updates.
 
 ```yaml
-name: Aegis CI/CD Production Pipeline
+name: CampusX CI/CD Production Pipeline
 
 on:
   push:
@@ -558,7 +556,7 @@ jobs:
       - name: Run Security Container Scan (Trivy)
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: 'aegis-registry.internal/academics:${{ github.sha }}'
+          image-ref: 'campusx-registry.internal/academics:${{ github.sha }}'
           format: 'table'
           exit-code: '1'
           ignore-unfixed: true
@@ -566,9 +564,9 @@ jobs:
 
       - name: Deploy to K8s Namespace (ArgoCD GitOps Sync Trigger)
         run: |
-          git config --global user.email "gitops@aegis.edu"
+          git config --global user.email "gitops@campusx.edu"
           git config --global user.name "GitOps Bot"
-          git clone https://github.com/aegis-edu/gitops-infra.git
+          git clone https://github.com/campusx-edu/gitops-infra.git
           cd gitops-infra
           sed -i 's/imageTag:.*/imageTag: "${{ github.sha }}"/g' values-prod.yaml
           git add values-prod.yaml
@@ -604,7 +602,7 @@ g, hod, faculty
 * **Prometheus Alerting Rules**:
 ```yaml
 groups:
-  - name: aegis-critical-alerts
+  - name: campusx-critical-alerts
     rules:
       - alert: HTTP5xxSpike
         expr: rate(http_requests_total{status=~"5.."}[5m]) > 0.05

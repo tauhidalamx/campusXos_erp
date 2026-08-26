@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { 
@@ -25,7 +25,7 @@ export default function SuiteSidebar() {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const session = sessionStorage.getItem('aegis_erp_session');
+      const session = sessionStorage.getItem('campusx_erp_session');
       if (session) {
         const user = JSON.parse(session);
         const roleHomeMap = {
@@ -72,23 +72,23 @@ export default function SuiteSidebar() {
 
   const appSwitcherItems = [
     { name: 'ERP Portal', href: dashboardUrl, icon: LayoutDashboard, color: 'text-indigo-400' },
-    { name: 'Aegis Connect', href: '/connect', icon: MessageSquare, color: 'text-brand-primary' },
-    { name: 'Aegis Chain', href: '/blockchain', icon: Shield, color: 'text-cyan-400' },
-    { name: 'Aegis Web3', href: '/web3', icon: Layers, color: 'text-brand-primary' },
+    { name: 'CampusX Connect', href: '/connect', icon: MessageSquare, color: 'text-brand-primary' },
+    { name: 'CampusX Chain', href: '/blockchain', icon: Shield, color: 'text-cyan-400' },
+    { name: 'CampusX Web3', href: '/web3', icon: Layers, color: 'text-brand-primary' },
     { name: 'Market Intel', href: '/stock', icon: TrendingUp, color: 'text-amber-400' },
     { name: 'AI Assistant', href: '/ai-assistant', icon: Bot, color: 'text-emerald-400' },
     { name: 'Research Console', href: '/research', icon: FlaskConical, color: 'text-rose-400' },
   ];
 
   return (
-    <aside className="w-20 fixed top-0 bottom-0 left-0 bg-[#0B1736] border-r border-white/5 flex flex-col items-center py-6 justify-between z-50 select-none">
+    <aside className="w-20 fixed top-0 bottom-0 left-0 bg-brand-bg-secondary/90 backdrop-blur-3xl border-r border-brand-border/60 flex flex-col items-center py-6 justify-between z-50 select-none shadow-xl">
       
       {/* Platform Initials Logo */}
       <Link href="/connect" className="flex flex-col items-center gap-1.5 cursor-pointer group">
-        <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-primary to-indigo-500 flex items-center justify-center glow-accent">
-          <span className="font-display font-extrabold text-lg text-white">AC</span>
+        <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-brand-primary via-indigo-600 to-brand-accent-cyan flex items-center justify-center shadow-[0_0_20px_rgba(99,102,241,0.4)] group-hover:scale-105 transition-transform duration-300">
+          <span className="font-display font-black text-base text-white tracking-wider">CX</span>
         </div>
-        <span className="text-[10px] font-bold text-white/50 tracking-wider uppercase scale-90 group-hover:text-brand-primary transition-colors">SUITE</span>
+        <span className="text-[9px] font-extrabold text-brand-text-muted tracking-widest uppercase group-hover:text-brand-primary transition-colors">SUITE</span>
       </Link>
 
       {/* Main Suite Toggles */}
@@ -154,7 +154,7 @@ export default function SuiteSidebar() {
                 className="absolute left-16 bottom-0 w-56 bg-[#102043] border border-white/5 rounded-2xl shadow-2xl p-2 z-50 flex flex-col gap-1 connect-glass"
               >
                 <div className="px-3 py-1.5 border-b border-white/5 mb-1 text-left">
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Aegis Switcher</span>
+                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">CampusX Switcher</span>
                 </div>
                 {appSwitcherItems.map((app) => {
                   const AppIcon = app.icon;

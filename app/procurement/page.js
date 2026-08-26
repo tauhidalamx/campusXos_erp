@@ -103,7 +103,7 @@ export default function ProcurementPage() {
           </Link>
           <div>
             <h1 className="text-2xl font-bold tracking-tight bg-gradient-to-r from-white via-indigo-200 to-indigo-400 bg-clip-text text-transparent">
-              AEGIS Procurement Portal
+              CAMPUSX Procurement Portal
             </h1>
             <p className="text-xs text-slate-400">Purchase orders directory, vendor metrics tracker & ticketing system</p>
           </div>

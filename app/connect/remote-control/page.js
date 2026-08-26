@@ -168,7 +168,7 @@ function RemoteControlContent() {
   const triggerIncomingRequest = () => {
     setIncomingRequestUser({
       name: 'Dr. Raymond Park',
-      did: 'did:aegis:usr_001',
+      did: 'did:campusx:usr_001',
       role: 'Faculty Supervisor'
     });
     setShowConsentModal(true);
@@ -330,7 +330,7 @@ function RemoteControlContent() {
               <div className="absolute inset-0 bg-[#050B1B]/90 flex flex-col justify-between p-4 z-0">
                 {/* Admin terminal mock */}
                 <div className="bg-black/40 border border-white/5 rounded-xl p-4 font-mono text-[10px] text-emerald-400 leading-relaxed max-w-[450px]">
-                  <p className="text-slate-500"># Aegis Operating System Terminal v6.2</p>
+                  <p className="text-slate-500"># CampusX Operating System Terminal v6.2</p>
                   <p>&gt; client_connect --handshake secure_key_attestation</p>
                   <p className="text-cyan-400">&gt; Status: SUCCESS [Attestation verified]</p>
                   <p>&gt; telemetry --track mouse_sync keyboard_sync</p>

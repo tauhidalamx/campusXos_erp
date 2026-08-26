@@ -125,12 +125,12 @@ function CallsPageContent() {
   );
 
   return (
-    <div className="messages-main-container select-none connect-font-inter">
+    <div className="flex h-screen bg-brand-bg-primary text-brand-text-main overflow-hidden font-sans select-none relative" style={{ paddingLeft: '80px' }}>
       {/* 1. Global Suite Sidebar */}
       <SuiteSidebar />
 
       {/* 2. Left sidebar: Call History & Direct Directory Dial */}
-      <div className="w-[320px] bg-[#0B1736] border-r border-white/5 flex flex-col h-full overflow-hidden shrink-0">
+      <div className="w-80 lg:w-90 border-r border-brand-border/40 bg-brand-bg-secondary/50 backdrop-blur-3xl flex flex-col shrink-0 h-full overflow-hidden">
         <div className="p-4 border-b border-white/5 flex flex-col gap-3 shrink-0">
           <h2 className="text-sm font-extrabold text-white tracking-wide">Direct Voice & Video</h2>
           
@@ -230,7 +230,7 @@ function CallsPageContent() {
               </div>
               <h3 className="text-sm font-bold text-white">Call Interface Offline</h3>
               <p className="text-xs text-slate-400 mt-2 max-w-xs leading-relaxed">
-                Initiate a call using the contact selector list on the left to start a 1-to-1 WebRTC peer stream with Aegis Identity verification.
+                Initiate a call using the contact selector list on the left to start a 1-to-1 WebRTC peer stream with CampusX Identity verification.
               </p>
             </motion.div>
           ) : callStatus === 'Ringing' ? (
@@ -377,14 +377,14 @@ function CallsPageContent() {
           {/* Identity validation */}
           <div className="bg-[#102043]/30 border border-white/5 rounded-2xl p-4 flex flex-col gap-3">
             <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1.5">
-              <ShieldCheck className="w-4 h-4 text-emerald-400" /> Aegis Identity Audit
+              <ShieldCheck className="w-4 h-4 text-emerald-400" /> CampusX Identity Audit
             </h4>
             <p className="text-[10px] text-slate-400 leading-relaxed">
               Verifying active participant certificates using the distributed credential ledger hashes to confirm remote session integrity.
             </p>
             <div className="flex flex-col gap-1.5 text-[10px] font-mono bg-black/30 p-2.5 rounded-xl border border-white/5 text-slate-300">
-              <p className="truncate">Local ID: did:aegis:usr_003</p>
-              <p className="truncate">Remote ID: {activeCall ? `did:aegis:${activeCall.id}` : 'None connected'}</p>
+              <p className="truncate">Local ID: did:campusx:usr_003</p>
+              <p className="truncate">Remote ID: {activeCall ? `did:campusx:${activeCall.id}` : 'None connected'}</p>
               <p className="truncate text-emerald-400">Attestation: CONFIRMED_SECURE_HASH</p>
             </div>
           </div>

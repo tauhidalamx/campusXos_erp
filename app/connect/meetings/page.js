@@ -85,7 +85,7 @@ function MeetingsPageContent() {
 
   // AI assistant transcription states
   const [transcripts, setTranscripts] = useState([
-    { sender: 'Dr. Raymond Park', time: '14:30', text: 'Let us confirm the verification speeds on the Aegis blockchain nodes.' },
+    { sender: 'Dr. Raymond Park', time: '14:30', text: 'Let us confirm the verification speeds on the CampusX blockchain nodes.' },
     { sender: 'Aria Nakamura', time: '14:31', text: 'I am preparing a draft protocol for checking consensus latency under high traffic load.' },
     { sender: 'Dr. Marcus Chen', time: '14:33', text: 'That sounds solid. Let us make sure that we keep remote desktop control security top of mind.' }
   ]);
@@ -302,7 +302,7 @@ function MeetingsPageContent() {
     setNewTranscriptInput('');
   };
 
-  // Anchoring verification event logs to Aegis Chain
+  // Anchoring verification event logs to CampusX Chain
   const anchorMeetingToChain = () => {
     setIsVerifying(true);
     setTimeout(() => {
@@ -312,7 +312,7 @@ function MeetingsPageContent() {
       setIsVerifying(false);
       // Auto add confirmation message
       const transcriptConfirm = {
-        sender: 'Aegis System Ledger',
+        sender: 'CampusX System Ledger',
         time: 'Ledger Confirm',
         text: `Anchored meeting consensus audit log to block #${blockNumber + 3}. Certificate Hash: ${newHash.substring(0, 10)}...`
       };
@@ -321,12 +321,12 @@ function MeetingsPageContent() {
   };
 
   return (
-    <div className="messages-main-container select-none connect-font-inter">
+    <div className="flex h-screen bg-brand-bg-primary text-brand-text-main overflow-hidden font-sans select-none relative" style={{ paddingLeft: '80px' }}>
       {/* 1. Global Suite Sidebar */}
       <SuiteSidebar />
 
       {/* 2. Middle Collaborative Meeting Space */}
-      <div className="flex-1 flex flex-col h-full overflow-hidden bg-[#071126]">
+      <div className="flex-1 flex flex-col h-full overflow-hidden bg-[#071126] w-full">
         {/* Top Header of Room */}
         <header className="h-[70px] border-b border-white/5 bg-[#0B1736]/40 px-6 flex items-center justify-between z-10">
           <div className="flex items-center gap-3">
@@ -546,7 +546,7 @@ function MeetingsPageContent() {
                       <Trash2 className="w-4 h-4" />
                     </button>
                     <button 
-                      onClick={() => alert("Simulated PNG Export: Canvas snapshot saved to meetings archive in Aegis Ledger.")}
+                      onClick={() => alert("Simulated PNG Export: Canvas snapshot saved to meetings archive in CampusX Ledger.")}
                       className="p-1.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 cursor-pointer"
                       title="Export Whiteboard PNG"
                     >
@@ -703,7 +703,7 @@ function MeetingsPageContent() {
                 <div className="bg-[#102043]/40 border border-white/5 rounded-2xl p-4 flex flex-col gap-2.5">
                   <div className="flex items-center justify-between">
                     <span className="text-[10px] text-slate-400 font-extrabold uppercase tracking-wide flex items-center gap-1">
-                      <Cpu className="w-3.5 h-3.5 text-cyan-400 animate-spin" /> Aegis Chain Anchoring
+                      <Cpu className="w-3.5 h-3.5 text-cyan-400 animate-spin" /> CampusX Chain Anchoring
                     </span>
                     <span className="text-[9px] text-slate-500 font-mono">Block #{blockNumber}</span>
                   </div>

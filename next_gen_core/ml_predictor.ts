@@ -15,7 +15,7 @@ export interface StudentRiskReport {
   academicWarningEnforced: boolean;
 }
 
-export class AegisMLPredictor {
+export class CampusXMLPredictor {
   // Model weights matrices representing a pre-trained deep neural network model
   private static inputWeights = [
     [-0.45,  0.85, -0.12],  // CGPA impact (high negative on dropout, positive on placement)
@@ -52,14 +52,14 @@ export class AegisMLPredictor {
     for (let col = 0; col < hiddenOutputs.length; col++) {
       let sum = 0;
       for (let row = 0; row < inputVector.length; row++) {
-        sum += inputVector[row] * AegisMLPredictor.inputWeights[row][col];
+        sum += inputVector[row] * CampusXMLPredictor.inputWeights[row][col];
       }
-      hiddenOutputs[col] = sum + AegisMLPredictor.biases[col];
+      hiddenOutputs[col] = sum + CampusXMLPredictor.biases[col];
     }
 
     // 3. Activation Functions (Sigmoid activation for probabilities, Linear mapping for GPA)
-    const rawDropoutProb = AegisMLPredictor.sigmoid(hiddenOutputs[0]);
-    const rawPlacementProb = AegisMLPredictor.sigmoid(hiddenOutputs[1]);
+    const rawDropoutProb = CampusXMLPredictor.sigmoid(hiddenOutputs[0]);
+    const rawPlacementProb = CampusXMLPredictor.sigmoid(hiddenOutputs[1]);
     
     // GPA projections (restricted to valid bounds)
     const predictedChange = hiddenOutputs[2] * 0.2; 
@@ -100,7 +100,7 @@ export class AegisMLPredictor {
     let totalLoss = 0;
 
     dataset.forEach(sample => {
-      const prediction = AegisMLPredictor.predictStudentRisk('sample', sample.features);
+      const prediction = CampusXMLPredictor.predictStudentRisk('sample', sample.features);
       const error = sample.label - prediction.dropoutProbability;
       
       // Binary Cross Entropy Loss accumulation

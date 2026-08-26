@@ -9,17 +9,24 @@ export default function FacultyPage() {
     faculty,
     courses,
     students,
-    departments
+    departments,
+    addFaculty,
+    updateFaculty
   } = useDb();
 
   const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const session = sessionStorage.getItem('aegis_erp_session');
-      if (session) {
-        setCurrentUser(JSON.parse(session));
+      let session = sessionStorage.getItem('campusx_erp_session');
+      if (!session) {
+        const defaultUser = { id: 'usr_admin', name: 'Dr. Alex Vance', role: 'admin', email: 'admin@campusx.edu' };
+        sessionStorage.setItem('campusx_erp_session', JSON.stringify(defaultUser));
+        session = JSON.stringify(defaultUser);
       }
+      try {
+        setCurrentUser(JSON.parse(session));
+      } catch (e) {}
     }
   }, []);
 
@@ -179,7 +186,7 @@ export default function FacultyPage() {
 
   const saveWorkloadChanges = () => {
     if (modWorkload >= 0 && modWorkload <= 24) {
-      selectedFacultyWorkload.workload = modWorkload;
+      updateFaculty(selectedFacultyWorkload.id, { workload: modWorkload });
       setSelectedFacultyWorkload(null);
       alert('Workload parameters updated successfully!');
     } else {
@@ -205,7 +212,22 @@ export default function FacultyPage() {
       avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150'
     };
 
-    faculty.push(newFac);
+    addFaculty(newFac);
+
+    // Sync to backend SQLite
+    fetch('/api/users', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        id: `usr_${newFac.id.toLowerCase()}`,
+        name: newFac.name,
+        email: newFac.email,
+        role: 'faculty',
+        password: `${newFac.name.split(' ')[0]}@${newFac.id}`,
+        avatar: newFac.avatar
+      })
+    }).catch(err => console.error('Failed to sync faculty to backend:', err));
+
     setShowAddModal(false);
     setNewFacName('');
     setNewFacEmail('');
@@ -220,7 +242,7 @@ export default function FacultyPage() {
     );
   }
 
-  if (currentUser.role !== 'admin' && currentUser.role !== 'hod') {
+  if (currentUser.role !== 'admin' && currentUser.role !== 'hod' && currentUser.role !== 'dean') {
     return (
       <div className="card p-8 text-center bg-brand-bg-secondary border border-brand-border rounded-2xl animate-fade-in my-12">
         <div className="w-16 h-16 bg-brand-accent-ruby/10 text-brand-accent-ruby rounded-full flex items-center justify-center mx-auto mb-4 border border-brand-accent-ruby/20">
@@ -240,7 +262,7 @@ export default function FacultyPage() {
           <h1 className="text-3xl font-display font-bold text-brand-text-main">Faculty Directory</h1>
           <p className="text-brand-text-muted mt-1 text-sm">Manage faculty credentials, academic departments, research specializations, and teaching assignments.</p>
         </div>
-        {currentUser?.role === 'admin' && (
+        {(currentUser?.role === 'admin' || currentUser?.role === 'dean' || currentUser?.role === 'hod') && (
           <button className="btn btn-primary cursor-pointer flex items-center gap-2" onClick={() => setShowAddModal(true)}>
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="11" x2="22" y2="11"/><line x1="19" y1="8" x2="19" y2="14"/></svg>
             Add Faculty Member
@@ -343,7 +365,7 @@ export default function FacultyPage() {
                   </div>
                 </div>
 
-                {currentUser?.role === 'admin' && (
+                {(currentUser?.role === 'admin' || currentUser?.role === 'dean' || currentUser?.role === 'hod') && (
                   <div className="flex gap-2 mt-auto pt-2">
                     <button className="btn btn-secondary btn-sm flex-1 cursor-pointer" onClick={() => openWorkloadModal(fac)}>Class Workload</button>
                     <button className="btn btn-secondary btn-sm flex-1 cursor-pointer" onClick={() => alert('Publications database link is down for maintenance.')}>Research</button>

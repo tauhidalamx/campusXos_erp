@@ -38,14 +38,14 @@ export default function AuthPage() {
   const tfModelRef = useRef(null);
 
   // Storage Keys
-  const USERS_KEY = 'aegis_erp_users';
-  const SESSION_KEY = 'aegis_erp_session';
+  const USERS_KEY = 'campusx_erp_users';
+  const SESSION_KEY = 'campusx_erp_session';
 
   const DEFAULT_ACCOUNTS = [
     {
       "id": "usr_001",
       "name": "Dr. Evelyn Sterling",
-      "email": "admin@aegis.edu",
+      "email": "admin@campusx.edu",
       "password": "h$g10hvh", // corresponds to "admin123"
       "role": "admin",
       "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150",
@@ -54,7 +54,7 @@ export default function AuthPage() {
     {
       "id": "usr_002",
       "name": "Prof. Marcus Chen",
-      "email": "faculty@aegis.edu",
+      "email": "faculty@campusx.edu",
       "password": "h$rwy182", // corresponds to "faculty123"
       "role": "faculty",
       "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150",
@@ -63,7 +63,7 @@ export default function AuthPage() {
     {
       "id": "usr_003",
       "name": "Aria Nakamura",
-      "email": "student@aegis.edu",
+      "email": "student@campusx.edu",
       "password": "h$h2pckp", // corresponds to "student123"
       "role": "student",
       "avatar": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150",
@@ -72,7 +72,7 @@ export default function AuthPage() {
     {
       "id": "usr_004",
       "name": "Prof. Sarah Jenkins",
-      "email": "hod@aegis.edu",
+      "email": "hod@campusx.edu",
       "password": "h$k1lauj", // corresponds to "hod123"
       "role": "hod",
       "avatar": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150",
@@ -81,7 +81,7 @@ export default function AuthPage() {
     {
       "id": "usr_demo_1",
       "name": "Global Super Admin",
-      "email": "superadmin@demo.aegis.edu",
+      "email": "superadmin@demo.campusx.edu",
       "password": "h$rv7t6",
       "role": "admin",
       "avatar": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150",
@@ -90,7 +90,7 @@ export default function AuthPage() {
     {
       "id": "usr_demo_2",
       "name": "University Admin",
-      "email": "admin@demo.aegis.edu",
+      "email": "admin@demo.campusx.edu",
       "password": "h$rv7t6",
       "role": "admin",
       "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150",
@@ -99,7 +99,7 @@ export default function AuthPage() {
     {
       "id": "usr_demo_3",
       "name": "Registrar Officer",
-      "email": "registrar@demo.aegis.edu",
+      "email": "registrar@demo.campusx.edu",
       "password": "h$rv7t6",
       "role": "registrar",
       "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150",
@@ -108,7 +108,7 @@ export default function AuthPage() {
     {
       "id": "usr_demo_4",
       "name": "Dean of Faculty",
-      "email": "dean@demo.aegis.edu",
+      "email": "dean@demo.campusx.edu",
       "password": "h$rv7t6",
       "role": "dean",
       "avatar": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150",
@@ -117,7 +117,7 @@ export default function AuthPage() {
     {
       "id": "usr_demo_5",
       "name": "Professor Sterling",
-      "email": "faculty@demo.aegis.edu",
+      "email": "faculty@demo.campusx.edu",
       "password": "h$rv7t6",
       "role": "faculty",
       "avatar": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150",
@@ -126,7 +126,7 @@ export default function AuthPage() {
     {
       "id": "usr_demo_6",
       "name": "Alex Rivera",
-      "email": "student@demo.aegis.edu",
+      "email": "student@demo.campusx.edu",
       "password": "h$rv7t6",
       "role": "student",
       "avatar": "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150",
@@ -135,7 +135,7 @@ export default function AuthPage() {
     {
       "id": "usr_demo_7",
       "name": "Lead Recruiter",
-      "email": "recruiter@demo.aegis.edu",
+      "email": "recruiter@demo.campusx.edu",
       "password": "h$rv7t6",
       "role": "recruiter",
       "avatar": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150",
@@ -428,7 +428,7 @@ export default function AuthPage() {
               </svg>
             </div>
 
-            <h1 className="brand-title text-2xl font-bold tracking-tight text-white font-display mb-2">AEGIS UNIVERSITY</h1>
+            <h1 className="brand-title text-2xl font-bold tracking-tight text-white font-display mb-2">CAMPUSX UNIVERSITY</h1>
             <p className="brand-tagline text-brand-text-muted text-sm mb-12">Next-Generation Campus Management Platform</p>
 
             <div className="brand-features flex flex-col gap-6">
@@ -484,7 +484,7 @@ export default function AuthPage() {
                 <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"/>
               </svg>
             </div>
-            <h1 className="brand-title text-xl font-bold tracking-tight text-white font-display">AEGIS UNIVERSITY</h1>
+            <h1 className="brand-title text-xl font-bold tracking-tight text-white font-display">CAMPUSX UNIVERSITY</h1>
           </div>
 
           {/* Form Tabs */}
@@ -606,33 +606,33 @@ export default function AuthPage() {
               <div className="auth-demo-info mt-6 p-4 bg-brand-bg-tertiary rounded-xl border border-brand-border">
                 <p className="text-xs font-bold uppercase tracking-wider text-brand-text-muted mb-3">Demo Credentials (Click to fill)</p>
                 <div className="demo-creds-list max-h-[220px] overflow-y-auto pr-1 chat-scroll">
-                  <div className="demo-cred flex items-center justify-between p-2 rounded-lg hover:bg-brand-bg-secondary transition-all cursor-pointer mb-2" onClick={() => fillDemo('superadmin@demo.aegis.edu', 'Demo@12345')}>
+                  <div className="demo-cred flex items-center justify-between p-2 rounded-lg hover:bg-brand-bg-secondary transition-all cursor-pointer mb-2" onClick={() => fillDemo('superadmin@demo.campusx.edu', 'Demo@12345')}>
                     <span className="role-badge admin text-xs font-semibold px-2 py-0.5 rounded bg-brand-accent-ruby/20 text-brand-accent-ruby">Super Admin</span>
-                    <code className="text-xs text-brand-text-main">superadmin@demo.aegis.edu / Demo@12345</code>
+                    <code className="text-xs text-brand-text-main">superadmin@demo.campusx.edu / Demo@12345</code>
                   </div>
-                  <div className="demo-cred flex items-center justify-between p-2 rounded-lg hover:bg-brand-bg-secondary transition-all cursor-pointer mb-2" onClick={() => fillDemo('admin@demo.aegis.edu', 'Demo@12345')}>
+                  <div className="demo-cred flex items-center justify-between p-2 rounded-lg hover:bg-brand-bg-secondary transition-all cursor-pointer mb-2" onClick={() => fillDemo('admin@demo.campusx.edu', 'Demo@12345')}>
                     <span className="role-badge admin text-xs font-semibold px-2 py-0.5 rounded bg-brand-accent-ruby/20 text-brand-accent-ruby">Univ Admin</span>
-                    <code className="text-xs text-brand-text-main">admin@demo.aegis.edu / Demo@12345</code>
+                    <code className="text-xs text-brand-text-main">admin@demo.campusx.edu / Demo@12345</code>
                   </div>
-                  <div className="demo-cred flex items-center justify-between p-2 rounded-lg hover:bg-brand-bg-secondary transition-all cursor-pointer mb-2" onClick={() => fillDemo('registrar@demo.aegis.edu', 'Demo@12345')}>
+                  <div className="demo-cred flex items-center justify-between p-2 rounded-lg hover:bg-brand-bg-secondary transition-all cursor-pointer mb-2" onClick={() => fillDemo('registrar@demo.campusx.edu', 'Demo@12345')}>
                     <span className="role-badge registrar text-xs font-semibold px-2 py-0.5 rounded bg-brand-accent-cyan/20 text-brand-accent-cyan">Registrar</span>
-                    <code className="text-xs text-brand-text-main">registrar@demo.aegis.edu / Demo@12345</code>
+                    <code className="text-xs text-brand-text-main">registrar@demo.campusx.edu / Demo@12345</code>
                   </div>
-                  <div className="demo-cred flex items-center justify-between p-2 rounded-lg hover:bg-brand-bg-secondary transition-all cursor-pointer mb-2" onClick={() => fillDemo('dean@demo.aegis.edu', 'Demo@12345')}>
+                  <div className="demo-cred flex items-center justify-between p-2 rounded-lg hover:bg-brand-bg-secondary transition-all cursor-pointer mb-2" onClick={() => fillDemo('dean@demo.campusx.edu', 'Demo@12345')}>
                     <span className="role-badge dean text-xs font-semibold px-2 py-0.5 rounded bg-brand-accent-amber/20 text-brand-accent-amber">Dean</span>
-                    <code className="text-xs text-brand-text-main">dean@demo.aegis.edu / Demo@12345</code>
+                    <code className="text-xs text-brand-text-main">dean@demo.campusx.edu / Demo@12345</code>
                   </div>
-                  <div className="demo-cred flex items-center justify-between p-2 rounded-lg hover:bg-brand-bg-secondary transition-all cursor-pointer mb-2" onClick={() => fillDemo('faculty@demo.aegis.edu', 'Demo@12345')}>
+                  <div className="demo-cred flex items-center justify-between p-2 rounded-lg hover:bg-brand-bg-secondary transition-all cursor-pointer mb-2" onClick={() => fillDemo('faculty@demo.campusx.edu', 'Demo@12345')}>
                     <span className="role-badge faculty text-xs font-semibold px-2 py-0.5 rounded bg-brand-accent-cyan/20 text-brand-accent-cyan">Faculty</span>
-                    <code className="text-xs text-brand-text-main">faculty@demo.aegis.edu / Demo@12345</code>
+                    <code className="text-xs text-brand-text-main">faculty@demo.campusx.edu / Demo@12345</code>
                   </div>
-                  <div className="demo-cred flex items-center justify-between p-2 rounded-lg hover:bg-brand-bg-secondary transition-all cursor-pointer mb-2" onClick={() => fillDemo('student@demo.aegis.edu', 'Demo@12345')}>
+                  <div className="demo-cred flex items-center justify-between p-2 rounded-lg hover:bg-brand-bg-secondary transition-all cursor-pointer mb-2" onClick={() => fillDemo('student@demo.campusx.edu', 'Demo@12345')}>
                     <span className="role-badge student text-xs font-semibold px-2 py-0.5 rounded bg-brand-accent-emerald/20 text-brand-accent-emerald">Student</span>
-                    <code className="text-xs text-brand-text-main">student@demo.aegis.edu / Demo@12345</code>
+                    <code className="text-xs text-brand-text-main">student@demo.campusx.edu / Demo@12345</code>
                   </div>
-                  <div className="demo-cred flex items-center justify-between p-2 rounded-lg hover:bg-brand-bg-secondary transition-all cursor-pointer" onClick={() => fillDemo('recruiter@demo.aegis.edu', 'Demo@12345')}>
+                  <div className="demo-cred flex items-center justify-between p-2 rounded-lg hover:bg-brand-bg-secondary transition-all cursor-pointer" onClick={() => fillDemo('recruiter@demo.campusx.edu', 'Demo@12345')}>
                     <span className="role-badge recruiter text-xs font-semibold px-2 py-0.5 rounded bg-[#6366F1]/20 text-[#6366F1]">Recruiter</span>
-                    <code className="text-xs text-brand-text-main">recruiter@demo.aegis.edu / Demo@12345</code>
+                    <code className="text-xs text-brand-text-main">recruiter@demo.campusx.edu / Demo@12345</code>
                   </div>
                 </div>
               </div>
@@ -663,7 +663,7 @@ export default function AuthPage() {
           ) : (
             <div className="auth-form-container fade-in">
               <h2 className="text-2xl font-bold text-white font-display mb-1">Create Account</h2>
-              <p className="text-sm text-brand-text-muted mb-6">Join the Aegis University portal</p>
+              <p className="text-sm text-brand-text-muted mb-6">Join the CampusX University portal</p>
 
               <form onSubmit={handleSignUp}>
                 <div className="auth-input-group relative mb-5">
@@ -780,7 +780,7 @@ export default function AuthPage() {
 
           {/* Footer */}
           <div className="auth-footer text-center mt-8 text-xs text-brand-text-subtle shrink-0">
-            <p>&copy; 2026 Aegis University. All rights reserved.</p>
+            <p>&copy; 2026 CampusX University. All rights reserved.</p>
           </div>
         </div>
 

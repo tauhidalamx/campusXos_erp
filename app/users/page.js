@@ -95,7 +95,7 @@ export default function UsersPage() {
     { step: 2, name: 'Department Head', role: 'HOD', status: 'COMPLETED', date: '2026-06-11 11:20', hash: '0x9a8b...12c4' },
     { step: 3, name: 'Dean of School', role: 'Dean', status: 'PENDING', date: 'N/A', hash: 'N/A' },
     { step: 4, name: 'Academic Office', role: 'Registrar', status: 'AWAITING_PREV', date: 'N/A', hash: 'N/A' },
-    { step: 5, name: 'Consortium Chain Attestation', role: 'Aegis Chain', status: 'AWAITING_PREV', date: 'N/A', hash: 'N/A' },
+    { step: 5, name: 'Consortium Chain Attestation', role: 'CampusX Chain', status: 'AWAITING_PREV', date: 'N/A', hash: 'N/A' },
     { step: 6, name: 'Verifiable Degree Issued', role: 'SBT Token', status: 'AWAITING_PREV', date: 'N/A', hash: 'N/A' }
   ]);
 
@@ -103,31 +103,31 @@ export default function UsersPage() {
   const [auditRegistry, setAuditRegistry] = useState([
     { user: 'Dr. Evelyn Sterling', role: 'Super Admin', timestamp: '2026-06-12 21:30:14', ip: '192.168.1.42', device: 'MacBook Pro (macOS)', action: 'MINT_SOULBOUND_CREDENTIAL', result: 'SUCCESS', hash: '0xf43a7b...' },
     { user: 'Dr. Evelyn Sterling', role: 'Super Admin', timestamp: '2026-06-12 21:12:05', ip: '192.168.1.42', device: 'MacBook Pro (macOS)', action: 'UPDATE_SSO_CONFIG', result: 'SUCCESS', hash: '0xe12c9b...' },
-    { user: 'registrar@demo.aegis.edu', role: 'Registrar', timestamp: '2026-06-12 18:42:12', ip: '10.0.4.11', device: 'Lenovo ThinkPad', action: 'VERIFY_DEGREE_HASH', result: 'SUCCESS', hash: '0x88ea2f...' },
-    { user: 'dean@demo.aegis.edu', role: 'Dean', timestamp: '2026-06-12 16:15:30', ip: '10.0.5.2', device: 'iPad Pro', action: 'APPROVE_COURSE_CURRICULUM', result: 'SUCCESS', hash: '0x911bda...' },
-    { user: 'student@demo.aegis.edu', role: 'Student', timestamp: '2026-06-12 15:10:44', ip: '172.16.8.91', device: 'iPhone 15', action: 'LOGIN_PORTAL', result: 'SUCCESS', hash: '0x32cf0b...' }
+    { user: 'registrar@demo.campusx.edu', role: 'Registrar', timestamp: '2026-06-12 18:42:12', ip: '10.0.4.11', device: 'Lenovo ThinkPad', action: 'VERIFY_DEGREE_HASH', result: 'SUCCESS', hash: '0x88ea2f...' },
+    { user: 'dean@demo.campusx.edu', role: 'Dean', timestamp: '2026-06-12 16:15:30', ip: '10.0.5.2', device: 'iPad Pro', action: 'APPROVE_COURSE_CURRICULUM', result: 'SUCCESS', hash: '0x911bda...' },
+    { user: 'student@demo.campusx.edu', role: 'Student', timestamp: '2026-06-12 15:10:44', ip: '172.16.8.91', device: 'iPhone 15', action: 'LOGIN_PORTAL', result: 'SUCCESS', hash: '0x32cf0b...' }
   ]);
 
   // Load initial users & session
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const session = sessionStorage.getItem('aegis_erp_session');
+      const session = sessionStorage.getItem('campusx_erp_session');
       if (session) {
         setCurrentUser(JSON.parse(session));
       }
       // Populate users from database or localStorage
-      const localUsers = JSON.parse(localStorage.getItem('aegis_erp_users')) || [];
+      const localUsers = JSON.parse(localStorage.getItem('campusx_erp_users')) || [];
       if (localUsers.length > 0) {
         setUsers(localUsers);
       } else {
         // Mock default users
         const defaultUsers = [
-          { id: 'usr_001', name: 'Dr. Evelyn Sterling', email: 'admin@aegis.edu', role: 'admin', tenant: 'Model University Alpha', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150' },
-          { id: 'usr_002', name: 'Prof. Marcus Chen', email: 'faculty@aegis.edu', role: 'faculty', tenant: 'Model University Alpha', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150' },
-          { id: 'usr_003', name: 'Aria Nakamura', email: 'student@aegis.edu', role: 'student', tenant: 'Model University Alpha', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150' }
+          { id: 'usr_001', name: 'Dr. Evelyn Sterling', email: 'admin@campusx.edu', role: 'admin', tenant: 'Model University Alpha', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150' },
+          { id: 'usr_002', name: 'Prof. Marcus Chen', email: 'faculty@campusx.edu', role: 'faculty', tenant: 'Model University Alpha', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150' },
+          { id: 'usr_003', name: 'Aria Nakamura', email: 'student@campusx.edu', role: 'student', tenant: 'Model University Alpha', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150' }
         ];
         setUsers(defaultUsers);
-        localStorage.setItem('aegis_erp_users', JSON.stringify(defaultUsers));
+        localStorage.setItem('campusx_erp_users', JSON.stringify(defaultUsers));
       }
     }
   }, []);
@@ -135,13 +135,13 @@ export default function UsersPage() {
   // Action: Seed all required demo accounts
   const handleSeedDemoAccounts = () => {
     const demoAccounts = [
-      { id: 'usr_demo_1', name: 'Global Super Admin', email: 'superadmin@demo.aegis.edu', role: 'admin', tenant: 'All Tenants', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150' },
-      { id: 'usr_demo_2', name: 'University Admin', email: 'admin@demo.aegis.edu', role: 'admin', tenant: 'Model University Alpha', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150' },
-      { id: 'usr_demo_3', name: 'Registrar Officer', email: 'registrar@demo.aegis.edu', role: 'registrar', tenant: 'Model University Alpha', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150' },
-      { id: 'usr_demo_4', name: 'Dean of Faculty', email: 'dean@demo.aegis.edu', role: 'dean', tenant: 'Model University Alpha', avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150' },
-      { id: 'usr_demo_5', name: 'Professor Sterling', email: 'faculty@demo.aegis.edu', role: 'faculty', tenant: 'Model University Alpha', avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150' },
-      { id: 'usr_demo_6', name: 'Alex Rivera', email: 'student@demo.aegis.edu', role: 'student', tenant: 'Model University Alpha', avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150' },
-      { id: 'usr_demo_7', name: 'Lead Recruiter', email: 'recruiter@demo.aegis.edu', role: 'recruiter', tenant: 'Model University Alpha', avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150' }
+      { id: 'usr_demo_1', name: 'Global Super Admin', email: 'superadmin@demo.campusx.edu', role: 'admin', tenant: 'All Tenants', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150' },
+      { id: 'usr_demo_2', name: 'University Admin', email: 'admin@demo.campusx.edu', role: 'admin', tenant: 'Model University Alpha', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150' },
+      { id: 'usr_demo_3', name: 'Registrar Officer', email: 'registrar@demo.campusx.edu', role: 'registrar', tenant: 'Model University Alpha', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150' },
+      { id: 'usr_demo_4', name: 'Dean of Faculty', email: 'dean@demo.campusx.edu', role: 'dean', tenant: 'Model University Alpha', avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150' },
+      { id: 'usr_demo_5', name: 'Professor Sterling', email: 'faculty@demo.campusx.edu', role: 'faculty', tenant: 'Model University Alpha', avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150' },
+      { id: 'usr_demo_6', name: 'Alex Rivera', email: 'student@demo.campusx.edu', role: 'student', tenant: 'Model University Alpha', avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150' },
+      { id: 'usr_demo_7', name: 'Lead Recruiter', email: 'recruiter@demo.campusx.edu', role: 'recruiter', tenant: 'Model University Alpha', avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150' }
     ];
 
     // Merge in users state & localStorage
@@ -153,7 +153,7 @@ export default function UsersPage() {
     });
 
     setUsers(merged);
-    localStorage.setItem('aegis_erp_users', JSON.stringify(merged));
+    localStorage.setItem('campusx_erp_users', JSON.stringify(merged));
     
     // Log seeder event in audit registry
     setAuditRegistry([
@@ -180,7 +180,7 @@ export default function UsersPage() {
 
     const updated = [...users, nUser];
     setUsers(updated);
-    localStorage.setItem('aegis_erp_users', JSON.stringify(updated));
+    localStorage.setItem('campusx_erp_users', JSON.stringify(updated));
 
     // Audit logs
     setAuditRegistry([
@@ -200,7 +200,7 @@ export default function UsersPage() {
     const target = users.find(u => u.id === id);
     const updated = users.filter(u => u.id !== id);
     setUsers(updated);
-    localStorage.setItem('aegis_erp_users', JSON.stringify(updated));
+    localStorage.setItem('campusx_erp_users', JSON.stringify(updated));
 
     if (target) {
       setAuditRegistry([
@@ -288,10 +288,10 @@ export default function UsersPage() {
               
               <div className="flex flex-col gap-3 max-h-[350px] overflow-y-auto pr-1 chat-scroll">
                 {[
-                  { role: 'Global Super Admin', scope: 'Entire AEGIS Ecosystem', capabilities: 'Manage tenants, Kubernetes infra, global SSO, blockchain nodes' },
+                  { role: 'Global Super Admin', scope: 'Entire CAMPUSX Ecosystem', capabilities: 'Manage tenants, Kubernetes infra, global SSO, blockchain nodes' },
                   { role: 'Platform Admin', scope: 'All Universities', capabilities: 'Manage plans, features, billing, analytics, integrations' },
                   { role: 'University Admin', scope: 'Single University Tenant', capabilities: 'Manage departments, faculty, students, approve ERP workflows' },
-                  { role: 'Registrar', scope: 'Clearance Academic Records', capabilities: 'Attest credentials, issue Degree SBTs, access Aegis Chain services' },
+                  { role: 'Registrar', scope: 'Clearance Academic Records', capabilities: 'Attest credentials, issue Degree SBTs, access CampusX Chain services' },
                   { role: 'Dean', scope: 'School / Faculty Scope', capabilities: 'Approve courses, faculty leaves, departmental research papers' },
                   { role: 'HOD', scope: 'Department Scope', capabilities: 'Manage course allocations, lecture timetables, faculty reviews' },
                   { role: 'Faculty', scope: 'Course Scope', capabilities: 'Take attendance, upload marks, create assignments, student advising' },
@@ -538,7 +538,7 @@ export default function UsersPage() {
               <div className="border-b border-brand-border pb-2 flex justify-between items-center">
                 <div>
                   <span className="text-xs font-bold text-white uppercase tracking-wider font-mono">Degree Issuance Verification Pipeline</span>
-                  <p className="text-[10px] text-slate-500 mt-1">Multi-step consensus path required to mint and lock student Degree certificates onto Aegis Chain.</p>
+                  <p className="text-[10px] text-slate-500 mt-1">Multi-step consensus path required to mint and lock student Degree certificates onto CampusX Chain.</p>
                 </div>
                 <button 
                   onClick={handleAuthorizeWorkflowStep}
@@ -595,7 +595,7 @@ export default function UsersPage() {
                   ))}
                 </div>
               </div>
-              <span className="text-[8.5px] text-slate-500 font-sans leading-relaxed">Attestation states sync cryptographically to Aegis Chain validation pools upon completing Step 5.</span>
+              <span className="text-[8.5px] text-slate-500 font-sans leading-relaxed">Attestation states sync cryptographically to CampusX Chain validation pools upon completing Step 5.</span>
             </div>
           </div>
         );
@@ -647,7 +647,7 @@ export default function UsersPage() {
       case 'blueprints':
         return (
           <div className="flex flex-col gap-6 text-left">
-            <span className="text-xs font-bold text-white uppercase tracking-wider font-mono border-b border-brand-border pb-2 block">AEGIS IAM Architectural Spec Blueprints</span>
+            <span className="text-xs font-bold text-white uppercase tracking-wider font-mono border-b border-brand-border pb-2 block">CAMPUSX IAM Architectural Spec Blueprints</span>
             
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 text-[11px] font-mono leading-relaxed">
               
@@ -697,7 +697,7 @@ CREATE TABLE audit_registry (
                   {`POST /api/v1/iam/sso/callback
 Body: { provider: "google", auth_token: "jwt" }
 Headers: { "X-Device-Fingerprint": "sha256" }
-Response: { success: true, session: "aegis_erp_session" }
+Response: { success: true, session: "campusx_erp_session" }
 
 POST /api/v1/iam/users/seed
 Headers: { "X-Admin-Clearance": "Global Super Admin" }
@@ -737,14 +737,14 @@ tenancy:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: aegis-iam-config
-  namespace: aegis-security-infrastructure
+  name: campusx-iam-config
+  namespace: campusx-security-infrastructure
 data:
   SSO_PROVIDERS_ENABLED: "google,microsoft,saml"
   ZERO_TRUST_MIN_SCORE: "15"
   MFA_REQUIRED: "true"
   ENCRYPTION_SCHEME: "AES-256-GCM"
-  AUDIT_ANCHOR_GATEWAY: "https://rpc.chain.aegis.edu"`}
+  AUDIT_ANCHOR_GATEWAY: "https://rpc.chain.campusx.edu"`}
                 </div>
               </div>
 

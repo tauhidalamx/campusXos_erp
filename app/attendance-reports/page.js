@@ -7,13 +7,13 @@ export default function AttendanceReportsPage() {
   const [currentUser, setCurrentUser] = useState(null);
 
   const [alerts, setAlerts] = useState([
-    { id: 'STU004', name: 'John Doe', dept: 'CS', attendance: 71.5, email: 'john@aegis.edu' },
-    { id: 'STU009', name: 'Aaliyah Jones', dept: 'CS', attendance: 68.2, email: 'aaliyah@aegis.edu' }
+    { id: 'STU004', name: 'John Doe', dept: 'CS', attendance: 71.5, email: 'john@campusx.edu' },
+    { id: 'STU009', name: 'Aaliyah Jones', dept: 'CS', attendance: 68.2, email: 'aaliyah@campusx.edu' }
   ]);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const session = sessionStorage.getItem('aegis_erp_session');
+      const session = sessionStorage.getItem('campusx_erp_session');
       if (session) {
         setCurrentUser(JSON.parse(session));
       }

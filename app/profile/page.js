@@ -10,7 +10,7 @@ export default function StudentProfilePage() {
   const studentInfo = {
     name: 'Aria Nakamura',
     id: 'STU003',
-    email: 'student@aegis.edu',
+    email: 'student@campusx.edu',
     phone: '+1 (555) 019-2834',
     dept: 'Computer Science',
     semester: 4,
@@ -29,7 +29,7 @@ export default function StudentProfilePage() {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const session = sessionStorage.getItem('aegis_erp_session');
+      const session = sessionStorage.getItem('campusx_erp_session');
       if (session) {
         setCurrentUser(JSON.parse(session));
       }

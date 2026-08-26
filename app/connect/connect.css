@@ -1,4 +1,4 @@
-/* Dedicated Stylesheet for AEGIS CONNECT UI Master */
+/* Dedicated Stylesheet for CAMPUSX CONNECT UI Master */
 
 /* Custom Typography & Scrollbars */
 .connect-font-inter {
@@ -57,27 +57,28 @@
 
 /* Glassmorphism Surface overlays */
 .connect-glass {
-  background: rgba(11, 23, 54, 0.75);
+  background: rgba(255, 255, 255, 0.75);
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 .connect-glass-card {
-  background: rgba(16, 32, 67, 0.7);
+  background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 /* Custom Message Bubble shapes */
 .bubble-sent {
   border-bottom-right-radius: 4px;
-  background: #6366F1;
+  background: #4F46E5;
 }
 
 .bubble-received {
   border-bottom-left-radius: 4px;
-  background: #102043;
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: #F1F5F9;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  color: #0F172A;
 }
 
 /* Floating Messenger Styles */
@@ -137,3 +138,99 @@
 .pulse-call-button {
   animation: pulseOuter 2s infinite;
 }
+
+/* =============================================================
+   LIGHT THEME OVERRIDES FOR CAMPUSX CONNECT
+   ============================================================= */
+
+/* Override dark/blue backgrounds with premium light slate & white surfaces */
+div[class*="bg-[#071126]"],
+div[class*="bg-[#0B1736]"],
+div[class*="bg-[#102043]"],
+div[class*="bg-[#050b1a]"],
+div[class*="bg-[#0A1020]"],
+div[class*="bg-[#1218298c]"],
+aside[class*="bg-[#0B1736]"],
+header[class*="bg-[#0B1736]"] {
+  background-color: var(--bg-secondary) !important;
+}
+
+/* Background sub-panels or container cards should be light slate bg-tertiary */
+div[class*="bg-[#102043]/20"],
+div[class*="bg-[#102043]/30"],
+div[class*="bg-[#102043]/40"],
+div[class*="bg-[#102043]/50"],
+div[class*="bg-[#102043]/60"],
+div[class*="bg-[#0B1736]/30"],
+div[class*="bg-[#0B1736]/40"],
+div[class*="bg-[#0B1736]/50"],
+div[class*="bg-[#0B1736]/60"],
+div[class*="bg-[#0B1736]/80"],
+div[class*="bg-[#071126]/40"],
+div[class*="bg-[#071126]/95"],
+form[class*="bg-[#0B1736]/40"] {
+  background-color: var(--bg-tertiary) !important;
+}
+
+/* Override borders to use subtle light borders */
+*[class*="border-white/5"],
+*[class*="border-white/10"],
+*[class*="border-white/20"],
+*[class*="border-white/15"] {
+  border-color: var(--border) !important;
+}
+
+/* Override text colors to use high-contrast dark text */
+.connect-font-inter span,
+.connect-font-inter p,
+.connect-font-inter h2,
+.connect-font-inter h3,
+.connect-font-inter h4,
+.connect-font-inter strong,
+.connect-font-inter button,
+.connect-font-inter a,
+*[class*="text-white"],
+*[class*="text-white/90"],
+*[class*="text-white/80"] {
+  color: var(--text-main) !important;
+}
+
+/* Muted / Subtle Text colors */
+*[class*="text-slate-400"],
+*[class*="text-slate-500"],
+*[class*="text-slate-300"],
+*[class*="text-white/45"],
+*[class*="text-white/50"],
+*[class*="text-white/40"],
+*[class*="text-white/30"] {
+  color: var(--text-muted) !important;
+}
+
+/* Active and Hover overrides */
+button[class*="hover:text-white"]:hover,
+a[class*="hover:text-white"]:hover,
+span[class*="hover:text-white"]:hover {
+  color: var(--primary) !important;
+}
+
+/* Preserve white text for primary action buttons and badge fills */
+.btn-primary,
+.btn-primary *,
+button.bg-brand-primary,
+button.bg-brand-primary *,
+button[class*="bg-gradient"],
+button[class*="bg-gradient"] *,
+.badge-primary,
+.badge-danger,
+.badge-success {
+  color: #FFFFFF !important;
+}
+
+/* Inputs and interactive text areas */
+input[class*="bg-[#0B1736]"],
+textarea[class*="bg-[#0B1736]"] {
+  background-color: var(--bg-tertiary) !important;
+  color: var(--text-main) !important;
+  border-color: var(--border) !important;
+}
+

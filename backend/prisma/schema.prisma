@@ -1,0 +1,639 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String       @id @default(uuid())
+  name          String
+  email         String       @unique
+  password      String
+  role          String       // STUDENT, FACULTY, HOD, DEAN, COE, REGISTRAR, COORDINATOR
+  department    String
+  walletAddress String?      @unique
+  isActive      Boolean      @default(true)
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  
+  submissions   Submission[]
+  evaluations   Evaluation[] @relation("EvaluatedBy")
+  audits        AuditLog[]
+
+  attendances          Attendance[] @relation("StudentAttendance")
+  markedAttendances    Attendance[] @relation("MarkedByAttendance")
+  corrections          AttendanceCorrection[] @relation("StudentCorrection")
+  reviewedCorrections  AttendanceCorrection[] @relation("ReviewerCorrection")
+}
+
+model Course {
+  code          String       @id
+  title         String
+  credits       Int
+  department    String
+  isActive      Boolean      @default(true)
+  
+  enrollments   Enrollment[]
+  assignments   Assignment[]
+  exams         Exam[]
+}
+
+model Enrollment {
+  id        String   @id @default(uuid())
+  studentId String
+  courseId  String
+  semester  Int
+  status    String   // ACTIVE, COMPLETED, DROPPED
+  createdAt DateTime @default(now())
+
+  course    Course   @relation(fields: [courseId], references: [code])
+}
+
+model Assignment {
+  id            String       @id @default(uuid())
+  courseCode    String
+  title         String
+  rubricHash    String?
+  dueDate       DateTime
+  weightage     Int          @default(100)
+  isDraft       Boolean      @default(true)
+  isArchived    Boolean      @default(false)
+  createdAt     DateTime     @default(now())
+
+  course        Course       @relation(fields: [courseCode], references: [code])
+  submissions   Submission[]
+}
+
+model Submission {
+  id           String       @id @default(uuid())
+  assignmentId String
+  studentId    String
+  ipfsHash     String
+  fileUrl      String?
+  submittedAt  DateTime     @default(now())
+  isLate       Boolean      @default(false)
+  txHash       String?
+
+  assignment   Assignment   @relation(fields: [assignmentId], references: [id])
+  student      User         @relation(fields: [studentId], references: [id])
+  evaluation   Evaluation?
+}
+
+model Evaluation {
+  id           String     @id @default(uuid())
+  submissionId String     @unique
+  evaluatorId  String
+  score        Float
+  feedbackHash String?
+  comments     String?
+  evaluatedAt  DateTime   @default(now())
+  txHash       String?
+
+  submission   Submission @relation(fields: [submissionId], references: [id])
+  evaluator    User       @relation("EvaluatedBy", fields: [evaluatorId], references: [id])
+}
+
+model Exam {
+  id           String       @id @default(uuid())
+  courseCode   String
+  name         String       // Midterm, End_Semester, Practical
+  examDate     DateTime
+  durationMins Int
+  isPublished  Boolean      @default(false)
+
+  course       Course       @relation(fields: [courseCode], references: [code])
+  halls        ExamHallAllocation[]
+  examiners    ExaminerAllocation[]
+  results      Result[]
+}
+
+model ExamHallAllocation {
+  id           String     @id @default(uuid())
+  examId       String
+  hallNumber   String
+  seatNumber   String
+  studentId    String
+  qrHash       String
+  txHash       String?
+
+  exam         Exam       @relation(fields: [examId], references: [id])
+}
+
+model ExaminerAllocation {
+  id           String     @id @default(uuid())
+  examId       String
+  facultyId    String
+  role         String     // INVIGILATOR, OBSERVER, FLYING_SQUAD
+  txHash       String?
+
+  exam         Exam       @relation(fields: [examId], references: [id])
+}
+
+model Result {
+  id            String    @id @default(uuid())
+  examId        String
+  studentId     String
+  internalMarks Float
+  externalMarks Float
+  practicalMarks Float
+  totalMarks    Float
+  grade         String    // A+, A, B, C, F
+  gpaPoint      Float
+  status        String    // PASS, FAIL
+  isPublished   Boolean   @default(false)
+  txHash        String?
+
+  exam          Exam      @relation(fields: [examId], references: [id])
+}
+
+model AuditLog {
+  id           String     @id @default(uuid())
+  userId       String
+  action       String     // MARKS_LOCK, RESULT_PROCESS, DEPLOY_CONTRACT
+  payload      String     // JSON metadata string
+  ipAddress    String
+  timestamp    DateTime   @default(now())
+  txHash       String?
+
+  user         User       @relation(fields: [userId], references: [id])
+}
+
+model Attendance {
+  id           String   @id @default(uuid())
+  courseCode   String
+  studentId    String
+  date         DateTime
+  status       String   // PRESENT, ABSENT, LATE, EXCUSED, MEDICAL_LEAVE, DUTY_LEAVE, ONLINE_PRESENT, HOLIDAY
+  method       String   // MANUAL, QR_CODE, RFID, NFC, BIOMETRIC, FACE_RECOGNITION, GPS, MOBILE, WEB, CLASSROOM, LABORATORY, SPORTS, EXAMINATION, EVENT
+  markedById   String?
+  isLocked     Boolean  @default(false)
+  txHash       String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  course       Course   @relation(fields: [courseCode], references: [code])
+  student      User     @relation("StudentAttendance", fields: [studentId], references: [id])
+  markedBy     User?    @relation("MarkedByAttendance", fields: [markedById], references: [id])
+  corrections  AttendanceCorrection[]
+}
+
+model AttendanceCorrection {
+  id              String   @id @default(uuid())
+  attendanceId    String
+  studentId       String
+  requestedStatus String
+  reason          String
+  status          String   // PENDING, APPROVED, REJECTED
+  reviewedById    String?
+  comments        String?
+  txHash          String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  attendance      Attendance @relation(fields: [attendanceId], references: [id])
+  student         User       @relation("StudentCorrection", fields: [studentId], references: [id])
+  reviewedBy      User?      @relation("ReviewerCorrection", fields: [reviewedById], references: [id])
+}
+
+model AttendanceApproval {
+  id           String   @id @default(uuid())
+  sessionId    String
+  approverId   String
+  role         String   // HOD, REGISTRAR, DEAN
+  approvedAt   DateTime @default(now())
+  txHash       String?
+}
+
+model AttendanceAudit {
+  id           String   @id @default(uuid())
+  operatorId   String
+  action       String   // e.g. MARK_ATTENDANCE, LOCK_SESSION, APPROVE_CORRECTION
+  details      String
+  timestamp    DateTime @default(now())
+  device       String?
+  ipAddress    String?
+  txHash       String?
+}
+
+model AcademicSession {
+  id                 String   @id @default(uuid())
+  academicYear       String   // e.g. "2026-2027"
+  semester           String   // e.g. "Spring", "Monsoon"
+  startDate          DateTime
+  endDate            DateTime
+  regWindowStart     DateTime
+  regWindowEnd       DateTime
+  status             String   // e.g. "ACTIVE", "ARCHIVED", "UPCOMING"
+  createdAt          DateTime @default(now())
+}
+
+model CourseOffering {
+  id                 String   @id @default(uuid())
+  semester           String
+  academicYear       String
+  courseCode         String
+  department         String
+  section            String
+  maxCapacity        Int
+  registeredCount    Int      @default(0)
+  status             String   // e.g. "DRAFT", "PUBLISHED", "CLOSED"
+  createdAt          DateTime @default(now())
+}
+
+model FacultyAllocation {
+  id                 String   @id @default(uuid())
+  courseCode         String
+  facultyId          String
+  status             String   // PENDING, ACCEPTED, DECLINED
+  deanApproved       Boolean  @default(false)
+  assignedHours      Int
+  txHash             String?
+  createdAt          DateTime @default(now())
+}
+
+model SemesterRegistration {
+  id                 String   @id @default(uuid())
+  studentId          String
+  semester           String
+  academicYear       String
+  creditLimit        Int
+  status             String   // PENDING, APPROVED, REJECTED
+  feeStatus          String   // PENDING, CLEARED
+  txHash             String?
+  createdAt          DateTime @default(now())
+}
+
+model FeeClearance {
+  id                 String   @id @default(uuid())
+  studentId          String
+  invoiceId          String
+  amount             Float
+  feeType            String   // TUITION, HOSTEL, TRANSPORT, LIBRARY_FINE, etc.
+  paymentMethod      String?  // STRIPE, RAZORPAY, UPI, etc.
+  status             String   // PENDING, CLEARED
+  receiptHash        String?
+  txHash             String?
+  createdAt          DateTime @default(now())
+}
+
+model AcademicApproval {
+  id           String   @id @default(uuid())
+  studentId    String
+  semester     String
+  academicYear String
+  step         String   // ADVISOR, HOD, DEAN, REGISTRAR
+  status       String   // PENDING, APPROVED, REJECTED
+  comments     String?
+  signature    String?
+  txHash       String?
+  approvedAt   DateTime @default(now())
+}
+
+model TimetableSlot {
+  id           String   @id @default(uuid())
+  courseCode   String
+  dayOfWeek    String
+  startTime    String
+  endTime      String
+  room         String
+  semester     String
+  academicYear String
+}
+
+model SportsStream {
+  id                String   @id @default(uuid())
+  matchId           String   @unique
+  streamOperatorId  String?
+  streamKey         String   @unique
+  backupStreamKey   String   @unique
+  ingestUrl         String
+  playbackUrl       String?
+  resolution        String   @default("1080p")
+  fps               Int      @default(60)
+  bitrate           String   @default("ABR")
+  audioChannels     String   @default("Stereo")
+  noiseSuppression  Boolean  @default(true)
+  echoCancellation  Boolean  @default(true)
+  streamStatus      String   @default("IDLE") // IDLE, LIVE, ENDED, ARCHIVED
+  durationSec       Int      @default(0)
+  viewerCount       Int      @default(0)
+  recordingUrl      String?
+  archiveUrl        String?
+  metadata          String?  // JSON string
+  createdAt         DateTime @default(now())
+}
+
+model SportsLiveComment {
+  id         String   @id @default(uuid())
+  streamId   String
+  userId     String
+  userName   String
+  userRole   String
+  comment    String
+  timestamp  DateTime @default(now())
+}
+
+model SportsMatchChainNotary {
+  id              String   @id @default(uuid())
+  matchId         String   @unique
+  finalScoreHash  String
+  recordingHash   String
+  officialApproval String
+  txHash          String
+  timestamp       DateTime @default(now())
+}
+
+model FacultyProfileDetail {
+  id                   String   @id
+  designation          String?
+  department           String?
+  qualification        String?
+  specialization       String?
+  teachingExperience   Int      @default(0)
+  researchArea         String?
+  weeklyTeachingLimit  Int      @default(18)
+  preferredSubjects    String   @default("[]")
+  preferredSections    String   @default("[]")
+  officeHours          String?
+  availabilityCalendar String   @default("[]")
+}
+
+model CourseOfferingV2 {
+  id              String   @id @default(uuid())
+  courseCode      String   @unique
+  courseName      String
+  credits         Int
+  theoryHours     Int
+  labHours        Int
+  tutorialHours   Int
+  department      String
+  semester        String
+  program         String
+  academicSession String
+  maxStudents     Int
+  classroomReq    String?
+  labReq          String?
+}
+
+model SectionAllocation {
+  id              String   @id @default(uuid())
+  sectionName     String
+  batch           String
+  studentCount    Int      @default(0)
+  mentorId        String?
+  courseCode      String?
+  theoryFacultyId String?
+  labFacultyId    String?
+  classroom       String?
+  labClassroom    String?
+  academicSession String
+}
+
+model FacultyAllocationV2 {
+  id                String   @id @default(uuid())
+  courseCode        String
+  facultyId         String
+  sectionName       String
+  assignedHours     Int
+  role              String
+  deptApproved      Int      @default(0)
+  hodApproved       Int      @default(0)
+  deanApproved      Int      @default(0)
+  registrarApproved Int      @default(0)
+  status            String   @default("PENDING")
+  txHash            String?
+  signature         String?
+  createdAt         DateTime @default(now())
+}
+
+model FacultyAllocationLedger {
+  id               String   @id @default(uuid())
+  allocationHash   String
+  facultyId        String
+  courseId         String
+  timestamp        DateTime @default(now())
+  digitalSignature String
+  approvalChain    String
+  txHash           String
+}
+
+model PaymentGatewaysAccount {
+  id            String   @id @default(uuid())
+  accountHolder String
+  accountNumber String   @unique
+  ifsc          String
+  swift         String?
+  branch        String?
+  upiId         String?
+  qrCodePath    String?
+  category      String   // PRIMARY, SECONDARY, DEPARTMENT, SCHOLARSHIP, INTERNATIONAL
+  isPrimary     Boolean  @default(false)
+  status        String   @default("ACTIVE")
+  createdAt     DateTime @default(now())
+}
+
+model PaymentGatewaysQr {
+  id            String   @id @default(uuid())
+  name          String
+  type          String   // UPI_QR, BANK_QR, etc.
+  upiId         String?
+  bankAccountId String?
+  qrCodePath    String?
+  status        String   @default("ACTIVE")
+  createdAt     DateTime @default(now())
+}
+
+model Payment {
+  id              String   @id @default(uuid())
+  studentId       String
+  feeType         String
+  semester        String
+  installmentId   String?
+  amount          Float
+  status          String   // PENDING, PROCESSING, VERIFICATION_PENDING, APPROVED, REJECTED, etc.
+  paymentMethod   String
+  transactionId   String?
+  utrNumber       String?
+  referenceNumber String?
+  bankName        String?
+  accountNumber   String?
+  ifsc            String?
+  remarks         String?
+  paymentDate     DateTime
+  screenshotPath  String?
+  receiptNumber   String?
+  receiptPath     String?
+  approvedBy      String?
+  rejectionReason String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Receipt {
+  id               String   @id @default(uuid())
+  paymentId        String
+  receiptNumber    String   @unique
+  studentName      String
+  enrollmentNumber String
+  department       String
+  semester         String
+  feeCategory      String
+  paymentDate      DateTime
+  paymentMethod    String
+  transactionId    String?
+  amount           Float
+  gst              Float
+  scholarship      Float
+  discount         Float
+  balance          Float
+  receiptPdfPath   String?
+  createdAt        DateTime @default(now())
+}
+
+model Refund {
+  id            String    @id @default(uuid())
+  paymentId     String
+  amount        Float
+  reason        String
+  status        String    // REQUESTED, APPROVED, REJECTED, COMPLETED
+  requestedAt   DateTime  @default(now())
+  approvedAt    DateTime?
+  rejectedAt    DateTime?
+  transactionId String?
+}
+
+model Installment {
+  id             String   @id @default(uuid())
+  studentId      String
+  feeType        String
+  amount         Float
+  dueDate        DateTime
+  status         String   // PENDING, PAID, OVERDUE
+  paidAmount     Float    @default(0.0)
+  penaltyLateFee Float    @default(0.0)
+  createdAt      DateTime @default(now())
+}
+
+model Scholarship {
+  id                 String   @id @default(uuid())
+  studentId          String
+  type               String   // FEE_WAIVER, SCHOLARSHIP, DISCOUNT, etc.
+  name               String
+  amount             Float    @default(0.0)
+  discountPercentage Float    @default(0.0)
+  status             String   @default("ACTIVE")
+  createdAt          DateTime @default(now())
+}
+
+model PaymentAuditLog {
+  id         String   @id @default(uuid())
+  userId     String
+  role       String
+  actionType String
+  payload    String
+  ipAddress  String?
+  device     String?
+  location   String?
+  createdAt  DateTime @default(now())
+}
+
+model PaymentNotification {
+  id        String   @id @default(uuid())
+  userId    String
+  title     String
+  message   String
+  status    String   @default("UNREAD")
+  createdAt DateTime @default(now())
+}
+
+model MarketWatchlist {
+  id        String   @id @default(uuid())
+  userId    String
+  name      String
+  isPinned  Boolean  @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  items     MarketWatchlistItem[]
+
+  @@index([userId])
+}
+
+model MarketWatchlistItem {
+  id          String          @id @default(uuid())
+  watchlistId String
+  symbol      String
+  assetType   String          // STOCK, ETF, CRYPTO, INDEX
+  createdAt   DateTime        @default(now())
+  watchlist   MarketWatchlist @relation(fields: [watchlistId], references: [id], onDelete: Cascade)
+
+  @@unique([watchlistId, symbol])
+}
+
+model MarketPortfolio {
+  id           String              @id @default(uuid())
+  userId       String              @unique
+  name         String
+  balance      Float               @default(100000.0) // Virtual Cash Balance for Paper Trading
+  isSimulated  Boolean             @default(true)
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+  holdings     MarketHolding[]
+  transactions MarketTransaction[]
+}
+
+model MarketHolding {
+  id                String          @id @default(uuid())
+  portfolioId       String
+  symbol            String
+  assetType         String          // STOCK, ETF, CRYPTO
+  quantity          Float
+  avgPurchasePrice  Float
+  updatedAt         DateTime        @updatedAt
+  portfolio         MarketPortfolio @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+
+  @@unique([portfolioId, symbol])
+}
+
+model MarketTransaction {
+  id          String          @id @default(uuid())
+  portfolioId String
+  symbol      String
+  assetType   String          // STOCK, ETF, CRYPTO
+  type        String          // BUY, SELL
+  quantity    Float
+  price       Float
+  timestamp   DateTime        @default(now())
+  notes       String?
+  portfolio   MarketPortfolio @relation(fields: [portfolioId], references: [id], onDelete: Cascade)
+}
+
+model MarketAlert {
+  id           String   @id @default(uuid())
+  userId       String
+  symbol       String
+  type         String   // PRICE, PERCENT_CHANGE, VOLUME, EARNINGS, DIVIDEND, NEWS
+  condition    String   // ABOVE, BELOW
+  value        Float
+  isTriggered  Boolean  @default(false)
+  channels     String   // comma-separated: in-app, email, push
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([userId, symbol])
+}
+
+model MarketResearchVerification {
+  id        String   @id @default(uuid())
+  researchId String
+  userId    String
+  hash      String
+  txHash    String
+  timestamp DateTime @default(now())
+}
+

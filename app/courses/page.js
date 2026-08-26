@@ -9,17 +9,23 @@ export default function CoursesPage() {
     courses,
     faculty,
     students,
-    departments
+    departments,
+    addCourse
   } = useDb();
 
   const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const session = sessionStorage.getItem('aegis_erp_session');
-      if (session) {
-        setCurrentUser(JSON.parse(session));
+      let session = sessionStorage.getItem('campusx_erp_session');
+      if (!session) {
+        const defaultUser = { id: 'usr_admin', name: 'Dr. Alex Vance', role: 'admin', email: 'admin@campusx.edu' };
+        sessionStorage.setItem('campusx_erp_session', JSON.stringify(defaultUser));
+        session = JSON.stringify(defaultUser);
       }
+      try {
+        setCurrentUser(JSON.parse(session));
+      } catch (e) {}
     }
   }, []);
 
@@ -142,7 +148,7 @@ export default function CoursesPage() {
       status: 'Active'
     };
 
-    courses.push(newCourse);
+    addCourse(newCourse);
     setShowAddModal(false);
     setNewTitle('');
     setNewCode('');

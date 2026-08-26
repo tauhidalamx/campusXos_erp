@@ -1,1 +1,31 @@
-node_modules
+# Dependencies
+node_modules/
+.venv/
+
+# Build and Cache
+.next/
+.cache/
+.do/
+build/
+builds/
+dist/
+cache/
+
+# IDE and OS
+.vscode/
+.DS_Store
+*.DS_Store
+
+# PyInstaller / Spec
+*.spec
+
+# Database and Log files
+*.sqlite
+*.db
+*.log
+
+# Large media & archives
+*.tar.gz
+uploads/
+artifacts/
+

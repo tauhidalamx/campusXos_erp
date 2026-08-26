@@ -14,6 +14,20 @@ export default function FinancePage() {
 
   const [currentUser, setCurrentUser] = useState(null);
 
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      let session = sessionStorage.getItem('campusx_erp_session');
+      if (!session) {
+        const defaultUser = { id: 'usr_admin', name: 'Dr. Alex Vance', role: 'admin', email: 'admin@campusx.edu' };
+        sessionStorage.setItem('campusx_erp_session', JSON.stringify(defaultUser));
+        session = JSON.stringify(defaultUser);
+      }
+      try {
+        setCurrentUser(JSON.parse(session));
+      } catch (e) {}
+    }
+  }, []);
+
   // Admin page states
   const [showPayModal, setShowPayModal] = useState(false);
   const [payStudentId, setPayStudentId] = useState('');
@@ -48,7 +62,7 @@ export default function FinancePage() {
   // Fetch Session User
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const session = sessionStorage.getItem('aegis_erp_session');
+      const session = sessionStorage.getItem('campusx_erp_session');
       if (session) {
         setCurrentUser(JSON.parse(session));
       } else {
@@ -74,7 +88,7 @@ export default function FinancePage() {
   const resolvedStudent = students.find(s => s.email.toLowerCase() === currentUser?.email?.toLowerCase()) || {
     id: 'STU038',
     name: currentUser?.name || 'Aria Nakamura',
-    email: currentUser?.email || 'student@aegis.edu',
+    email: currentUser?.email || 'student@campusx.edu',
     dept: 'CS',
     gpa: 3.75,
     semester: 4,

@@ -73,7 +73,7 @@ function Web3PageContent() {
   const [connectedAddress, setConnectedAddress] = useState('0x6366f1fc9a7d21a221befdb881e3a9c7db0e21a');
   
   // BIP-39 & Identity Enclave States
-  const [mnemonicPhrase, setMnemonicPhrase] = useState('aegis mnemonic private seed phrase academic trust credentials key secure system');
+  const [mnemonicPhrase, setMnemonicPhrase] = useState('campusx mnemonic private seed phrase academic trust credentials key secure system');
   const [derivedKey, setDerivedKey] = useState('0x9d2efc7db0e21bcda8ff9320e4da2b7a94ef88decf823abf26d7f021e05a');
   const [clearanceRole, setClearanceRole] = useState('Registrar'); // Super Admin, Registrar, Dean, Faculty, Student
 
@@ -513,11 +513,11 @@ function Web3PageContent() {
               <span className="text-xs font-bold text-white uppercase tracking-wider font-mono border-b border-white/5 pb-2">Active Verifiable Credentials (DID Framework)</span>
               <div className="flex flex-col gap-4">
                 {[
-                  { role: 'Student Identity', did: 'did:aegis:edu:student:STU001', verified: true, date: '2026-01-05' },
-                  { role: 'Faculty Identity', did: 'did:aegis:edu:faculty:FAC042', verified: true, date: '2026-02-12' },
-                  { role: 'Research Identity', did: 'did:aegis:edu:research:RES882', verified: true, date: '2026-03-24' },
-                  { role: 'Alumni Identity', did: 'did:aegis:edu:alumni:ALU902', verified: false, date: 'N/A' },
-                  { role: 'Employer Identity', did: 'did:aegis:edu:employer:EMP112', verified: false, date: 'N/A' }
+                  { role: 'Student Identity', did: 'did:campusx:edu:student:STU001', verified: true, date: '2026-01-05' },
+                  { role: 'Faculty Identity', did: 'did:campusx:edu:faculty:FAC042', verified: true, date: '2026-02-12' },
+                  { role: 'Research Identity', did: 'did:campusx:edu:research:RES882', verified: true, date: '2026-03-24' },
+                  { role: 'Alumni Identity', did: 'did:campusx:edu:alumni:ALU902', verified: false, date: 'N/A' },
+                  { role: 'Employer Identity', did: 'did:campusx:edu:employer:EMP112', verified: false, date: 'N/A' }
                 ].map((idCard, i) => (
                   <div key={i} className="p-4 bg-black/20 border border-white/5 rounded-xl flex items-center justify-between text-xs font-mono">
                     <div>
@@ -548,8 +548,8 @@ function Web3PageContent() {
           <div className="glass-card p-6 flex flex-col gap-5 text-left">
             <div className="border-b border-white/5 pb-3 flex items-center justify-between">
               <div>
-                <h3 className="text-sm font-bold text-white uppercase tracking-wider">Aegis Connect Synced Profile Preview</h3>
-                <p className="text-[10px] text-slate-500 mt-0.5 font-sans">This preview represents the credentials display on the AEGIS CONNECT social network.</p>
+                <h3 className="text-sm font-bold text-white uppercase tracking-wider">CampusX Connect Synced Profile Preview</h3>
+                <p className="text-[10px] text-slate-500 mt-0.5 font-sans">This preview represents the credentials display on the CAMPUSX CONNECT social network.</p>
               </div>
               <span className="px-2.5 py-0.5 bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 text-[8px] font-bold rounded">CONNECT INTEGRATION: LIVE</span>
             </div>
@@ -1101,7 +1101,7 @@ function Web3PageContent() {
               
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 {[
-                  'AegisDegreeRegistry.sol',
+                  'CampusXDegreeRegistry.sol',
                   'ResearchPatentEscrow.sol',
                   'ScholarshipPoolManager.sol',
                   'QuadraticVotingDAO.sol'
@@ -1164,8 +1164,8 @@ function Web3PageContent() {
             <span className="text-xs font-bold text-white uppercase tracking-wider font-mono border-b border-white/5 pb-2 block">Standalone Web3 Operating Layer Sandboxes</span>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {[
-                { title: 'Aegis Chain Platform', link: '/blockchain', desc: 'Enterprise credential registry & BIP-39 mnemonic wallet key derivations portal.', icon: Layers },
-                { title: 'Aegis Connect Messages', link: '/connect/messages', desc: 'Secure Web3 peer-to-peer social discussions and multi-sig council debates.', icon: Globe },
+                { title: 'CampusX Chain Platform', link: '/blockchain', desc: 'Enterprise credential registry & BIP-39 mnemonic wallet key derivations portal.', icon: Layers },
+                { title: 'CampusX Connect Messages', link: '/connect/messages', desc: 'Secure Web3 peer-to-peer social discussions and multi-sig council debates.', icon: Globe },
                 { title: 'Verifiable Credentials Sandbox', link: '/blockchain', desc: 'Credential validator tools and degree revoke registries.', icon: ShieldCheck }
               ].map((dapp, idx) => (
                 <div key={idx} className="glass-card p-5 flex flex-col justify-between h-[180px]">
@@ -1448,7 +1448,7 @@ function Web3PageContent() {
                 <label className="text-[9px] text-slate-400 font-bold uppercase">RPC Gateway Connection Endpoint</label>
                 <input 
                   type="text" 
-                  defaultValue="https://polygon-mainnet.g.alchemy.com/v2/aegis-key"
+                  defaultValue="https://polygon-mainnet.g.alchemy.com/v2/campusx-key"
                   className="w-full bg-[#102043] border border-white/5 p-2 rounded-xl text-white outline-none font-mono"
                 />
               </div>
@@ -1477,7 +1477,7 @@ function Web3PageContent() {
       case 'devdesk':
         return (
           <div className="flex flex-col gap-6 text-left">
-            <span className="text-xs font-bold text-white uppercase tracking-wider font-mono border-b border-white/5 pb-2 block">AEGIS WEB3 Architectural Blueprint Console</span>
+            <span className="text-xs font-bold text-white uppercase tracking-wider font-mono border-b border-white/5 pb-2 block">CAMPUSX WEB3 Architectural Blueprint Console</span>
             
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 text-[11px] font-mono leading-relaxed">
               
@@ -1518,7 +1518,7 @@ CREATE TABLE token_transfers (
                 <div className="compiler-console max-h-[300px] overflow-y-auto web3-scroll">
                   {`GET  /api/v1/web3/identity/did/:address
 Headers: { Authorization: "Bearer JWT" }
-Response: { status: "success", did: "did:aegis:edu:student" }
+Response: { status: "success", did: "did:campusx:edu:student" }
 
 POST /api/v1/web3/credentials/mint
 Body: { recipient: "STU001", title: "Dean Honour", type: "Degree" }
@@ -1537,13 +1537,13 @@ Response: { status: "success", votes_power: 25 }`}
                   {`# helm-values.yaml
 replicaCount: 3
 image:
-  repository: gcr.io/aegis-mesh/web3-operating-layer
+  repository: gcr.io/campusx-mesh/web3-operating-layer
   tag: v1.2.0
 ingress:
   enabled: true
   className: nginx
   hosts:
-    - host: erp.aegis.edu
+    - host: erp.campusx.edu
       paths:
         - path: /app/web3
           pathType: Prefix
@@ -1599,7 +1599,7 @@ CMD ["npm", "start"]`}
             </div>
             <div className="text-left">
               <span className="text-xl font-bold tracking-tight text-white uppercase block">
-                AEGIS WEB3
+                CAMPUSX WEB3
               </span>
               <span className="text-[7.5px] font-bold text-slate-400 uppercase tracking-widest block mt-0.5 whitespace-nowrap">
                 Decentralized Academic OS Layer

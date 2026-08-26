@@ -46,7 +46,7 @@ export default function ConversationArea({ channelId, onStartCall }) {
   useEffect(() => {
     const defaultData = {
       'ai_copilot': [
-        { id: 'm_ai1', sender: 'Aegis AI Copilot', avatar: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=150', text: 'Greeting! I parsed the cs202 grading parameters on the trust ledger. I recommend starting a study session.', time: '10:00 AM', isSystem: false, reactions: {} }
+        { id: 'm_ai1', sender: 'CampusX AI Copilot', avatar: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=150', text: 'Greeting! I parsed the cs202 grading parameters on the trust ledger. I recommend starting a study session.', time: '10:00 AM', isSystem: false, reactions: {} }
       ],
       'usr_001': [
         { id: 'm_str1', sender: 'Dr. Evelyn Sterling', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150', text: 'I uploaded the peer review guidelines draft for the consensus algorithm.', time: 'Yesterday at 3:12 PM', isSystem: false, reactions: { '👍': 2 } },
@@ -97,7 +97,7 @@ export default function ConversationArea({ channelId, onStartCall }) {
       setTimeout(() => {
         const aiMsg = {
           id: 'msg_ai_' + Date.now(),
-          sender: 'Aegis AI Copilot',
+          sender: 'CampusX AI Copilot',
           avatar: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=150',
           text: '🤖 **AI Copilot Analysis**:\nI parsed your ledger query. I verified that your thesis presentation has successfully been indexed on the Polygon Subnet under transaction verification code 0x982a... Action recommended: Prepare slide outlines.',
           time: 'Just now',
@@ -124,7 +124,7 @@ export default function ConversationArea({ channelId, onStartCall }) {
     setTimeout(() => {
       setTranslations(prev => ({
         ...prev,
-        [msgId]: `Translated (ES): "Entendido. He verificado los parámetros de la blockchain en la red de Aegis."`
+        [msgId]: `Translated (ES): "Entendido. He verificado los parámetros de la blockchain en la red de CampusX."`
       }));
       setTranslatingId(null);
     }, 800);
@@ -291,7 +291,7 @@ export default function ConversationArea({ channelId, onStartCall }) {
                     <pre className="p-4 overflow-x-auto text-[10px] font-mono text-indigo-300 text-left bg-[#050b1a]">
 {`pragma solidity ^0.8.0;
 
-contract AegisMeetingRegistry {
+contract CampusXMeetingRegistry {
     // Gas optimized registry hashes
     mapping(bytes32 => bool) public verifiedLogs;
 }`}

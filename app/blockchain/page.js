@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, Suspense } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useDb } from '../../context/db-context';
@@ -42,7 +42,7 @@ import {
   MessageSquare
 } from 'lucide-react';
 
-export default function BlockchainPage() {
+function BlockchainPageContent() {
   const { students, transactions } = useDb();
   const [currentUser, setCurrentUser] = useState(null);
   const router = useRouter();
@@ -52,7 +52,7 @@ export default function BlockchainPage() {
   // Load user session
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const session = sessionStorage.getItem('aegis_erp_session');
+      const session = sessionStorage.getItem('campusx_erp_session');
       if (session) {
         setCurrentUser(JSON.parse(session));
       }
@@ -74,7 +74,7 @@ export default function BlockchainPage() {
   
   // Wallet states
   const [selectedWalletUser, setSelectedWalletUser] = useState('STU001');
-  const [customKeySeed, setCustomKeySeed] = useState('aegis mnemonic private seed phrase academic trust credentials key');
+  const [customKeySeed, setCustomKeySeed] = useState('campusx mnemonic private seed phrase academic trust credentials key');
   const [derivedAddress, setDerivedAddress] = useState('0x1b790d984d720a45594efa4cbefe46df7db0e21');
   const [signingPayload, setSigningPayload] = useState('Recruiter Challenge Token #9401');
   const [signatureOutput, setSignatureOutput] = useState('');
@@ -101,7 +101,7 @@ export default function BlockchainPage() {
 
     // Seeding mock Blocks
     const initialBlocks = [
-      { index: 0, hash: '0x0000000000000000000000000000000000000000', prevHash: '0x0000000000000000000000000000000000000000', type: 'GENESIS', timestamp: '2026-01-01 00:00', data: 'Aegis Genesis' },
+      { index: 0, hash: '0x0000000000000000000000000000000000000000', prevHash: '0x0000000000000000000000000000000000000000', type: 'GENESIS', timestamp: '2026-01-01 00:00', data: 'CampusX Genesis' },
       { index: 1, hash: '0x81cf712d984efc464efb6088ffabce18ff940a01', prevHash: '0x0000000000000000000000000000000000000000', type: 'IDENTITY_REGISTER', timestamp: '2026-01-05 10:14', data: 'Authorized Registrar Nodes' },
       { index: 2, hash: '0x3cb4d720a455a1532ffeb9d22ffde46d7db0e21a', prevHash: '0x81cf712d984efc464efb6088ffabce18ff940a01', type: 'CONTRACT_DEPLOY', timestamp: '2026-01-10 11:30', data: 'CertificateSBT Contract Deployed' }
     ];
@@ -306,7 +306,7 @@ export default function BlockchainPage() {
     };
     setBlocks(prev => [...prev, block]);
 
-    alert('Proposal Broadcasted to AEGIS DAO Governance Ledger.');
+    alert('Proposal Broadcasted to CAMPUSX DAO Governance Ledger.');
   };
 
   const handleCastVote = (proposalId, support, weight) => {
@@ -345,7 +345,7 @@ export default function BlockchainPage() {
       {/* Page Header */}
       <div className="page-header flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-display font-bold text-brand-text-main">Aegis Chain</h1>
+          <h1 className="text-3xl font-display font-bold text-brand-text-main">CampusX Chain</h1>
           <p className="text-brand-text-muted mt-1 text-sm font-medium">Decentralized credential verification, digital certificate minting, on-chain ledger, and student wallet management.</p>
         </div>
         <div className="flex items-center gap-4 flex-wrap">
@@ -363,14 +363,14 @@ export default function BlockchainPage() {
               className="px-3 py-1.5 hover:bg-white/[0.03] text-brand-text-muted hover:text-white rounded-lg transition-all flex items-center gap-1.5"
             >
               <MessageSquare className="w-3.5 h-3.5" />
-              <span>AEGIS CONNECT</span>
+              <span>CAMPUSX CONNECT</span>
             </Link>
             <Link 
               href="/blockchain?tab=overview"
               className="px-3 py-1.5 bg-brand-primary/20 border border-brand-primary/10 text-brand-text-main rounded-lg flex items-center gap-1.5"
             >
               <svg className="w-3.5 h-3.5 text-brand-primary shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-              <span>AEGIS CHAIN</span>
+              <span>CAMPUSX CHAIN</span>
             </Link>
           </div>
         </div>
@@ -883,7 +883,7 @@ export default function BlockchainPage() {
                   </div>
                   <span className="font-display font-bold text-base text-white">No Smart Contracts Permitted</span>
                   <p className="text-xs text-brand-text-muted max-w-sm leading-relaxed">
-                    Your current role (<strong className="text-brand-accent-ruby font-semibold uppercase">{currentUser?.role || 'Guest'}</strong>) is not granted security clearance to view or interact with any deployed smart contracts on the Aegis Chain validator network.
+                    Your current role (<strong className="text-brand-accent-ruby font-semibold uppercase">{currentUser?.role || 'Guest'}</strong>) is not granted security clearance to view or interact with any deployed smart contracts on the CampusX Chain validator network.
                   </p>
                 </div>
               ) : (
@@ -1042,7 +1042,7 @@ export default function BlockchainPage() {
                 </div>
                 <div className="flex flex-col gap-1">
                   <span className="text-[10px] text-brand-text-subtle font-bold">Derived DID Namespace:</span>
-                  <code className="text-[10px] text-brand-accent-cyan font-mono mt-1 break-all bg-brand-bg-tertiary/60 p-2.5 rounded border border-brand-border">did:aegis:sol:{derivedAddress}</code>
+                  <code className="text-[10px] text-brand-accent-cyan font-mono mt-1 break-all bg-brand-bg-tertiary/60 p-2.5 rounded border border-brand-border">did:campusx:sol:{derivedAddress}</code>
                 </div>
               </div>
             </div>
@@ -1277,7 +1277,7 @@ export default function BlockchainPage() {
         {activeTab === 'explorer' && (
           <div className="flex flex-col gap-6">
             <div className="card p-6 bg-brand-bg-secondary border border-brand-border rounded-2xl flex flex-col gap-4">
-              <span className="font-display text-sm font-bold text-white">Aegis Chain Internal Block Explorer</span>
+              <span className="font-display text-sm font-bold text-white">CampusX Chain Internal Block Explorer</span>
               <div className="flex gap-3">
                 <div className="flex-1 flex items-center bg-brand-bg-tertiary border border-brand-border rounded-xl px-4 py-2 gap-2">
                   <Search className="w-4 h-4 text-brand-text-subtle" />
@@ -1402,6 +1402,14 @@ export default function BlockchainPage() {
 
       </div>
     </div>
+  );
+}
+
+export default function BlockchainPage() {
+  return (
+    <Suspense fallback={<div className="text-white text-center py-10">Loading Blockchain Console...</div>}>
+      <BlockchainPageContent />
+    </Suspense>
   );
 }
 

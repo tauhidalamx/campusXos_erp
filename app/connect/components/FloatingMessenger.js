@@ -68,7 +68,7 @@ export default function FloatingMessenger() {
   // Filter conversations/channels
   const conversationChannels = [
     { id: 'channel_general', name: 'General Announcements', type: 'channel', unread: false },
-    { id: 'ai_chat', name: 'Aegis AI Copilot', type: 'ai', unread: true },
+    { id: 'ai_chat', name: 'CampusX AI Copilot', type: 'ai', unread: true },
     { id: 'usr_001', name: 'Dr. Evelyn Sterling', type: 'faculty', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150', unread: false },
     { id: 'usr_002', name: 'Prof. Marcus Chen', type: 'faculty', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150', unread: false },
     { id: 'usr_005', name: 'Carlos Mendez', type: 'student', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150', unread: true }
@@ -251,7 +251,7 @@ export default function FloatingMessenger() {
         >
           <div className="flex items-center gap-2.5">
             <div className="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-ping shrink-0" />
-            <span className="text-sm font-bold text-white tracking-wide">Aegis Direct Chat</span>
+            <span className="text-sm font-bold text-white tracking-wide">CampusX Direct Chat</span>
           </div>
           <div className="flex items-center gap-3">
             {/* Unread count badge */}
@@ -335,7 +335,7 @@ export default function FloatingMessenger() {
                   {activeChatChannel.startsWith('usr_') && (
                     <button 
                       onClick={() => {
-                        const rec = users.find(u => u.id === activeChatChannel) || { name: 'Aegis Node', avatar: '' };
+                        const rec = users.find(u => u.id === activeChatChannel) || { name: 'CampusX Node', avatar: '' };
                         startVideoCall(rec);
                       }}
                       className="p-1.5 bg-brand-primary/10 border border-brand-primary/20 text-brand-primary hover:bg-brand-primary hover:text-white rounded-xl transition-all"

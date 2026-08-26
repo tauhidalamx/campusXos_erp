@@ -22,11 +22,11 @@ export default function DetailsPanel({ channelId }) {
   // Simulated blockchain hash logs for active channel meetings
   const [ledgerProof, setLedgerProof] = useState({
     hash: '0x9320e4da88f2be58daef271cb0f438da1cf4d88e001f78ea',
-    attestationCode: '0xsig_did_aegis_sol_88f2be58daef27',
+    attestationCode: '0xsig_did_campusx_sol_88f2be58daef27',
     blockNumber: '1,492,084',
     txFee: '0.00042 ETH',
     gasUnits: '42,500 Wei',
-    derivedDid: 'did:aegis:sol:0x1b790d984d720a45594efa4c',
+    derivedDid: 'did:campusx:sol:0x1b790d984d720a45594efa4c',
     timestamp: 'June 12, 2026 at 20:45 PM'
   });
 
@@ -55,7 +55,7 @@ export default function DetailsPanel({ channelId }) {
       <div className="flex border-b border-white/5 p-2 bg-[#102043]/10">
         {[
           { id: 'files', label: 'Shared Files' },
-          { id: 'blockchain', label: 'Aegis Trust Proof' },
+          { id: 'blockchain', label: 'CampusX Trust Proof' },
           { id: 'members', label: 'Room Members' }
         ].map((tab) => (
           <button

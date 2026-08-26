@@ -22,7 +22,7 @@ export default function EventsView() {
       date: 'June 22, 2026',
       time: '09:00 - 18:00',
       location: 'Interactive Engineering Lab',
-      speaker: 'Sponsored by Aegis Finance Society',
+      speaker: 'Sponsored by CampusX Finance Society',
       interested: '112 registered'
     },
     {

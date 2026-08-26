@@ -1,10 +1,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: aegis-sports-service
-  namespace: aegis-prod
+  name: campusx-sports-service
+  namespace: campusx-prod
   labels:
-    app: aegis-sports
+    app: campusx-sports
 spec:
   replicas: 3
   strategy:
@@ -14,15 +14,15 @@ spec:
       maxUnavailable: 0
   selector:
     matchLabels:
-      app: aegis-sports
+      app: campusx-sports
   template:
     metadata:
       labels:
-        app: aegis-sports
+        app: campusx-sports
     spec:
       containers:
         - name: sports-container
-          image: aegis-sports:latest
+          image: campusx-sports:latest
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 5000
@@ -59,16 +59,16 @@ spec:
       volumes:
         - name: sports-storage
           persistentVolumeClaim:
-            claimName: aegis-sports-pvc
+            claimName: campusx-sports-pvc
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: aegis-sports-service
-  namespace: aegis-prod
+  name: campusx-sports-service
+  namespace: campusx-prod
 spec:
   selector:
-    app: aegis-sports
+    app: campusx-sports
   ports:
     - protocol: TCP
       port: 5000

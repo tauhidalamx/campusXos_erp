@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Aegis Connect — University Social & Forum Portal</title>
+  <title>CampusX Connect — University Social & Forum Portal</title>
   
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -14,14 +14,20 @@
   
   <!-- TensorFlow.js Library -->
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.22.0/dist/tf.min.js"></script>
-  <script type="module" crossorigin src="/assets/forum-CHwYhL_L.js"></script>
-  <link rel="modulepreload" crossorigin href="/assets/main-C5NvtwyE.js">
-  <link rel="stylesheet" crossorigin href="/assets/main-BRxP3S2G.css">
-  <link rel="stylesheet" crossorigin href="/assets/forum-Dmd-d4rz.css">
+  <script type="module" crossorigin src="/assets/forum-CnMKFCJa.js"></script>
+  <link rel="modulepreload" crossorigin href="/assets/main-BDZd_gmO.js">
+  <link rel="stylesheet" crossorigin href="/assets/main-D8aYg8ki.css">
+  <link rel="stylesheet" crossorigin href="/assets/forum-BfqC39G2.css">
 </head>
-<body class="dark-mode bg-brand-bg-primary text-brand-text-main font-sans">
+<body class="dark-mode bg-brand-bg-primary text-brand-text-main font-sans relative overflow-hidden">
+  <!-- Ambient Liquid Mesh Glowing Background Orbs -->
+  <div class="liquid-mesh-bg">
+    <div class="liquid-orb liquid-orb-cyan liquid-orb-1"></div>
+    <div class="liquid-orb liquid-orb-indigo liquid-orb-2"></div>
+    <div class="liquid-orb liquid-orb-violet liquid-orb-3"></div>
+  </div>
 
-  <div class="forum-container flex min-h-screen w-screen bg-brand-bg-primary text-brand-text-main font-sans">
+  <div class="forum-container flex min-h-screen w-screen bg-brand-bg-primary text-brand-text-main font-sans relative z-10">
     
     <!-- ============================================================
          LEFT SIDEBAR — Navigation
@@ -33,7 +39,7 @@
           <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
           <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
         </svg>
-        <span>Aegis Connect</span>
+        <span>CampusX Connect</span>
       </div>
       
       <nav class="sidebar-menu flex flex-col gap-2 flex-1">
@@ -81,7 +87,7 @@
         <div class="header-left">
           <div class="header-search flex items-center gap-3 bg-brand-bg-secondary border border-brand-border px-4 py-2 rounded-xl w-[300px]">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-4 h-4 text-brand-text-subtle"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-            <input type="text" placeholder="Search Aegis Connect..." id="forum-search" class="bg-transparent border-none text-brand-text-main outline-none w-full text-sm">
+            <input type="text" placeholder="Search CampusX Connect..." id="forum-search" class="bg-transparent border-none text-brand-text-main outline-none w-full text-sm">
           </div>
         </div>
         <div class="header-right">
@@ -114,7 +120,7 @@
                   <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150" alt="Avatar" id="right-panel-avatar" class="w-12 h-12 rounded-full object-cover border-2 border-brand-border">
                   <div class="profile-info flex flex-col">
                     <h4 id="right-panel-name" class="text-sm font-semibold">Dr. Evelyn Sterling</h4>
-                    <p id="right-panel-email" class="text-xs text-brand-text-muted">admin@aegis.edu</p>
+                    <p id="right-panel-email" class="text-xs text-brand-text-muted">admin@campusx.edu</p>
                   </div>
                 </div>
               </div>

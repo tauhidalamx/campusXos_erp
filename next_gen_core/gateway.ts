@@ -17,8 +17,8 @@ export interface UserSession {
 export class ApiGatewayRouter {
   // Mock Redis Caching client
   private static tenantCache = new Map<string, TenantContext>([
-    ['mit.aegis.edu', { id: 'tenant_001', name: 'MIT Aegis Campus', domain: 'mit.aegis.edu', tier: 'dedicated' }],
-    ['stanford.aegis.edu', { id: 'tenant_002', name: 'Stanford Aegis', domain: 'stanford.aegis.edu', tier: 'enterprise' }],
+    ['mit.campusx.edu', { id: 'tenant_001', name: 'MIT CampusX Campus', domain: 'mit.campusx.edu', tier: 'dedicated' }],
+    ['stanford.campusx.edu', { id: 'tenant_002', name: 'Stanford CampusX', domain: 'stanford.campusx.edu', tier: 'enterprise' }],
     ['localhost', { id: 'tenant_default', name: 'Local Dev University', domain: 'localhost', tier: 'standard' }]
   ]);
 
@@ -33,7 +33,7 @@ export class ApiGatewayRouter {
 
     const tenant = ApiGatewayRouter.tenantCache.get(cleanHost) || {
       id: 'tenant_default',
-      name: 'Default Aegis Portal',
+      name: 'Default CampusX Portal',
       domain: cleanHost,
       tier: 'standard'
     };

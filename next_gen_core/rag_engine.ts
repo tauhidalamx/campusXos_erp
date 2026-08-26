@@ -12,7 +12,7 @@ export interface VectorPoint {
   payload: VectorPayload;
 }
 
-export class AegisRagEngine {
+export class CampusXRagEngine {
   private static qdrantStore = new Map<string, VectorPoint[]>(); // Collection storage
 
   /**
@@ -26,7 +26,7 @@ export class AegisRagEngine {
     allowedRoles: string[]
   ): Promise<string> {
     const pointId = `pt_${Math.random().toString(36).substr(2, 9)}`;
-    const vector = await AegisRagEngine.generateEmbeddings(content);
+    const vector = await CampusXRagEngine.generateEmbeddings(content);
 
     const payload: VectorPayload = {
       tenantId,
@@ -38,10 +38,10 @@ export class AegisRagEngine {
 
     const point: VectorPoint = { id: pointId, vector, payload };
 
-    const collectionName = `aegis_kb_${tenantId}`;
-    const collection = AegisRagEngine.qdrantStore.get(collectionName) || [];
+    const collectionName = `campusx_kb_${tenantId}`;
+    const collection = CampusXRagEngine.qdrantStore.get(collectionName) || [];
     collection.push(point);
-    AegisRagEngine.qdrantStore.set(collectionName, collection);
+    CampusXRagEngine.qdrantStore.set(collectionName, collection);
 
     return pointId;
   }
@@ -55,9 +55,9 @@ export class AegisRagEngine {
     userRole: string,
     categoryLimit: number = 3
   ): Promise<string[]> {
-    const queryVector = await AegisRagEngine.generateEmbeddings(query);
-    const collectionName = `aegis_kb_${tenantId}`;
-    const collection = AegisRagEngine.qdrantStore.get(collectionName) || [];
+    const queryVector = await CampusXRagEngine.generateEmbeddings(query);
+    const collectionName = `campusx_kb_${tenantId}`;
+    const collection = CampusXRagEngine.qdrantStore.get(collectionName) || [];
 
     // Filter points by tenant metadata AND role permissions
     const accessiblePoints = collection.filter(point => 
@@ -66,7 +66,7 @@ export class AegisRagEngine {
 
     // Calculate cosine similarity scores
     const scoredPoints = accessiblePoints.map(point => {
-      const score = AegisRagEngine.cosineSimilarity(queryVector, point.vector);
+      const score = CampusXRagEngine.cosineSimilarity(queryVector, point.vector);
       return { point, score };
     });
 
@@ -86,7 +86,7 @@ export class AegisRagEngine {
     modelName: 'deepseek-r1' | 'llama3' | 'qwen2.5' = 'deepseek-r1'
   ): Promise<string> {
     // Retrieve context chunks
-    const contexts = await AegisRagEngine.queryKnowledgeBase(tenantId, query, userRole);
+    const contexts = await CampusXRagEngine.queryKnowledgeBase(tenantId, query, userRole);
     
     if (contexts.length === 0) {
       return `I could not find any internal records relating to your request with role ${userRole}.`;
@@ -95,7 +95,7 @@ export class AegisRagEngine {
     const contextParagraphs = contexts.join('\n\n');
 
     // Prompt construction template
-    const systemPrompt = `You are the Aegis ERP AI Assistant. Answer the user's query using the provided context from university policies.
+    const systemPrompt = `You are the CampusX ERP AI Assistant. Answer the user's query using the provided context from university policies.
 If the context does not contain the answer, explain that the information is unavailable.
 
 [CONTEXT DATA]

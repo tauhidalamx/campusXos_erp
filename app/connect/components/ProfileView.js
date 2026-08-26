@@ -94,7 +94,7 @@ export default function ProfileView() {
           </div>
         ) : (
           <div className="p-12 text-center bg-[#102043]/10 border border-white/5 rounded-2xl text-slate-500 text-xs font-semibold">
-            You haven't posted anything to Aegis Connect yet.
+            You haven't posted anything to CampusX Connect yet.
           </div>
         )}
       </div>

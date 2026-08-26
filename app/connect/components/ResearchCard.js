@@ -37,13 +37,13 @@ export default function ResearchCard({ paper }) {
     
     switch(style) {
       case 'APA':
-        return `${primaryAuthor} et al. (${year}). ${title}. Aegis Journal of Technology.`;
+        return `${primaryAuthor} et al. (${year}). ${title}. CampusX Journal of Technology.`;
       case 'MLA':
-        return `${primaryAuthor}, et al. "${title}." Aegis Journal of Technology, ${year}.`;
+        return `${primaryAuthor}, et al. "${title}." CampusX Journal of Technology, ${year}.`;
       case 'Chicago':
-        return `${primaryAuthor}, et al. "${title}." Aegis Journal of Technology (${year}).`;
+        return `${primaryAuthor}, et al. "${title}." CampusX Journal of Technology (${year}).`;
       default:
-        return `@article{aegis_${paper.id},\n  author={${primaryAuthor} and others},\n  title={${title}},\n  journal={Aegis Journal},\n  year={${year}}\n}`;
+        return `@article{campusx_${paper.id},\n  author={${primaryAuthor} and others},\n  title={${title}},\n  journal={CampusX Journal},\n  year={${year}}\n}`;
     }
   };
 

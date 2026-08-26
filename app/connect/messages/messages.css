@@ -1,12 +1,12 @@
-/* AEGIS CONNECT - Enterprise Messaging & Meetings Stylesheet */
+/* CAMPUSX CONNECT - Enterprise Messaging & Meetings Stylesheet */
 
 /* Spacing Layout System */
 .messages-main-container {
   height: 100vh;
   display: grid;
   grid-template-columns: 320px 420px 1fr 360px;
-  background-color: #071126;
-  color: #FFFFFF;
+  background-color: var(--bg-primary, #F8FAFC);
+  color: var(--text-main, #0F172A);
 }
 
 @media (max-width: 1440px) {
@@ -61,15 +61,15 @@
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 16px;
   padding: 16px;
-  background-color: #050b1a;
+  background-color: #0F172A;
   border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border);
 }
 
 .video-grid-card {
   position: relative;
   aspect-ratio: 16/9;
-  background-color: #102043;
+  background-color: #1E293B;
   border: 2px solid rgba(255, 255, 255, 0.05);
   border-radius: 16px;
   overflow: hidden;
@@ -77,15 +77,15 @@
 }
 
 .video-grid-card.speaking {
-  border-color: #6366F1;
-  box-shadow: 0 0 15px rgba(99, 102, 241, 0.45);
+  border-color: #4F46E5;
+  box-shadow: 0 0 15px rgba(79, 70, 229, 0.45);
 }
 
 /* Whiteboard Canvas styling */
 .whiteboard-canvas-container {
   border-radius: 16px;
   background-color: #ffffff;
-  border: 1.5px solid rgba(255, 255, 255, 0.08);
+  border: 1.5px solid var(--border);
   box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.05);
   cursor: crosshair;
 }
@@ -129,16 +129,16 @@
   background: transparent;
 }
 .chat-scroll::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(0, 0, 0, 0.05);
   border-radius: 10px;
 }
 .chat-scroll::-webkit-scrollbar-thumb:hover {
-  background: rgba(99, 102, 241, 0.3);
+  background: rgba(79, 70, 229, 0.3);
 }
 
 /* Glass panel */
 .glass-overlay {
-  background: rgba(11, 23, 54, 0.8);
+  background: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.08);
 }

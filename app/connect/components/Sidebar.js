@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useConnect } from '../ConnectContext';
 import { 
   Home, 
@@ -17,20 +18,20 @@ import {
   Menu,
   LayoutDashboard,
   Shield,
-  Coins,
   TrendingUp,
   Bot
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function Sidebar() {
-  const { activeView, setActiveView, notifications, setMessengerOpen, activeChatChannel, setActiveChatChannel } = useConnect();
+  const router = useRouter();
+  const { activeView, setActiveView, notifications, setMessengerOpen } = useConnect();
   const [showSwitcher, setShowSwitcher] = useState(false);
   const [dashboardUrl, setDashboardUrl] = useState('/');
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const session = sessionStorage.getItem('aegis_erp_session');
+      const session = sessionStorage.getItem('campusx_erp_session');
       if (session) {
         const user = JSON.parse(session);
         const roleHomeMap = {
@@ -52,15 +53,7 @@ export default function Sidebar() {
           coach: '/sports/coach',
           athlete: '/sports/athlete',
           sports_parent: '/sports/parent',
-          department_admin: '/',
-          library_admin: '/library',
-          hostel_admin: '/hostel',
-          transport_admin: '/transport',
-          medical_staff: '/sports',
-          guest: '/',
-          consultant: '/reports',
-          auditor: '/reports',
-          compliance_officer: '/compliance'
+          department_admin: '/'
         };
         setDashboardUrl(roleHomeMap[user.role] || '/');
       }
@@ -68,44 +61,47 @@ export default function Sidebar() {
   }, []);
   
   const navItems = [
-    { view: 'home', label: 'Home', icon: Home },
+    { view: 'home', label: 'Home', icon: Home, href: '/connect' },
     { view: 'explore', label: 'Explore', icon: Compass },
-    { view: 'communities', label: 'Communities', icon: Users },
+    { view: 'communities', label: 'Communities', icon: Users, href: '/connect/channels' },
     { view: 'research', label: 'Research', icon: FlaskConical },
-    { view: 'messages', label: 'Messages', icon: MessageCircle },
-    { view: 'notifications', label: 'Notifications', icon: Bell, badge: notifications.filter(n => n.unread).length },
+    { view: 'messages', label: 'Messages', icon: MessageCircle, href: '/connect/messages' },
+    { view: 'notifications', label: 'Notifications', icon: Bell, badge: notifications.filter(n => n.unread).length, href: '/connect/notifications' },
     { view: 'bookmarks', label: 'Bookmarks', icon: Bookmark },
-    { view: 'events', label: 'Events', icon: Calendar },
+    { view: 'events', label: 'Events', icon: Calendar, href: '/connect/calendar' },
     { view: 'achievements', label: 'Achievements', icon: Trophy },
-    { view: 'profile', label: 'Profile', icon: User },
+    { view: 'profile', label: 'Profile', icon: User, href: '/connect/profile' },
   ];
 
   const appSwitcherItems = [
     { name: 'ERP Portal', href: dashboardUrl, icon: LayoutDashboard, color: 'text-indigo-400' },
-    { name: 'Aegis Connect', href: '/connect', icon: MessageCircle, color: 'text-brand-primary' },
-    { name: 'Aegis Chain', href: '/blockchain', icon: Shield, color: 'text-cyan-400' },
-    { name: 'Aegis Web3', href: '/web3', icon: Home, color: 'text-indigo-400' },
+    { name: 'CampusX Connect', href: '/connect', icon: MessageCircle, color: 'text-brand-primary' },
+    { name: 'CampusX Chain', href: '/blockchain', icon: Shield, color: 'text-cyan-400' },
+    { name: 'CampusX Web3', href: '/web3', icon: Home, color: 'text-indigo-400' },
     { name: 'Market Intel', href: '/stock', icon: TrendingUp, color: 'text-amber-400' },
     { name: 'AI Assistant', href: '/ai-assistant', icon: Bot, color: 'text-emerald-400' },
     { name: 'Research Console', href: '/research', icon: FlaskConical, color: 'text-rose-400' },
   ];
 
-  const handleNavClick = (view) => {
-    setActiveView(view);
-    if (view === 'messages') {
+  const handleNavClick = (item) => {
+    setActiveView(item.view);
+    if (item.view === 'messages' || item.href) {
       setMessengerOpen(true);
+      if (item.href) {
+        router.push(item.href);
+      }
     }
   };
 
   return (
-    <aside className="w-20 md:w-20 fixed top-0 bottom-0 left-0 bg-[#0B1736] border-r border-white/5 flex flex-col items-center py-6 justify-between z-50">
+    <aside className="w-20 md:w-20 fixed top-0 bottom-0 left-0 bg-brand-bg-secondary/90 backdrop-blur-3xl border-r border-brand-border/60 flex flex-col items-center py-6 justify-between z-50 shadow-xl">
       
       {/* Top Left Logo Display */}
       <div className="flex flex-col items-center gap-1.5 cursor-pointer group" onClick={() => setActiveView('home')}>
-        <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-primary to-indigo-500 flex items-center justify-center glow-accent">
-          <span className="font-display font-extrabold text-lg text-white">AC</span>
+        <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-brand-primary via-indigo-600 to-brand-accent-cyan flex items-center justify-center shadow-[0_0_20px_rgba(99,102,241,0.4)] group-hover:scale-105 transition-transform duration-300">
+          <span className="font-display font-black text-base text-white tracking-wider">CX</span>
         </div>
-        <span className="text-[10px] font-bold text-white/50 tracking-wider uppercase scale-90 group-hover:text-brand-primary transition-colors">CONNECT</span>
+        <span className="text-[9px] font-extrabold text-brand-text-muted tracking-widest uppercase group-hover:text-brand-primary transition-colors">CONNECT</span>
       </div>
 
       {/* Sidebar Navigation - Icons Only */}
@@ -117,7 +113,7 @@ export default function Sidebar() {
           return (
             <div key={item.view} className="relative group w-full flex justify-center">
               <button
-                onClick={() => handleNavClick(item.view)}
+                onClick={() => handleNavClick(item)}
                 className={`w-12 h-12 rounded-xl flex items-center justify-center transition-all relative border ${
                   isActive 
                     ? 'bg-brand-primary/10 border-brand-primary/20 text-brand-primary' 
@@ -186,7 +182,7 @@ export default function Sidebar() {
                 className="absolute left-16 bottom-0 w-56 bg-[#102043] border border-white/5 rounded-2xl shadow-2xl p-2 z-50 flex flex-col gap-1 connect-glass"
               >
                 <div className="px-3 py-1.5 border-b border-white/5 mb-1">
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Aegis Switcher</span>
+                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">CampusX Switcher</span>
                 </div>
                 {appSwitcherItems.map((app) => {
                   const AppIcon = app.icon;

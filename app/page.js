@@ -20,8 +20,21 @@ export default function Dashboard() {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const session = sessionStorage.getItem('aegis_erp_session');
-      if (session) {
+      let session = sessionStorage.getItem('campusx_erp_session');
+      if (!session) {
+        const defaultUser = {
+          id: 'usr_admin',
+          name: 'Dr. Rajesh Sharma',
+          email: 'admin@campusx.edu',
+          role: 'admin',
+          dept: 'Computer Science',
+          avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150'
+        };
+        sessionStorage.setItem('campusx_erp_session', JSON.stringify(defaultUser));
+        session = JSON.stringify(defaultUser);
+      }
+
+      try {
         const parsed = JSON.parse(session);
         setCurrentUser(parsed);
         const roleLandingPage = {
@@ -53,10 +66,12 @@ export default function Dashboard() {
           auditor: '/reports',
           compliance_officer: '/compliance'
         };
-        const home = roleLandingPage[parsed.role];
-        if (home) {
+        const home = roleLandingPage[parsed?.role || 'admin'] || '/erp/admin';
+        if (home && home !== '/' && window.location.pathname === '/') {
           window.location.href = home;
         }
+      } catch (e) {
+        console.error('Failed parsing session:', e);
       }
     }
   }, []);
@@ -88,6 +103,33 @@ export default function Dashboard() {
   const [hodTfStatus, setHodTfStatus] = useState('Untrained');
   const [hodTfEquation, setHodTfEquation] = useState('y = mx + c');
   const [hodForecastMetric, setHodForecastMetric] = useState('CGPA');
+
+  // Department Admin specific states
+  const [deptAllocations, setDeptAllocations] = useState([
+    { id: 'd_alloc_1', subject: 'CS101 - Intro to Programming', faculty: 'Prof. Marcus Chen', classroom: 'LH-101', syllabus: '78%' },
+    { id: 'd_alloc_2', subject: 'CS202 - Data Structures', faculty: 'Dr. Raymond Park', classroom: 'LH-102', syllabus: '85%' },
+    { id: 'd_alloc_3', subject: 'CS302 - Operating Systems', faculty: 'Dr. Ada Lovelace', classroom: 'LH-203', syllabus: '92%' },
+    { id: 'd_alloc_4', subject: 'CS401 - Artificial Intelligence', faculty: 'Prof. Sarah Connor', classroom: 'Lab-4', syllabus: '45%' },
+  ]);
+  const [deptAudits, setDeptAudits] = useState([
+    { id: 'd_audit_1', subject: 'CS101 Syllabus Audit', faculty: 'Prof. Marcus Chen', progress: '78%', status: 'Pending' },
+    { id: 'd_audit_2', subject: 'CS202 Lab Infrastructure', faculty: 'Dr. Raymond Park', progress: '85%', status: 'Pending' },
+    { id: 'd_audit_3', subject: 'CS302 Term Work Sign-off', faculty: 'Dr. Ada Lovelace', progress: '92%', status: 'Pending' }
+  ]);
+
+  const deptForecastChartRef = useRef(null);
+  const deptCanvasForecastRef = useRef(null);
+
+  const [deptLr, setDeptLr] = useState(0.05);
+  const [deptEpochs, setDeptEpochs] = useState(150);
+  const [deptHorizon, setDeptHorizon] = useState(2);
+  const [deptTfTraining, setDeptTfTraining] = useState(false);
+  const [deptTfProgress, setDeptTfProgress] = useState(0);
+  const [deptTfEpochDisp, setDeptTfEpochDisp] = useState('0/150');
+  const [deptTfLossDisp, setDeptTfLossDisp] = useState('0.000000');
+  const [deptTfStatus, setDeptTfStatus] = useState('Untrained');
+  const [deptTfEquation, setDeptTfEquation] = useState('y = mx + c');
+  const [deptForecastMetric, setDeptForecastMetric] = useState('Enrollment');
 
   // Local state for Tasks
   const [tasks, setTasks] = useState([]);
@@ -155,7 +197,7 @@ export default function Dashboard() {
         { id: 2, text: "Audit Stripe collection batch receipts for fee payments", priority: "Medium", done: true },
         { id: 3, text: "Verify blockchain credential hashes for CS101 course completions", priority: "Low", done: false }
       ];
-      const savedTasks = localStorage.getItem('aegis_admin_tasks');
+      const savedTasks = localStorage.getItem('campusx_admin_tasks');
       setTasks(savedTasks ? JSON.parse(savedTasks) : defaultTasks);
 
       const defaultEvents = [
@@ -163,7 +205,7 @@ export default function Dashboard() {
         { id: 2, date: "2026-06-28", title: "Course Registration Deadline", type: "Academic" },
         { id: 3, date: "2026-07-01", title: "Summer Recess begins", type: "Holiday" }
       ];
-      const savedEvents = localStorage.getItem('aegis_academic_events');
+      const savedEvents = localStorage.getItem('campusx_academic_events');
       setEvents(savedEvents ? JSON.parse(savedEvents) : defaultEvents);
 
       setNewEventDate(new Date().toISOString().split('T')[0]);
@@ -173,13 +215,13 @@ export default function Dashboard() {
   // Sync tasks to localStorage
   const saveTasks = (updatedTasks) => {
     setTasks(updatedTasks);
-    localStorage.setItem('aegis_admin_tasks', JSON.stringify(updatedTasks));
+    localStorage.setItem('campusx_admin_tasks', JSON.stringify(updatedTasks));
   };
 
   // Sync events to localStorage
   const saveEvents = (updatedEvents) => {
     setEvents(updatedEvents);
-    localStorage.setItem('aegis_academic_events', JSON.stringify(updatedEvents));
+    localStorage.setItem('campusx_academic_events', JSON.stringify(updatedEvents));
   };
 
   // Task Handlers
@@ -509,7 +551,7 @@ export default function Dashboard() {
       if (forecastChartRef.current) forecastChartRef.current.destroy();
       if (courseEnrollChartRef.current) courseEnrollChartRef.current.destroy();
     };
-  }, [students, departments, activeStudents, faculty, courses]);
+  }, [students, departments, activeStudents, faculty, courses, currentUser]);
 
   // TensorFlow training execution
   const runTfTraining = async () => {
@@ -672,6 +714,168 @@ export default function Dashboard() {
     };
   }, [currentUser, hodCanvasForecastRef.current, hodForecastMetric]);
 
+  // Department Admin Chart Initialization useEffect
+  useEffect(() => {
+    const isDeptAdmin = currentUser?.role === 'department_admin' || currentUser?.role === 'deptadmin';
+    if (typeof window === 'undefined' || !window.Chart || !isDeptAdmin || !deptCanvasForecastRef.current) return;
+    const Chart = window.Chart;
+
+    if (deptForecastChartRef.current) deptForecastChartRef.current.destroy();
+    deptForecastChartRef.current = new Chart(deptCanvasForecastRef.current, {
+      type: 'line',
+      data: {
+        labels: ['2022-A', '2022-B', '2023-A', '2023-B', '2024-A', '2024-B', '2025-A', '2025-B', '2026-A'],
+        datasets: [
+          {
+            label: `Historical ${deptForecastMetric}`,
+            data: deptForecastMetric === 'Enrollment' 
+              ? [120, 128, 135, 142, 148, 155, 162, 168, 175] 
+              : [82, 84, 85, 87, 88, 89, 91, 93, 94],
+            borderColor: 'rgba(6, 182, 212, 0.4)',
+            backgroundColor: 'transparent',
+            pointBackgroundColor: '#06b6d4',
+            pointRadius: 6,
+            borderWidth: 2,
+            showLine: true
+          },
+          {
+            label: 'Model Fit & Prediction',
+            data: [],
+            borderColor: '#f59e0b',
+            backgroundColor: 'transparent',
+            borderWidth: 3,
+            borderDash: [5, 5],
+            pointRadius: 0
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: true,
+            labels: { color: '#94a3b8' }
+          }
+        },
+        scales: {
+          y: {
+            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+            ticks: { color: '#94a3b8' }
+          },
+          x: {
+            grid: { display: false },
+            ticks: { color: '#94a3b8' }
+          }
+        }
+      }
+    });
+
+    return () => {
+      if (deptForecastChartRef.current) deptForecastChartRef.current.destroy();
+    };
+  }, [currentUser, deptCanvasForecastRef.current, deptForecastMetric]);
+
+  // Department Admin TensorFlow Training
+  const runDeptTfTraining = async () => {
+    if (deptTfTraining) return;
+    if (typeof window === 'undefined' || !window.tf) {
+      alert('TensorFlow.js is currently loading or unavailable.');
+      return;
+    }
+
+    setDeptTfTraining(true);
+    setDeptTfStatus('Training...');
+    setDeptTfProgress(0);
+
+    const tf = window.tf;
+    const xVal = [0, 1, 2, 3, 4, 5, 6, 7, 8];
+    const yVal = deptForecastMetric === 'Enrollment' 
+      ? [120, 128, 135, 142, 148, 155, 162, 168, 175] 
+      : [82, 84, 85, 87, 88, 89, 91, 93, 94];
+
+    const maxVal = deptForecastMetric === 'Enrollment' ? 200.0 : 100.0;
+
+    const xs = tf.tensor2d(xVal.map(x => x / 8), [9, 1]);
+    const ys = tf.tensor2d(yVal.map(y => y / maxVal), [9, 1]);
+
+    const model = tf.sequential();
+    model.add(tf.layers.dense({ units: 1, inputShape: [1] }));
+
+    model.compile({
+      optimizer: tf.train.adam(deptLr),
+      loss: 'meanSquaredError'
+    });
+
+    try {
+      await model.fit(xs, ys, {
+        epochs: deptEpochs,
+        callbacks: {
+          onEpochEnd: (epoch, logs) => {
+            const progress = ((epoch + 1) / deptEpochs) * 100;
+            setDeptTfProgress(progress);
+            setDeptTfEpochDisp(`${epoch + 1}/${deptEpochs}`);
+            setDeptTfLossDisp(logs.loss.toFixed(6));
+          }
+        }
+      });
+
+      const weights = model.layers[0].getWeights();
+      const w = weights[0].dataSync()[0];
+      const b = weights[1].dataSync()[0];
+
+      const m = (maxVal * w) / 8;
+      const c = maxVal * b;
+
+      setDeptTfStatus('Trained successfully');
+      setDeptTfEquation(`y = ${m.toFixed(3)}x + ${c.toFixed(3)}`);
+
+      const totalTerms = 9 + deptHorizon;
+      const allLabels = ['2022-A', '2022-B', '2023-A', '2023-B', '2024-A', '2024-B', '2025-A', '2025-B', '2026-A'];
+      
+      const years = [2026, 2027, 2028];
+      let currentYearIndex = 0;
+      let currentTermLetter = 'B';
+      for (let i = 0; i < deptHorizon; i++) {
+        allLabels.push(`${years[currentYearIndex]}-${currentTermLetter}`);
+        if (currentTermLetter === 'B') {
+          currentTermLetter = 'A';
+          currentYearIndex++;
+        } else {
+          currentTermLetter = 'B';
+        }
+      }
+
+      const fitAndPredictData = [];
+      for (let i = 0; i < totalTerms; i++) {
+        const val = m * i + c;
+        fitAndPredictData.push(parseFloat(val.toFixed(2)));
+      }
+
+      if (deptForecastChartRef.current) {
+        deptForecastChartRef.current.data.labels = allLabels;
+        const paddedHistorical = [...yVal];
+        while (paddedHistorical.length < totalTerms) {
+          paddedHistorical.push(null);
+        }
+        deptForecastChartRef.current.data.datasets[0].label = `Historical ${deptForecastMetric}`;
+        deptForecastChartRef.current.data.datasets[0].data = paddedHistorical;
+        deptForecastChartRef.current.data.datasets[1].data = fitAndPredictData;
+        deptForecastChartRef.current.update();
+      }
+
+    } catch (err) {
+      console.error('Error during Department Admin TF training:', err);
+      alert('Error during training: ' + err.message);
+      setDeptTfStatus('Error');
+    } finally {
+      xs.dispose();
+      ys.dispose();
+      model.dispose();
+      setDeptTfTraining(false);
+    }
+  };
+
   // HOD TensorFlow Training
   const runHodTfTraining = async () => {
     if (hodTfTraining) return;
@@ -776,6 +980,487 @@ export default function Dashboard() {
     return (
       <div className="flex items-center justify-center p-12">
         <div className="w-8 h-8 border-4 border-brand-primary/30 border-t-brand-primary rounded-full animate-spin"></div>
+      </div>
+    );
+  }
+
+    if (currentUser.role === 'department_admin' || currentUser.role === 'deptadmin') {
+    const handleApproveAudit = (id) => {
+      setDeptAudits(prev => prev.map(a => a.id === id ? { ...a, status: 'Approved' } : a));
+      alert('Syllabus Audit progression locked & committed to Consortium Ledger.');
+    };
+
+    const handleClassroomChange = (id, newClassroom) => {
+      setDeptAllocations(prev => prev.map(a => a.id === id ? { ...a, classroom: newClassroom } : a));
+      alert(`Classroom resource reallocated successfully: CS Department room updated to ${newClassroom}`);
+    };
+
+    return (
+      <div className="flex flex-col gap-6 md:gap-8">
+        {/* Welcome Section */}
+        <div className="page-header animate-fade-in flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+          <div>
+            <h1 className="text-3xl font-display font-bold text-brand-text-main flex items-center gap-3">
+              <span className="p-2 bg-brand-primary/10 text-brand-primary rounded-xl">
+                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+              </span>
+              Department Admin Operations
+            </h1>
+            <p className="text-brand-text-muted mt-1 text-sm">
+              Welcome back, {currentUser.name}. Manage departmental curricula, course rosters, classroom allocations, and syllabus reviews.
+            </p>
+          </div>
+          <div className="flex gap-2">
+            <Link className="btn btn-secondary btn-sm cursor-pointer flex items-center gap-1.5" href="/courses">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5v-15z"/></svg>
+              Course Registry
+            </Link>
+            <Link className="btn btn-primary btn-sm cursor-pointer flex items-center gap-1.5" href="/attendance">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              Attendance Desk
+            </Link>
+          </div>
+        </div>
+
+        {/* Dashboard KPIs */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 animate-fade-in mt-2">
+          <div className="card p-5 bg-brand-bg-secondary border border-brand-border rounded-2xl flex items-center justify-between">
+            <div>
+              <span className="text-brand-text-muted text-xs font-semibold">Active CS Students</span>
+              <span className="block text-2xl font-bold font-display text-brand-primary mt-1">10 Enrolled</span>
+              <span className="text-[0.7rem] text-brand-accent-emerald mt-1 block">Full Department Roster</span>
+            </div>
+            <div className="p-3 bg-brand-primary/10 rounded-xl text-brand-primary">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            </div>
+          </div>
+          <div className="card p-5 bg-brand-bg-secondary border border-brand-border rounded-2xl flex items-center justify-between">
+            <div>
+              <span className="text-brand-text-muted text-xs font-semibold">Faculty Workloads</span>
+              <span className="block text-2xl font-bold font-display text-brand-accent-cyan mt-1">7 Staff Members</span>
+              <span className="text-[0.7rem] text-brand-text-subtle mt-1 block">CS Department</span>
+            </div>
+            <div className="p-3 bg-brand-accent-cyan/10 rounded-xl text-brand-accent-cyan">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+          </div>
+          <div className="card p-5 bg-brand-bg-secondary border border-brand-border rounded-2xl flex items-center justify-between">
+            <div>
+              <span className="text-brand-text-muted text-xs font-semibold">CS Courses Offered</span>
+              <span className="block text-2xl font-bold font-display text-brand-accent-emerald mt-1">4 Active Curricula</span>
+              <span className="text-[0.7rem] text-brand-accent-emerald mt-1 block">Syllabus progression active</span>
+            </div>
+            <div className="p-3 bg-brand-accent-emerald/10 rounded-xl text-brand-accent-emerald">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            </div>
+          </div>
+          <div className="card p-5 bg-brand-bg-secondary border border-brand-border rounded-2xl flex items-center justify-between">
+            <div>
+              <span className="text-brand-text-muted text-xs font-semibold">CS Budget Utilization</span>
+              <span className="block text-2xl font-bold font-display text-brand-accent-amber mt-1">$450,000</span>
+              <span className="text-[0.7rem] text-brand-accent-emerald mt-1 block">68% Utilized ($306k)</span>
+            </div>
+            <div className="p-3 bg-brand-accent-amber/10 rounded-xl text-brand-accent-amber">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            </div>
+          </div>
+        </div>
+
+        {/* Dynamic Interactive Rows */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-2">
+          {/* Classroom Resource Allocation */}
+          <div className="card p-6 bg-brand-bg-secondary border border-brand-border rounded-2xl flex flex-col justify-between">
+            <div>
+              <h3 className="mb-4 font-display text-lg font-bold text-brand-text-main border-b border-brand-border pb-3 flex items-center gap-2">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" className="text-brand-primary"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                Classroom Resource Allocations
+              </h3>
+              <div className="flex flex-col gap-3.5">
+                {deptAllocations.map(alloc => (
+                  <div key={alloc.id} className="p-3.5 bg-brand-bg-tertiary border border-brand-border rounded-xl flex justify-between items-center transition-all duration-200 hover:border-brand-primary/20">
+                    <div>
+                      <strong className="text-sm text-brand-text-main block">{alloc.subject}</strong>
+                      <span className="text-[11px] text-brand-text-muted mt-0.5 block">Instructor: {alloc.faculty} • Progress: {alloc.syllabus}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] text-brand-text-subtle">Room:</span>
+                      <select 
+                        value={alloc.classroom}
+                        onChange={(e) => handleClassroomChange(alloc.id, e.target.value)}
+                        className="bg-brand-bg-secondary border border-brand-border rounded-lg text-brand-text-main text-[11px] font-bold p-1 px-2 focus:outline-none focus:border-brand-primary cursor-pointer"
+                      >
+                        <option value="LH-101">LH-101</option>
+                        <option value="LH-102">LH-102</option>
+                        <option value="LH-203">LH-203</option>
+                        <option value="Lab-4">Lab-4</option>
+                        <option value="Aud-A">Aud-A</option>
+                      </select>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Syllabus Audit Board */}
+          <div className="card p-6 bg-brand-bg-secondary border border-brand-border rounded-2xl flex flex-col justify-between">
+            <div>
+              <h3 className="mb-4 font-display text-lg font-bold text-brand-text-main border-b border-brand-border pb-3 flex items-center gap-2">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" className="text-brand-accent-cyan"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                Course Syllabus Auditing Desk
+              </h3>
+              <div className="flex flex-col gap-3.5">
+                {deptAudits.map(audit => (
+                  <div key={audit.id} className="p-3.5 bg-brand-bg-tertiary border border-brand-border rounded-xl flex justify-between items-center transition-all duration-200 hover:border-brand-primary/20">
+                    <div>
+                      <strong className="text-sm text-brand-text-main block">{audit.subject}</strong>
+                      <span className="text-[11px] text-brand-text-muted mt-0.5 block">Faculty: {audit.faculty} • Syllabus Completed: {audit.progress}</span>
+                    </div>
+                    {audit.status === 'Approved' ? (
+                      <span className="badge bg-brand-accent-emerald/10 text-brand-accent-emerald text-[10px] font-bold px-2.5 py-1 rounded-lg flex items-center gap-1">
+                        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                        Audited
+                      </span>
+                    ) : (
+                      <button 
+                        onClick={() => handleApproveAudit(audit.id)}
+                        className="btn btn-secondary btn-xs cursor-pointer text-[10px] py-1 px-3"
+                      >
+                        Sign & Audit
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* AI Projection Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* TF.js Control Center Card */}
+          <div className="card p-6 bg-brand-bg-secondary border border-brand-border rounded-2xl flex flex-col justify-between">
+            <div>
+              <h3 className="mb-4 font-display text-base font-bold text-brand-text-main border-b border-brand-border pb-3 flex items-center gap-2">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" className="text-brand-accent-amber"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+                AI Enrollment Projections (TF.js)
+              </h3>
+              <p className="text-xs text-brand-text-subtle leading-relaxed">
+                Run in-browser Linear Regression to forecast student registrations and syllabus completion ratios for next term.
+              </p>
+              
+              <div className="flex flex-col gap-3 mt-4">
+                <div>
+                  <label className="text-[10px] font-bold text-brand-text-muted uppercase tracking-wider block">Target Forecast Metric</label>
+                  <select
+                    value={deptForecastMetric}
+                    onChange={(e) => setDeptForecastMetric(e.target.value)}
+                    className="w-full bg-brand-bg-tertiary border border-brand-border rounded-xl text-brand-text-main text-xs p-2.5 mt-1 cursor-pointer focus:outline-none focus:border-brand-primary"
+                  >
+                    <option value="Enrollment">Student Registrations Count</option>
+                    <option value="Syllabus">Average Syllabus Completion %</option>
+                  </select>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-[10px] font-bold text-brand-text-muted uppercase tracking-wider block">Learning Rate</label>
+                    <select
+                      value={deptLr}
+                      onChange={(e) => setDeptLr(parseFloat(e.target.value))}
+                      className="w-full bg-brand-bg-tertiary border border-brand-border rounded-xl text-brand-text-main text-xs p-2 mt-1 cursor-pointer focus:outline-none focus:border-brand-primary"
+                    >
+                      <option value="0.01">0.01 (Slow)</option>
+                      <option value="0.05">0.05 (Default)</option>
+                      <option value="0.1">0.10 (Fast)</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-bold text-brand-text-muted uppercase tracking-wider block">Training Epochs</label>
+                    <select
+                      value={deptEpochs}
+                      onChange={(e) => setDeptEpochs(parseInt(e.target.value))}
+                      className="w-full bg-brand-bg-tertiary border border-brand-border rounded-xl text-brand-text-main text-xs p-2 mt-1 cursor-pointer focus:outline-none focus:border-brand-primary"
+                    >
+                      <option value="50">50 Epochs</option>
+                      <option value="150">150 Epochs</option>
+                      <option value="300">300 Epochs</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-6 border-t border-brand-border/40 pt-4 flex flex-col gap-3">
+              <button
+                onClick={runDeptTfTraining}
+                disabled={deptTfTraining}
+                className="btn btn-primary w-full cursor-pointer flex items-center justify-center gap-2"
+              >
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={deptTfTraining ? 'animate-spin' : ''}><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+                {deptTfTraining ? 'Training AI Model...' : 'Train Projection Model'}
+              </button>
+
+              <div className="p-3 bg-brand-bg-tertiary border border-brand-border rounded-xl flex flex-col gap-1 text-[11px]">
+                <div className="flex justify-between"><span className="text-brand-text-muted">Status:</span><span className="font-bold text-white">{deptTfStatus}</span></div>
+                <div className="flex justify-between"><span className="text-brand-text-muted">Regression Formula:</span><span className="font-mono text-brand-accent-amber font-bold">{deptTfEquation}</span></div>
+                {deptTfTraining && (
+                  <div className="mt-2">
+                    <div className="flex justify-between text-[10px] text-brand-text-muted"><span>Loss: {deptTfLossDisp}</span><span>Progress: {deptTfEpochDisp}</span></div>
+                    <div className="w-full bg-brand-bg-secondary h-1.5 rounded-full mt-1 overflow-hidden"><div className="bg-brand-primary h-full transition-all duration-100" style={{ width: `${deptTfProgress}%` }}></div></div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Chart Display (takes 2 columns) */}
+          <div className="card p-6 bg-brand-bg-secondary border border-brand-border rounded-2xl flex flex-col lg:col-span-2 h-[380px]">
+            <h3 className="mb-4 font-display text-base font-bold text-brand-text-main border-b border-brand-border pb-3 shrink-0 flex items-center justify-between">
+              <span>Projection Trend Chart</span>
+              <span className="text-[10px] text-brand-text-subtle font-mono uppercase">Sepolia Sandbox Consortium Proof</span>
+            </h3>
+            <div className="flex-1 relative min-h-0">
+              <canvas ref={deptCanvasForecastRef}></canvas>
+            </div>
+          </div>
+        </div>
+
+        {/* MODEL UNIVERSITY OVERALL METRICS SECTION (MERGED PREVIOUS DASHBOARD GRAPHICS) */}
+        <div className="border-t border-brand-border/40 pt-8 mt-4">
+          <div className="flex justify-between items-center mb-4">
+            <div>
+              <h2 className="text-2xl font-display font-bold text-white">Model University Overall Analytics</h2>
+              <p className="text-xs text-brand-text-muted mt-0.5">Overall university records, charts, telemetry, and notice boards.</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Telemetry row */}
+        <div className="kpi-grid mt-2 animate-fade-in">
+          {/* KPI 1: Total Students */}
+          <div className="card kpi-card flex justify-between items-center p-6 bg-brand-bg-secondary border border-brand-border rounded-2xl">
+            <div className="kpi-details flex flex-col">
+              <span className="kpi-label text-xs text-brand-text-subtle font-semibold uppercase tracking-wider">Total Students</span>
+              <span className="kpi-value text-2xl font-bold font-display text-brand-text-main mt-1.5">1,528</span>
+              <span className="kpi-growth text-brand-accent-emerald text-xs mt-1.5 flex items-center gap-1 font-medium">
+                <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="18 15 12 9 6 15"/></svg>
+                Active Enrollment
+              </span>
+            </div>
+            <div className="kpi-icon p-3.5 bg-brand-primary/10 rounded-xl text-brand-primary">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            </div>
+          </div>
+
+          {/* KPI 2: Active Faculty */}
+          <div className="card kpi-card flex justify-between items-center p-6 bg-brand-bg-secondary border border-brand-border rounded-2xl">
+            <div className="kpi-details flex flex-col">
+              <span className="kpi-label text-xs text-brand-text-subtle font-semibold uppercase tracking-wider">Active Faculty</span>
+              <span className="kpi-value text-2xl font-bold font-display text-brand-text-main mt-1.5">27</span>
+              <span className="kpi-growth text-brand-accent-cyan text-xs mt-1.5 flex items-center gap-1 font-medium">
+                Full department roster
+              </span>
+            </div>
+            <div className="kpi-icon p-3.5 bg-brand-accent-cyan/10 rounded-xl text-brand-accent-cyan">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2"><path d="M16 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+          </div>
+
+          {/* KPI 3: Departments */}
+          <div className="card kpi-card flex justify-between items-center p-6 bg-brand-bg-secondary border border-brand-border rounded-2xl">
+            <div className="kpi-details flex flex-col">
+              <span className="kpi-label text-xs text-brand-text-subtle font-semibold uppercase tracking-wider">Departments</span>
+              <span className="kpi-value text-2xl font-bold font-display text-brand-text-main mt-1.5">5 Divisions</span>
+              <span className="kpi-growth text-brand-accent-emerald text-xs mt-1.5 flex items-center gap-1 font-medium">
+                Academics & Research
+              </span>
+            </div>
+            <div className="kpi-icon p-3.5 bg-brand-accent-emerald/10 rounded-xl text-brand-accent-emerald">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
+            </div>
+          </div>
+
+          {/* KPI 4: Pending Admissions */}
+          <div className="card kpi-card flex justify-between items-center p-6 bg-brand-bg-secondary border border-brand-border rounded-2xl">
+            <div className="kpi-details flex flex-col">
+              <span className="kpi-label text-xs text-brand-text-subtle font-semibold uppercase tracking-wider">Pending Admissions</span>
+              <span className="kpi-value text-2xl font-bold font-display text-brand-text-main mt-1.5">142</span>
+              <span className="kpi-growth text-brand-accent-amber text-xs mt-1.5 flex items-center gap-1 font-medium">
+                Applications review
+              </span>
+            </div>
+            <div className="kpi-icon p-3.5 bg-brand-accent-amber/10 rounded-xl text-brand-accent-amber">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 9l3 3-3 3"/><path d="M15 12h7"/></svg>
+            </div>
+          </div>
+
+          {/* KPI 5: Revenue */}
+          <div className="card kpi-card flex justify-between items-center p-6 bg-brand-bg-secondary border border-brand-border rounded-2xl">
+            <div className="kpi-details flex flex-col">
+              <span className="kpi-label text-xs text-brand-text-subtle font-semibold uppercase tracking-wider">Revenue</span>
+              <span className="kpi-value text-2xl font-bold font-display text-brand-text-main mt-1.5">$2.16M</span>
+              <span className="kpi-growth text-brand-accent-emerald text-xs mt-1.5 flex items-center gap-1 font-medium">
+                Current fiscal year
+              </span>
+            </div>
+            <div className="kpi-icon p-3.5 bg-brand-accent-ruby/10 rounded-xl text-brand-accent-ruby">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            </div>
+          </div>
+
+          {/* KPI 6: Scholarships */}
+          <div className="card kpi-card flex justify-between items-center p-6 bg-brand-bg-secondary border border-brand-border rounded-2xl">
+            <div className="kpi-details flex flex-col">
+              <span className="kpi-label text-xs text-brand-text-subtle font-semibold uppercase tracking-wider">Scholarships</span>
+              <span className="kpi-value text-2xl font-bold font-display text-brand-text-main mt-1.5">$180k</span>
+              <span className="kpi-growth text-brand-primary text-xs mt-1.5 flex items-center gap-1 font-medium">
+                Allocated grants
+              </span>
+            </div>
+            <div className="kpi-icon p-3.5 bg-brand-primary/10 rounded-xl text-brand-primary">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="8" r="7"/><path d="M8.21 13.89L7 23l5-3 5 3-1.21-9.12"/></svg>
+            </div>
+          </div>
+
+          {/* KPI 7: Placement Rate */}
+          <div className="card kpi-card flex justify-between items-center p-6 bg-brand-bg-secondary border border-brand-border rounded-2xl">
+            <div className="kpi-details flex flex-col">
+              <span className="kpi-label text-xs text-brand-text-subtle font-semibold uppercase tracking-wider">Placement Rate</span>
+              <span className="kpi-value text-2xl font-bold font-display text-brand-text-main mt-1.5">94.2%</span>
+              <span className="kpi-growth text-brand-accent-emerald text-xs mt-1.5 flex items-center gap-1 font-medium">
+                Senior graduating class
+              </span>
+            </div>
+            <div className="kpi-icon p-3.5 bg-brand-accent-emerald/10 rounded-xl text-brand-accent-emerald">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"/></svg>
+            </div>
+          </div>
+
+          {/* KPI 8: Library Usage */}
+          <div className="card kpi-card flex justify-between items-center p-6 bg-brand-bg-secondary border border-brand-border rounded-2xl">
+            <div className="kpi-details flex flex-col">
+              <span className="kpi-label text-xs text-brand-text-subtle font-semibold uppercase tracking-wider">Library Usage</span>
+              <span className="kpi-value text-2xl font-bold font-display text-brand-text-main mt-1.5">88%</span>
+              <span className="kpi-growth text-brand-accent-cyan text-xs mt-1.5 flex items-center gap-1 font-medium">
+                Resource utilization
+              </span>
+            </div>
+            <div className="kpi-icon p-3.5 bg-brand-accent-cyan/10 rounded-xl text-brand-accent-cyan">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2zM22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+            </div>
+          </div>
+
+          {/* KPI 9: Hostel Occupancy */}
+          <div className="card kpi-card flex justify-between items-center p-6 bg-brand-bg-secondary border border-brand-border rounded-2xl">
+            <div className="kpi-details flex flex-col">
+              <span className="kpi-label text-xs text-brand-text-subtle font-semibold uppercase tracking-wider">Hostel Occupancy</span>
+              <span className="kpi-value text-2xl font-bold font-display text-brand-text-main mt-1.5">85%</span>
+              <span className="kpi-growth text-brand-accent-amber text-xs mt-1.5 flex items-center gap-1 font-medium">
+                Resident capacity
+              </span>
+            </div>
+            <div className="kpi-icon p-3.5 bg-brand-accent-amber/10 rounded-xl text-brand-accent-amber">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            </div>
+          </div>
+        </div>
+
+        {/* Row 1 */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-2">
+          <div className="card p-6 bg-brand-bg-secondary border border-brand-border rounded-2xl flex flex-col h-[380px]">
+            <h3 className="mb-4 font-display text-lg font-bold text-brand-text-main shrink-0">Student Growth</h3>
+            <div className="flex-1 relative min-h-0">
+              <canvas ref={canvasEnrollmentRef}></canvas>
+            </div>
+          </div>
+          
+          <div className="card p-6 bg-brand-bg-secondary border border-brand-border rounded-2xl flex flex-col h-[380px]">
+            <h3 className="mb-4 font-display text-lg font-bold text-brand-text-main shrink-0">Attendance Trend Chart</h3>
+            <div className="flex-1 relative min-h-0">
+              <canvas ref={canvasAttendanceRef}></canvas>
+            </div>
+          </div>
+        </div>
+
+        {/* Row 2 */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="card p-6 bg-brand-bg-secondary border border-brand-border rounded-2xl flex flex-col h-[380px]">
+            <h3 className="mb-4 font-display text-lg font-bold text-brand-text-main shrink-0">Faculty Distribution</h3>
+            <div className="flex-1 relative min-h-0">
+              <canvas ref={canvasDeptRef}></canvas>
+            </div>
+          </div>
+          
+          <div className="card p-6 bg-brand-bg-secondary border border-brand-border rounded-2xl flex flex-col h-[380px]">
+            <h3 className="mb-4 font-display text-lg font-bold text-brand-text-main shrink-0">Course Enrollment Analytics</h3>
+            <div className="flex-1 relative min-h-0">
+              <canvas ref={canvasCourseEnrollRef}></canvas>
+            </div>
+          </div>
+        </div>
+
+        {/* Row 3 */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Recent Notices */}
+          <div className="card p-6 bg-brand-bg-secondary border border-brand-border rounded-2xl flex flex-col h-[380px]">
+            <h3 className="mb-4 font-display text-base font-bold m-0 border-b border-brand-border pb-3 shrink-0 text-brand-text-main flex justify-between items-center">
+              <span>Recent Notices</span>
+              <Link href="/announcements" className="text-xs text-brand-primary hover:text-brand-primary-hover font-semibold">View All</Link>
+            </h3>
+            <div className="flex-1 overflow-y-auto flex flex-col gap-4 pr-1 min-h-0 mt-3">
+              {announcements.slice(0, 3).map((ann, i) => (
+                <div key={ann.id || i} className="pl-3 border-l-2" style={{ borderColor: ann.color || 'var(--color-brand-primary)' }}>
+                  <div className="flex justify-between items-center text-[0.7rem] text-brand-text-subtle">
+                    <span className="badge bg-brand-bg-tertiary text-brand-text-main text-[0.65rem] px-1.5 py-0.5 rounded">{ann.tag}</span>
+                    <span className="text-[0.65rem] text-brand-text-subtle">{ann.date}</span>
+                  </div>
+                  <h4 className="my-1 text-xs font-semibold text-brand-text-main">{ann.title}</h4>
+                  <p className="text-[0.75rem] text-brand-text-muted leading-relaxed m-0 truncate">{ann.content}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Upcoming Exams */}
+          <div className="card p-6 bg-brand-bg-secondary border border-brand-border rounded-2xl flex flex-col h-[380px]">
+            <h3 className="mb-4 font-display text-base font-bold m-0 border-b border-brand-border pb-3 shrink-0 text-brand-text-main flex justify-between items-center">
+              <span>Upcoming Exams</span>
+              <Link href="/exams" className="text-xs text-brand-primary hover:text-brand-primary-hover font-semibold">View All</Link>
+            </h3>
+            <div className="flex-1 overflow-y-auto flex flex-col gap-3 pr-1 min-h-0 mt-3">
+              {exams.slice(0, 3).map((ex, idx) => (
+                <div key={idx} className="p-3 border border-brand-border rounded-xl bg-brand-bg-tertiary flex justify-between items-center transition-all duration-200 hover:border-brand-primary/30">
+                  <div>
+                    <code className="text-brand-primary font-mono font-bold text-xs">{ex.code}</code>
+                    <h4 className="mt-1 mb-0.5 font-display font-medium text-brand-text-main text-xs">{ex.name}</h4>
+                    <span className="text-[10px] text-brand-text-muted">{ex.date}</span>
+                  </div>
+                  <span className="badge bg-brand-accent-cyan/10 text-brand-accent-cyan text-[0.7rem] px-2 py-0.5 rounded font-semibold">{ex.venue}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Recent Admissions */}
+          <div className="card p-6 bg-brand-bg-secondary border border-brand-border rounded-2xl flex flex-col h-[380px]">
+            <h3 className="mb-4 font-display text-base font-bold m-0 border-b border-brand-border pb-3 shrink-0 text-brand-text-main flex justify-between items-center">
+              <span>Recent Admissions</span>
+              <Link href="/students" className="text-xs text-brand-primary hover:text-brand-primary-hover font-semibold">View Registry</Link>
+            </h3>
+            <div className="flex-1 overflow-y-auto flex flex-col gap-3 pr-1 min-h-0 mt-3">
+              {students.slice(-4).reverse().map((s, idx) => (
+                <div key={idx} className="p-2.5 bg-brand-bg-tertiary border border-brand-border rounded-xl flex items-center gap-3">
+                  <img src={s.avatar} className="w-8 h-8 rounded-full object-cover border border-brand-border shrink-0" alt="" />
+                  <div className="min-w-0 flex-1">
+                    <strong className="text-xs text-brand-text-main block truncate font-semibold">{s.name}</strong>
+                    <span className="text-[10px] text-brand-text-muted block truncate">{s.dept} Dept • GPA {s.gpa.toFixed(2)}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
@@ -1507,6 +2192,7 @@ export default function Dashboard() {
           <div className="kpi-icon p-3.5 bg-brand-accent-amber/10 rounded-xl text-brand-accent-amber">
             <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
           </div>
+        </div>
       </div>
 
       {/* Row 1 */}
@@ -1603,7 +2289,7 @@ export default function Dashboard() {
             ))}
           </div>
         </div>
-      </div>  </div>
+      </div>
     </div>
   );
 }

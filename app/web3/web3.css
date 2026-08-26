@@ -2,13 +2,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap');
 
 :root {
-  --bg-dark: #071126;
-  --surface-dark: #0B1736;
-  --card-dark: #102043;
-  --color-primary: #6366F1;
-  --color-success: #22C55E;
-  --color-warning: #F59E0B;
-  --color-danger: #EF4444;
+  --bg-dark: #F8FAFC;
+  --surface-dark: #FFFFFF;
+  --card-dark: #F1F5F9;
+  --color-primary: #4F46E5;
+  --color-success: #059669;
+  --color-warning: #D97706;
+  --color-danger: #E11D48;
   --font-inter: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
   --radius-lg: 20px;
@@ -20,7 +20,7 @@
 /* Base Terminal Settings */
 .web3-terminal-body {
   background-color: var(--bg-dark);
-  color: #f1f5f9;
+  color: #0F172A;
   font-family: var(--font-inter);
   min-height: 100vh;
   overflow: hidden;
@@ -32,11 +32,11 @@
   height: 6px;
 }
 .web3-scroll::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(0, 0, 0, 0.02);
   border-radius: 10px;
 }
 .web3-scroll::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.08);
   border-radius: 10px;
 }
 .web3-scroll::-webkit-scrollbar-thumb:hover {
@@ -55,7 +55,7 @@
 }
 
 .text-gradient {
-  background: linear-gradient(135deg, #a5b4fc 0%, #6366f1 100%);
+  background: linear-gradient(135deg, #4F46E5 0%, #0891B2 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -84,16 +84,16 @@
 
 /* Glassmorphism Cards */
 .glass-card {
-  background: rgba(16, 32, 67, 0.45);
+  background: rgba(255, 255, 255, 0.45);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.05);
   border-radius: var(--radius-lg);
   transition: all 0.3s ease;
 }
 .glass-card:hover {
-  background: rgba(16, 32, 67, 0.6);
-  border-color: rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.6);
+  border-color: rgba(0, 0, 0, 0.08);
 }
 
 /* Sidebar Nav Rail Buttons */
@@ -114,10 +114,10 @@
   transition: all 0.2s ease;
 }
 .nav-rail-item.active {
-  background-color: rgba(99, 102, 241, 0.12);
-  color: #ffffff;
+  background-color: rgba(79, 70, 229, 0.12);
+  color: var(--color-primary);
   font-weight: 700;
-  border-color: rgba(99, 102, 241, 0.15);
+  border-color: rgba(79, 70, 229, 0.15);
 }
 .nav-rail-item.active::before {
   height: 20px;
@@ -125,7 +125,7 @@
 
 /* Visual Node Graph Grid */
 .network-grid-svg {
-  background-image: radial-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-image: radial-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px);
   background-size: 16px 16px;
 }
 
@@ -152,9 +152,9 @@
 /* Interactive custom switchers */
 .select-dark {
   background-color: var(--card-dark);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.05);
   border-radius: 12px;
-  color: #fff;
+  color: #0F172A;
   padding: 8px 12px;
   outline: none;
   font-weight: 600;
@@ -178,22 +178,22 @@
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: #64748b;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 .web3-table td {
   padding: 14px 16px;
   font-size: 12px;
-  color: #cbd5e1;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  color: #475569;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.03);
 }
 .web3-table tr:hover td {
-  background-color: rgba(255, 255, 255, 0.01);
+  background-color: rgba(0, 0, 0, 0.01);
 }
 
 /* Code compiler console output styling */
 .compiler-console {
   background-color: #030816;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 12px;
   font-family: var(--font-mono);
   font-size: 11px;

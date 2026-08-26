@@ -28,7 +28,7 @@ export default function GradesPage() {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const session = sessionStorage.getItem('aegis_erp_session');
+      const session = sessionStorage.getItem('campusx_erp_session');
       if (session) {
         setCurrentUser(JSON.parse(session));
       }
@@ -86,7 +86,7 @@ export default function GradesPage() {
         {/* Left: Grade Scale (2 columns) */}
         <div className="card p-6 bg-brand-bg-secondary border border-brand-border rounded-2xl lg:col-span-2 flex flex-col gap-4">
           <h3 className="m-0 font-display text-base font-bold text-brand-text-main">Official Grade Scale</h3>
-          <p className="text-xs text-brand-text-muted mt-0 m-0">Aegis University operates on a 10-point absolute scale.</p>
+          <p className="text-xs text-brand-text-muted mt-0 m-0">CampusX University operates on a 10-point absolute scale.</p>
           
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse text-xs">

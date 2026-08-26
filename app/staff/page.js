@@ -11,13 +11,13 @@ export default function StaffPage() {
   
   // Dummy staff data
   const [staff, setStaff] = useState([
-    { id: 'STF001', name: 'Alok Sharma', role: 'Registrar', dept: 'Administration', email: 'registrar@aegis.edu', phone: '+91 98765 43210', status: 'Active', shift: 'General' },
-    { id: 'STF002', name: 'Bhavna Joshi', role: 'Chief Librarian', dept: 'Library Services', email: 'librarian@aegis.edu', phone: '+91 98765 43211', status: 'Active', shift: 'General' },
-    { id: 'STF003', name: 'Major Vikram Singh', role: 'Chief Warden', dept: 'Hostel Operations', email: 'warden@aegis.edu', phone: '+91 98765 43212', status: 'Active', shift: 'Night' },
-    { id: 'STF004', name: 'Devendra Patil', role: 'Security Coordinator', dept: 'Campus Security', email: 'security@aegis.edu', phone: '+91 98765 43213', status: 'Active', shift: 'Rotational' },
-    { id: 'STF005', name: 'Anjali Desai', role: 'IT Support Engineer', dept: 'Information Technology', email: 'itsupport@aegis.edu', phone: '+91 98765 43214', status: 'Active', shift: 'General' },
-    { id: 'STF006', name: 'Ramesh Chawla', role: 'Assistant Warden', dept: 'Hostel Operations', email: 'asstwarden@aegis.edu', phone: '+91 98765 43215', status: 'On Leave', shift: 'Day' },
-    { id: 'STF007', name: 'Sanjay Kumar', role: 'System Administrator', dept: 'Information Technology', email: 'sysadmin@aegis.edu', phone: '+91 98765 43216', status: 'Active', shift: 'Rotational' }
+    { id: 'STF001', name: 'Alok Sharma', role: 'Registrar', dept: 'Administration', email: 'registrar@campusx.edu', phone: '+91 98765 43210', status: 'Active', shift: 'General' },
+    { id: 'STF002', name: 'Bhavna Joshi', role: 'Chief Librarian', dept: 'Library Services', email: 'librarian@campusx.edu', phone: '+91 98765 43211', status: 'Active', shift: 'General' },
+    { id: 'STF003', name: 'Major Vikram Singh', role: 'Chief Warden', dept: 'Hostel Operations', email: 'warden@campusx.edu', phone: '+91 98765 43212', status: 'Active', shift: 'Night' },
+    { id: 'STF004', name: 'Devendra Patil', role: 'Security Coordinator', dept: 'Campus Security', email: 'security@campusx.edu', phone: '+91 98765 43213', status: 'Active', shift: 'Rotational' },
+    { id: 'STF005', name: 'Anjali Desai', role: 'IT Support Engineer', dept: 'Information Technology', email: 'itsupport@campusx.edu', phone: '+91 98765 43214', status: 'Active', shift: 'General' },
+    { id: 'STF006', name: 'Ramesh Chawla', role: 'Assistant Warden', dept: 'Hostel Operations', email: 'asstwarden@campusx.edu', phone: '+91 98765 43215', status: 'On Leave', shift: 'Day' },
+    { id: 'STF007', name: 'Sanjay Kumar', role: 'System Administrator', dept: 'Information Technology', email: 'sysadmin@campusx.edu', phone: '+91 98765 43216', status: 'Active', shift: 'Rotational' }
   ]);
 
   const [newStaff, setNewStaff] = useState({
@@ -26,7 +26,7 @@ export default function StaffPage() {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const session = sessionStorage.getItem('aegis_erp_session');
+      const session = sessionStorage.getItem('campusx_erp_session');
       if (session) {
         setCurrentUser(JSON.parse(session));
       }
@@ -261,7 +261,7 @@ export default function StaffPage() {
                   value={newStaff.email}
                   onChange={(e) => setNewStaff({...newStaff, email: e.target.value})}
                   className="w-full bg-brand-bg-tertiary border border-brand-border text-brand-text-main p-2.5 rounded-xl outline-none focus:border-brand-primary font-mono"
-                  placeholder="name@aegis.edu"
+                  placeholder="name@campusx.edu"
                 />
               </div>
               <div>

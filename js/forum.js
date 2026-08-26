@@ -1,12 +1,12 @@
 /* ========================================================================
-   Aegis Connect — Instagram-Style Forum App Logic
+   CampusX Connect — Instagram-Style Forum App Logic
    ======================================================================== */
 
 function initForum() {
   'use strict';
 
   // 1. Session & Auth Check
-  const SESSION_KEY = 'aegis_erp_session';
+  const SESSION_KEY = 'campusx_erp_session';
   let currentUser = null;
 
   try {
@@ -34,8 +34,40 @@ function initForum() {
 
   // Logout Handler
   document.getElementById('forum-logout-btn').addEventListener('click', () => {
-    sessionStorage.removeItem(SESSION_KEY);
-    window.location.href = 'auth.html';
+    const modalHtml = `
+      <div id="custom-logout-modal" style="position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 10000; font-family: var(--font-sans, sans-serif);">
+        <div style="background: var(--bg-secondary, #ffffff); border: 1.5px solid var(--border, rgba(0,0,0,0.08)); border-radius: 20px; width: 400px; padding: 24px; text-align: center; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.15); position: relative; overflow: hidden; display: flex; flex-direction: column; gap: 20px;">
+          <div style="position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--primary, #4F46E5) 0%, var(--accent-ruby, #E11D48) 100%);"></div>
+          <div style="width: 48px; height: 48px; border-radius: 50%; background: rgba(225, 29, 72, 0.1); border: 1px solid rgba(225, 29, 72, 0.2); display: flex; align-items: center; justify-content: center; color: var(--accent-ruby, #E11D48); margin: 0 auto; box-shadow: 0 0 15px rgba(225, 29, 72, 0.15);">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <h3 style="color: var(--text-main, #0F172A); font-size: 1.25rem; font-weight: 600; margin: 0;">Sign Out</h3>
+            <p style="color: var(--text-muted, #475569); font-size: 0.875rem; line-height: 1.5; margin: 0;">Are you sure you want to sign out from the CampusX Forum?</p>
+          </div>
+          <div style="display: flex; gap: 12px; margin-top: 4px;">
+            <button id="custom-logout-cancel" style="flex: 1; padding: 10px; border-radius: 12px; background: var(--bg-tertiary, #F1F5F9); border: 1px solid var(--border, rgba(0,0,0,0.08)); color: var(--text-main, #0F172A); font-weight: 600; cursor: pointer; transition: all 0.2s;">Cancel</button>
+            <button id="custom-logout-confirm" style="flex: 1; padding: 10px; border-radius: 12px; background: var(--accent-ruby, #E11D48); border: none; color: white; font-weight: 600; cursor: pointer; transition: all 0.2s;">Sign Out</button>
+          </div>
+        </div>
+      </div>
+    `;
+    
+    const wrapper = document.createElement('div');
+    wrapper.id = 'custom-logout-modal-wrapper';
+    wrapper.innerHTML = modalHtml;
+    document.body.appendChild(wrapper);
+
+    // Cancel action
+    document.getElementById('custom-logout-cancel').addEventListener('click', () => {
+      wrapper.remove();
+    });
+
+    // Confirm action
+    document.getElementById('custom-logout-confirm').addEventListener('click', () => {
+      sessionStorage.removeItem(SESSION_KEY);
+      window.location.href = 'auth.html';
+    });
   });
 
   // 2. View Navigation (Tabs)

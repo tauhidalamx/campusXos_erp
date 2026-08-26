@@ -39,7 +39,7 @@ export default function SportsPage() {
 
   // Form states
   const [newAthlete, setNewAthlete] = useState({ name: '', email: '', sport: 'Basketball', status: 'Active', medical: 'No concerns.' });
-  const [newMatch, setNewMatch] = useState({ team_a: 'Aegis Titans', team_b: 'Metro Wolves', sport: 'Basketball', schedule: '2026-06-25 18:00', venue: 'Varsity Court A', status: 'Scheduled' });
+  const [newMatch, setNewMatch] = useState({ team_a: 'CampusX Titans', team_b: 'Metro Wolves', sport: 'Basketball', schedule: '2026-06-25 18:00', venue: 'Varsity Court A', status: 'Scheduled' });
   const [newTeam, setNewTeam] = useState({ name: '', sport: 'Basketball', captain_id: '' });
   const [newTournament, setNewTournament] = useState({ name: '', sport: 'Basketball', status: 'Upcoming' });
 
@@ -64,7 +64,7 @@ export default function SportsPage() {
   // Load user session and fetch data
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const session = sessionStorage.getItem('aegis_erp_session');
+      const session = sessionStorage.getItem('campusx_erp_session');
       if (session) {
         const parsed = JSON.parse(session);
         setCurrentUser(parsed);
@@ -118,9 +118,28 @@ export default function SportsPage() {
     e.preventDefault();
     if (!newAthlete.name || !newAthlete.email) return;
 
+    const createdId = 'ath_' + Date.now().toString(36);
+    const athleteRecord = {
+      id: createdId,
+      name: newAthlete.name,
+      email: newAthlete.email.trim().toLowerCase(),
+      sport: newAthlete.sport,
+      status: newAthlete.status,
+      medical_records: newAthlete.medical,
+      fitness_scores: { vo2_max: 54, bmi: 21.8, endurance: 85, strength: 78, speed: 82, recovery: 92 },
+      achievements: [newAthlete.sport + ' Varsity Roster'],
+      ranking: athletes.length + 1,
+      statistics: { matches_played: 0, points: 0 },
+      avatar: `https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150`
+    };
+
+    setAthletes(prev => [athleteRecord, ...prev]);
+    setSummary(prev => ({ ...prev, total_athletes: (prev.total_athletes || 0) + 1 }));
+    setNewAthlete({ name: '', email: '', sport: 'Basketball', status: 'Active', medical: 'No concerns.' });
+    alert(`Athlete ${newAthlete.name} successfully registered on the CampusX Sports network!`);
+
     try {
-      // Create user inside Express DB first
-      const userRes = await fetch('/api/users', {
+      await fetch('/api/users', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -128,34 +147,16 @@ export default function SportsPage() {
           name: newAthlete.name,
           email: newAthlete.email.trim().toLowerCase(),
           role: 'athlete',
-          avatar: `https://images.unsplash.com/photo-${1500000000000 + Math.floor(Math.random()*1000000)}?w=150`
+          avatar: athleteRecord.avatar
         })
-      }).then(r => r.json());
-
-      if (userRes.success) {
-        // Now register athlete profile
-        const athRes = await fetch('/api/sports/athletes', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            user_id: 'usr_' + Date.now().toString(36), // fallback or query newly created ID
-            status: newAthlete.status,
-            medical_records: newAthlete.medical,
-            fitness_scores: { vo2_max: 50, bmi: 22, endurance: 80, strength: 75, speed: 80, recovery: 90 },
-            achievements: [newAthlete.sport + ' Varsity Roster'],
-            ranking: athletes.length + 1,
-            statistics: { matches_played: 0, points: 0 }
-          })
-        }).then(r => r.json());
-
-        alert('Athlete successfully registered on the Aegis Sports network!');
-        // Reload list
-        const refreshed = await fetch('/api/sports/athletes').then(r => r.json());
-        setAthletes(refreshed);
-        setNewAthlete({ name: '', email: '', sport: 'Basketball', status: 'Active', medical: 'No concerns.' });
-      }
+      });
+      await fetch('/api/sports/athletes', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(athleteRecord)
+      });
     } catch (err) {
-      alert('Error registering athlete: ' + err.message);
+      console.warn('Backend sync failed, preserved in local state.', err);
     }
   };
 
@@ -163,27 +164,28 @@ export default function SportsPage() {
     e.preventDefault();
     if (!newTeam.name) return;
 
+    const teamRecord = {
+      id: 'tm_' + Date.now().toString(36),
+      name: newTeam.name,
+      sport: newTeam.sport,
+      captain_id: newTeam.captain_id || 'CAP001',
+      roster: [],
+      stats: { wins: 0, losses: 0, win_rate: '100%' }
+    };
+
+    setTeams(prev => [teamRecord, ...prev]);
+    setSummary(prev => ({ ...prev, active_teams: (prev.active_teams || 0) + 1 }));
+    setNewTeam({ name: '', sport: 'Basketball', captain_id: '' });
+    alert(`Team "${newTeam.name}" created successfully.`);
+
     try {
-      const res = await fetch('/api/sports/teams', {
+      await fetch('/api/sports/teams', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: newTeam.name,
-          sport: newTeam.sport,
-          captain_id: newTeam.captain_id,
-          roster: [],
-          stats: { wins: 0, losses: 0, win_rate: '0%' }
-        })
-      }).then(r => r.json());
-
-      if (res.success) {
-        alert(`Team "${newTeam.name}" created successfully.`);
-        const refreshed = await fetch('/api/sports/teams').then(r => r.json());
-        setTeams(refreshed);
-        setNewTeam({ name: '', sport: 'Basketball', captain_id: '' });
-      }
+        body: JSON.stringify(teamRecord)
+      });
     } catch (err) {
-      alert(err.message);
+      console.warn('Backend sync failed, preserved in local state.', err);
     }
   };
 
@@ -191,46 +193,49 @@ export default function SportsPage() {
     e.preventDefault();
     if (!newTournament.name) return;
 
+    const tourRecord = {
+      id: 'tr_' + Date.now().toString(36),
+      name: newTournament.name,
+      sport: newTournament.sport,
+      status: newTournament.status,
+      fixtures: [],
+      standings: []
+    };
+
+    setTournaments(prev => [tourRecord, ...prev]);
+    setNewTournament({ name: '', sport: 'Basketball', status: 'Upcoming' });
+    alert(`Tournament "${newTournament.name}" registered.`);
+
     try {
-      const res = await fetch('/api/sports/tournaments', {
+      await fetch('/api/sports/tournaments', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: newTournament.name,
-          sport: newTournament.sport,
-          status: newTournament.status,
-          fixtures: [],
-          standings: []
-        })
-      }).then(r => r.json());
-
-      if (res.success) {
-        alert(`Tournament "${newTournament.name}" registered.`);
-        const refreshed = await fetch('/api/sports/tournaments').then(r => r.json());
-        setTournaments(refreshed);
-        setNewTournament({ name: '', sport: 'Basketball', status: 'Upcoming' });
-      }
+        body: JSON.stringify(tourRecord)
+      });
     } catch (err) {
-      alert(err.message);
+      console.warn('Backend sync failed, preserved in local state.', err);
     }
   };
 
   const handleScheduleMatch = async (e) => {
     e.preventDefault();
+    const matchRecord = {
+      id: 'mt_' + Date.now().toString(36),
+      ...newMatch
+    };
+
+    setMatches(prev => [matchRecord, ...prev]);
+    setSummary(prev => ({ ...prev, upcoming_matches: (prev.upcoming_matches || 0) + 1 }));
+    alert('Match fixture scheduled.');
+
     try {
-      const res = await fetch('/api/sports/matches', {
+      await fetch('/api/sports/matches', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newMatch)
-      }).then(r => r.json());
-
-      if (res.success) {
-        alert('Match fixture scheduled.');
-        const refreshed = await fetch('/api/sports/matches').then(r => r.json());
-        setMatches(refreshed);
-      }
+        body: JSON.stringify(matchRecord)
+      });
     } catch (err) {
-      alert(err.message);
+      console.warn('Backend sync failed, preserved in local state.', err);
     }
   };
 
@@ -250,7 +255,7 @@ export default function SportsPage() {
       }).then(r => r.json());
 
       if (res.success) {
-        setShareSuccess('✓ Broadcasted successfully on Aegis Connect Campus Feed!');
+        setShareSuccess('✓ Broadcasted successfully on CampusX Connect Campus Feed!');
         setConnectContent('');
         setTimeout(() => setShareSuccess(''), 3000);
       }
@@ -261,7 +266,7 @@ export default function SportsPage() {
 
   // Chain integration
   const handleIssueCredential = (athleteName, achievement) => {
-    setMintingSuccess('Initiating verification on Aegis Consortium network...');
+    setMintingSuccess('Initiating verification on CampusX Consortium network...');
     const txId = '0x' + Math.random().toString(16).substr(2, 32);
     const stateProof = '0x' + Math.random().toString(16).substr(2, 40);
 
@@ -316,7 +321,7 @@ export default function SportsPage() {
       if (rand < 0.3) {
         scoreA += Math.random() > 0.5 ? 2 : 3; // basketball/points mock
         setSimulatedScore({ a: scoreA, b: scoreB });
-        setSimulatedCommentary(prev => [`[Live ${counter}'] Scoring drive! Aegis Titans convert.`, ...prev]);
+        setSimulatedCommentary(prev => [`[Live ${counter}'] Scoring drive! CampusX Titans convert.`, ...prev]);
       } else if (rand < 0.5) {
         scoreB += Math.random() > 0.5 ? 2 : 3;
         setSimulatedScore({ a: scoreA, b: scoreB });
@@ -336,7 +341,7 @@ export default function SportsPage() {
     return (
       <div className="flex flex-col items-center justify-center h-[60vh] gap-4">
         <div className="w-10 h-10 border-4 border-indigo-500/20 border-t-indigo-500 rounded-full animate-spin"></div>
-        <span className="text-sm text-slate-400">Loading Aegis Sports Data mesh...</span>
+        <span className="text-sm text-slate-400">Loading CampusX Sports Data mesh...</span>
       </div>
     );
   }
@@ -370,7 +375,7 @@ export default function SportsPage() {
             {currentTab === 'scouting' && "Recruitment & Scouting Platform"}
             {currentTab === 'scholarships' && "Sports Scholarship & Funding Desk"}
             {currentTab === 'facilities' && "Varsity Facility Calendar"}
-            {currentTab === 'live' && "Aegis Live Tracker"}
+            {currentTab === 'live' && "CampusX Live Tracker"}
             {currentTab === 'ai-coach' && "AI Tactical Coach Coordinator"}
             {currentTab === 'sports-catalog' && "Sports Disciplines Catalog"}
             {currentTab === 'events' && "Events Calendar"}
@@ -396,7 +401,7 @@ export default function SportsPage() {
             {currentTab === 'facilities' && "Verify grounds, pools, courts, and gyms utilization logs."}
             {currentTab === 'live' && "Simulate match plays, trace scores, and check live commentary logs."}
             {currentTab === 'ai-coach' && "Prompt assistant for customized workout formulations, diet, and recovery schedules."}
-            {currentTab === 'sports-catalog' && "Browse sports disciplines supported inside Aegis consortium system."}
+            {currentTab === 'sports-catalog' && "Browse sports disciplines supported inside CampusX consortium system."}
             {currentTab === 'events' && "Review key varsity sports dates, meets, and tryout matches."}
             {currentTab === 'reports' && "Compile operational stats and download varsity summaries."}
             {currentTab === 'settings' && "Manage permission hierarchies, alerts, and wearable integrations."}
@@ -518,7 +523,7 @@ export default function SportsPage() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2.5">
                       <div className="w-8 h-8 bg-indigo-600/10 border border-indigo-500/30 rounded-xl flex items-center justify-center font-bold text-indigo-400 text-xs shadow-md">AT</div>
-                      <span className="text-xs font-bold text-white">Aegis Titans</span>
+                      <span className="text-xs font-bold text-white">CampusX Titans</span>
                     </div>
                     <span className="text-xl font-bold font-mono text-white">82</span>
                   </div>
@@ -622,7 +627,7 @@ export default function SportsPage() {
                   </div>
                   <div className="flex items-start gap-2 bg-[#071126]/30 p-2 rounded-xl border border-slate-800/20">
                     <span className="text-[#818CF8] font-bold shrink-0">[3:02]</span>
-                    <span>Steal by Aria Nakamura, leading to a fast break dunk! Aegis Titans take the lead.</span>
+                    <span>Steal by Aria Nakamura, leading to a fast break dunk! CampusX Titans take the lead.</span>
                   </div>
                   <div className="flex items-start gap-2 bg-[#071126]/30 p-2 rounded-xl border border-slate-800/20">
                     <span className="text-slate-500 font-bold shrink-0">[4:15]</span>
@@ -803,13 +808,13 @@ export default function SportsPage() {
                     )}
                     {selectedRoleWorkspace === 'athlete' && (
                       <>
-                        <div>• Roster cleared for Aegis Gold Cup.</div>
+                        <div>• Roster cleared for CampusX Gold Cup.</div>
                         <div>• Athletic grant approved for Fall 2026.</div>
                       </>
                     )}
                     {selectedRoleWorkspace === 'parent' && (
                       <>
-                        <div>• Next game: Aegis vs Metro Wolves Friday.</div>
+                        <div>• Next game: CampusX vs Metro Wolves Friday.</div>
                         <div>• Child endurance logs rose by 12%.</div>
                       </>
                     )}
@@ -1057,7 +1062,7 @@ export default function SportsPage() {
                   <label className="text-xs text-slate-400 font-semibold mb-1 block">Tournament Title</label>
                   <input 
                     type="text" 
-                    placeholder="e.g. Aegis Gold Cup" 
+                    placeholder="e.g. CampusX Gold Cup" 
                     value={newTournament.name}
                     onChange={(e) => setNewTournament({ ...newTournament, name: e.target.value })}
                     className="w-full bg-[#071126] border border-slate-800 focus:border-indigo-500 rounded-xl px-4 py-2.5 text-xs text-white outline-none"
@@ -1152,7 +1157,7 @@ export default function SportsPage() {
             <div className="card p-5 bg-[#102043] border border-slate-800 rounded-2xl shadow-lg flex flex-col gap-2">
               <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-800 pb-2 flex items-center gap-2">
                 <ShieldCheck className="w-4.5 h-4.5 text-indigo-400" />
-                Aegis Chain Proof Logs
+                CampusX Chain Proof Logs
               </h3>
               <div className="h-32 bg-[#071126] border border-slate-800 rounded-xl p-3 overflow-y-auto font-mono text-[9px] text-emerald-400 flex flex-col gap-1.5 custom-scrollbar">
                 {blockchainLogs.length === 0 ? (
@@ -1258,7 +1263,7 @@ export default function SportsPage() {
 
             {/* Share to Connect block */}
             <div className="card p-5 bg-[#102043] border border-slate-800 rounded-2xl shadow-lg flex flex-col gap-3.5">
-              <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-800 pb-2">Broadcast to Aegis Connect</h3>
+              <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-800 pb-2">Broadcast to CampusX Connect</h3>
               <textarea 
                 placeholder="Share a team result, drill reels, or scholarship notices directly to the campus main social feed..." 
                 value={connectContent}
@@ -1426,7 +1431,7 @@ export default function SportsPage() {
                 <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150" alt="Athlete" className="w-12 h-12 rounded-full object-cover border border-slate-700" />
                 <div>
                   <h4 className="font-semibold text-white">Aria Nakamura</h4>
-                  <span className="text-[10px] text-slate-400 block mt-0.5">Basketball • Aegis Titans Captain</span>
+                  <span className="text-[10px] text-slate-400 block mt-0.5">Basketball • CampusX Titans Captain</span>
                 </div>
               </div>
               <div className="text-right">
@@ -1458,12 +1463,12 @@ export default function SportsPage() {
               <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-800 pb-2">Upcoming Match Schedule</h3>
               <div className="flex flex-col gap-2.5">
                 <div className="p-3 bg-[#071126] border border-slate-800 rounded-xl text-xs">
-                  <div className="font-semibold text-white">Aegis Titans vs Metro Wolves</div>
+                  <div className="font-semibold text-white">CampusX Titans vs Metro Wolves</div>
                   <div className="text-[9.5px] text-slate-500 mt-1 font-mono">June 15, 2026 • 18:00</div>
                   <div className="text-[9.5px] text-slate-400 mt-1.5">Venue: Varsity Court A</div>
                 </div>
                 <div className="p-3 bg-[#071126] border border-slate-800 rounded-xl text-xs">
-                  <div className="font-semibold text-white">Aegis Titans vs Coast Raiders</div>
+                  <div className="font-semibold text-white">CampusX Titans vs Coast Raiders</div>
                   <div className="text-[9.5px] text-slate-500 mt-1 font-mono">June 20, 2026 • 18:00</div>
                   <div className="text-[9.5px] text-slate-400 mt-1.5">Venue: Varsity Court A</div>
                 </div>
@@ -1628,7 +1633,7 @@ export default function SportsPage() {
                   type="text" 
                   value={newTeam.name}
                   onChange={(e) => setNewTeam({ ...newTeam, name: e.target.value })}
-                  placeholder="e.g. Aegis Archers"
+                  placeholder="e.g. CampusX Archers"
                   className="w-full bg-[#071126] border border-slate-800 focus:border-indigo-500 rounded-xl p-2.5 text-white outline-none"
                   required
                 />
@@ -1892,7 +1897,7 @@ export default function SportsPage() {
                       <img src={a.user_avatar} alt="Avatar" className="w-8 h-8 rounded-full object-cover" />
                       <span>{a.user_name}</span>
                     </td>
-                    <td className="p-3 font-mono text-slate-400">Aegis Varsity</td>
+                    <td className="p-3 font-mono text-slate-400">CampusX Varsity</td>
                     <td className="p-3 font-mono">90% min</td>
                     <td className="p-3 text-emerald-400 font-mono">95%</td>
                     <td className="p-3 text-right">
@@ -1997,22 +2002,90 @@ export default function SportsPage() {
 
       {/* 12. Live Scores Tab */}
       {currentTab === 'live' && (
-        <div className="card p-6 bg-[#102043] border border-slate-800 rounded-2xl shadow-lg animate-fade-in flex flex-col gap-4">
-          <h2 className="text-md font-bold text-white pb-3 border-b border-slate-800 flex items-center gap-2">
-            <Tv className="w-5 h-5 text-indigo-400" />
-            Simulate Live Varsity Play-by-Play
-          </h2>
-          <div className="p-4 bg-[#071126] border border-slate-800 rounded-xl text-center flex flex-col gap-2">
-            <span className="text-xs text-slate-500 font-semibold block mb-2">Simulate ongoing match ticker stream</span>
-            <button 
-              onClick={() => {
-                const liveMatch = matches.find(m => m.status === 'Live') || matches[0];
-                if (liveMatch) startLiveSimulation(liveMatch);
-              }}
-              className="px-6 py-2.5 bg-rose-500 hover:bg-rose-600 text-white rounded-xl text-xs font-semibold cursor-pointer shadow-lg shadow-rose-500/20 w-fit mx-auto transition-colors"
-            >
-              Trigger Live Play Ticker
-            </button>
+        <div className="flex flex-col gap-6 animate-fade-in">
+          {/* Active Live Broadcasts Panel */}
+          <div className="card p-6 bg-[#102043] border border-slate-800 rounded-2xl shadow-lg flex flex-col gap-4">
+            <h2 className="text-md font-bold text-white pb-3 border-b border-slate-800 flex items-center gap-2">
+              <Tv className="w-5 h-5 text-rose-500 animate-pulse" />
+              Active Live Broadcasts
+            </h2>
+            
+            {matches.filter(m => m.status === 'Live').length === 0 ? (
+              <div className="p-4 bg-[#071126] border border-slate-800 rounded-xl text-center text-xs text-slate-500">
+                No active live streams at the moment. Try starting a broadcast from the Live Stream Studio or schedule a match status as "Live".
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {matches.filter(m => m.status === 'Live').map(m => (
+                  <div key={m.id} className="p-4 bg-[#071126] border border-rose-500/30 rounded-xl flex items-center justify-between gap-4">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-xs font-bold text-white">{m.team_a} vs {m.team_b}</span>
+                        <span className="px-2 py-0.5 text-[8px] font-bold rounded-full bg-rose-500/20 text-rose-400 animate-pulse uppercase">LIVE</span>
+                      </div>
+                      <span className="text-[10px] text-slate-400 block mt-1 font-mono">{m.venue}</span>
+                    </div>
+                    <button 
+                      onClick={() => router.push(`/sports/live/watch/${m.id}`)}
+                      className="px-4 py-1.5 bg-rose-600 hover:bg-rose-500 text-white rounded-xl text-xs font-bold transition-all cursor-pointer shadow-lg shadow-rose-600/20"
+                    >
+                      Watch Stream
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Standard Simulator and Matches list */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="md:col-span-2 card p-6 bg-[#102043] border border-slate-800 rounded-2xl shadow-lg flex flex-col gap-4">
+              <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-800 pb-2">Ongoing & Scheduled Matches</h3>
+              <div className="flex flex-col gap-3">
+                {matches.map(m => (
+                  <div key={m.id} className="p-4 bg-[#071126] border border-slate-800 rounded-xl flex justify-between items-center text-xs">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-bold text-white">{m.team_a} vs {m.team_b}</span>
+                        <span className={`px-2 py-0.5 text-[9px] font-bold rounded-full uppercase ${m.status === 'Completed' ? 'bg-slate-800 text-slate-400' : (m.status === 'Live' ? 'bg-rose-500/20 text-rose-400 animate-pulse' : 'bg-indigo-500/10 text-indigo-400')}`}>{m.status}</span>
+                      </div>
+                      <div className="text-[10px] text-slate-400 mt-1 font-mono">{m.schedule} • {m.venue}</div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {m.status === 'Live' && (
+                        <button 
+                          onClick={() => router.push(`/sports/live/watch/${m.id}`)}
+                          className="px-3.5 py-1.5 bg-rose-600 hover:bg-rose-500 text-white rounded-lg text-[10px] font-bold cursor-pointer transition-colors shadow-lg shadow-rose-600/20"
+                        >
+                          Watch Live
+                        </button>
+                      )}
+                      {m.status === 'Completed' && (
+                        <span className="font-bold font-mono text-white text-sm bg-slate-800 px-2.5 py-1 rounded-lg">
+                          {m.results?.score_a || 0} - {m.results?.score_b || 0}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="card p-6 bg-[#102043] border border-slate-800 rounded-2xl shadow-lg flex flex-col gap-4 h-fit">
+              <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider border-b border-slate-800 pb-2">Simulate Match Ticker</h3>
+              <div className="flex flex-col gap-2">
+                <span className="text-[11px] text-slate-400 leading-relaxed block mb-2">Simulate live text ticker stream for active match play logs.</span>
+                <button 
+                  onClick={() => {
+                    const liveMatch = matches.find(m => m.status === 'Live') || matches[0];
+                    if (liveMatch) startLiveSimulation(liveMatch);
+                  }}
+                  className="w-full py-2.5 bg-rose-500 hover:bg-rose-600 text-white rounded-xl text-xs font-semibold cursor-pointer shadow-lg shadow-rose-500/20 transition-colors"
+                >
+                  Trigger Live Play Ticker
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       )}
@@ -2074,7 +2147,7 @@ export default function SportsPage() {
             <div className="p-4 bg-[#071126] border border-slate-800 rounded-xl text-xs flex justify-between items-center">
               <div>
                 <span className="font-bold text-white">Consortium Trials 2026</span>
-                <span className="text-[10px] text-slate-400 block mt-1">June 18, 2026 • Aegis Athletics Arena</span>
+                <span className="text-[10px] text-slate-400 block mt-1">June 18, 2026 • CampusX Athletics Arena</span>
               </div>
               <span className="text-indigo-400 font-mono font-bold">Upcoming</span>
             </div>

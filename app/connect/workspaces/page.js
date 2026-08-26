@@ -35,7 +35,7 @@ function WorkspacesPageContent() {
       isFolder: true,
       open: true,
       children: [
-        { name: 'AegisConsensus.sol', isFolder: false, content: `// SPDX-License-Identifier: MIT\npragma solidity ^0.8.20;\n\ncontract AegisConsensus {\n    address public owner;\n    mapping(address => bool) public verifiers;\n    \n    event VerificationAnchored(bytes32 indexed blockHash, uint256 timestamp);\n\n    constructor() {\n        owner = msg.sender;\n        verifiers[msg.sender] = true;\n    }\n\n    function anchorVerification(bytes32 hash) public {\n        require(verifiers[msg.sender], "Not authorized verifier");\n        emit VerificationAnchored(hash, block.timestamp);\n    }\n}` },
+        { name: 'CampusXConsensus.sol', isFolder: false, content: `// SPDX-License-Identifier: MIT\npragma solidity ^0.8.20;\n\ncontract CampusXConsensus {\n    address public owner;\n    mapping(address => bool) public verifiers;\n    \n    event VerificationAnchored(bytes32 indexed blockHash, uint256 timestamp);\n\n    constructor() {\n        owner = msg.sender;\n        verifiers[msg.sender] = true;\n    }\n\n    function anchorVerification(bytes32 hash) public {\n        require(verifiers[msg.sender], "Not authorized verifier");\n        emit VerificationAnchored(hash, block.timestamp);\n    }\n}` },
         { name: 'IdentityRegistry.sol', isFolder: false, content: `// SPDX-License-Identifier: MIT\npragma solidity ^0.8.20;\n\ncontract IdentityRegistry {\n    struct User {\n        string did;\n        bool active;\n    }\n    mapping(address => User) public registry;\n}` }
       ]
     },
@@ -48,8 +48,8 @@ function WorkspacesPageContent() {
         { name: 'webrtc.js', isFolder: false, content: `export function initializePeerConnection(config) {\n  return new RTCPeerConnection(config);\n}` }
       ]
     },
-    { name: 'package.json', isFolder: false, content: `{\n  "name": "aegis-workspaces",\n  "version": "1.0.0",\n  "dependencies": {\n    "ethers": "^6.0.0"\n  }\n}` },
-    { name: 'README.md', isFolder: false, content: `# Aegis Connect Workspaces\nCollaborate on smart contracts and telemetry scripts directly in a secure ledger-backed sandbox.` }
+    { name: 'package.json', isFolder: false, content: `{\n  "name": "campusx-workspaces",\n  "version": "1.0.0",\n  "dependencies": {\n    "ethers": "^6.0.0"\n  }\n}` },
+    { name: 'README.md', isFolder: false, content: `# CampusX Connect Workspaces\nCollaborate on smart contracts and telemetry scripts directly in a secure ledger-backed sandbox.` }
   ]);
 
   // Selected File details
@@ -58,7 +58,7 @@ function WorkspacesPageContent() {
   
   // Build and console states
   const [consoleLogs, setConsoleLogs] = useState([
-    { type: 'info', text: 'Initializing Aegis Ledger Compiler engine...' },
+    { type: 'info', text: 'Initializing CampusX Ledger Compiler engine...' },
     { type: 'success', text: 'Secured workspace connection: sandbox_usr_003 active.' }
   ]);
   const [isCompiling, setIsCompiling] = useState(false);
@@ -102,7 +102,7 @@ function WorkspacesPageContent() {
       setConsoleLogs(prev => [
         ...prev,
         { type: 'success', text: 'Compilation completed successfully. Solidity v0.8.20 target matched.' },
-        { type: 'success', text: `Aegis Chain Deployment transaction broadcast: ${randHash.substring(0, 16)}...` },
+        { type: 'success', text: `CampusX Chain Deployment transaction broadcast: ${randHash.substring(0, 16)}...` },
         { type: 'info', text: `Block confirm received: block #${104800 + Math.floor(Math.random() * 50)} verified.` }
       ]);
     }, 1800);

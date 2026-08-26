@@ -1,5 +1,5 @@
 /* ========================================================================
-   Aegis University ERP — Authentication System
+   CampusX University ERP — Authentication System
    Handles registration, login, session management, and validation
    ======================================================================== */
 
@@ -7,15 +7,15 @@ window.AuthSystem = (function () {
   'use strict';
 
   // ── Storage Keys ──
-  const USERS_KEY = 'aegis_erp_users';
-  const SESSION_KEY = 'aegis_erp_session';
+  const USERS_KEY = 'campusx_erp_users';
+  const SESSION_KEY = 'campusx_erp_session';
 
   // ── Default Accounts ──
   const DEFAULT_ACCOUNTS = [
     {
       "id": "usr_001",
-      "name": "Dr. Evelyn Sterling",
-      "email": "admin@aegis.edu",
+      "name": "Dr. Rajesh Sharma",
+      "email": "admin@campusx.edu",
       "password": "h$g10hvh",
       "role": "admin",
       "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150",
@@ -23,8 +23,8 @@ window.AuthSystem = (function () {
     },
     {
       "id": "usr_002",
-      "name": "Prof. Marcus Chen",
-      "email": "faculty@aegis.edu",
+      "name": "Prof. Tariq Ansari",
+      "email": "faculty@campusx.edu",
       "password": "h$rwy182",
       "role": "faculty",
       "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150",
@@ -32,8 +32,8 @@ window.AuthSystem = (function () {
     },
     {
       "id": "usr_003",
-      "name": "Aria Nakamura",
-      "email": "student@aegis.edu",
+      "name": "Ananya Patel",
+      "email": "student@campusx.edu",
       "password": "h$h2pckp",
       "role": "student",
       "avatar": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150",
@@ -41,597 +41,597 @@ window.AuthSystem = (function () {
     },
     {
       "id": "usr_004",
-      "name": "Prof. Sarah Jenkins",
-      "email": "hod@aegis.edu",
+      "name": "Prof. Sunita Verma",
+      "email": "hod@campusx.edu",
       "password": "h$k1lauj",
       "role": "hod",
       "avatar": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150",
       "createdAt": "2024-01-20T00:00:00.000Z"
     },
     {
-      "id": "usr_fac001",
-      "name": "Dr. Evelyn Sterling",
-      "email": "evelyn.sterling@modeluni.edu",
-      "password": "h$g0vmzp",
+      "id": "FAC001",
+      "name": "Dr. Rajesh Sharma",
+      "email": "rajesh.sharma@modeluni.edu",
+      "password": "h$ahtk4x",
       "role": "faculty",
       "avatar": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150",
-      "createdAt": "2026-06-08T10:38:14.513Z"
+      "createdAt": "2024-01-15T00:00:00.000Z"
     },
     {
-      "id": "usr_fac002",
-      "name": "Dr. Marcus Vance",
-      "email": "marcus.vance@modeluni.edu",
-      "password": "h$az3qz",
+      "id": "FAC002",
+      "name": "Dr. Tariq Ansari",
+      "email": "tariq.ansari@modeluni.edu",
+      "password": "h$oryr2g",
       "role": "faculty",
       "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150",
-      "createdAt": "2026-06-08T10:38:14.513Z"
+      "createdAt": "2024-01-15T00:00:00.000Z"
     },
     {
-      "id": "usr_fac003",
-      "name": "Dr. Sarah Connor",
-      "email": "sarah.connor@modeluni.edu",
-      "password": "h$33we4k",
+      "id": "FAC003",
+      "name": "Dr. Sunita Verma",
+      "email": "sunita.verma@modeluni.edu",
+      "password": "h$luvql0",
       "role": "faculty",
       "avatar": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150",
-      "createdAt": "2026-06-08T10:38:14.513Z"
+      "createdAt": "2024-01-15T00:00:00.000Z"
     },
     {
-      "id": "usr_fac004",
-      "name": "Dr. Raymond Park",
-      "email": "raymond.park@modeluni.edu",
-      "password": "h$h38w1u",
+      "id": "FAC004",
+      "name": "Dr. Kabir Qureshi",
+      "email": "kabir.qureshi@modeluni.edu",
+      "password": "h$579re9",
       "role": "faculty",
       "avatar": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150",
-      "createdAt": "2026-06-08T10:38:14.513Z"
+      "createdAt": "2024-01-15T00:00:00.000Z"
     },
     {
-      "id": "usr_fac005",
-      "name": "Dr. Helena Rostova",
-      "email": "helena.rostova@modeluni.edu",
-      "password": "h$1axyb5",
+      "id": "FAC005",
+      "name": "Dr. Harleen Kaur",
+      "email": "harleen.kaur@modeluni.edu",
+      "password": "h$6cvk2u",
       "role": "faculty",
       "avatar": "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150",
-      "createdAt": "2026-06-08T10:38:14.513Z"
+      "createdAt": "2024-01-15T00:00:00.000Z"
     },
     {
-      "id": "usr_fac006",
-      "name": "Prof. Alan Turing",
-      "email": "alan.turing@modeluni.edu",
-      "password": "h$yn678d",
+      "id": "FAC006",
+      "name": "Prof. Ramesh Shastri",
+      "email": "ramesh.shastri@modeluni.edu",
+      "password": "h$31v5xy",
       "role": "faculty",
       "avatar": "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150",
-      "createdAt": "2026-06-08T10:38:14.513Z"
+      "createdAt": "2024-01-15T00:00:00.000Z"
     },
     {
-      "id": "usr_fac007",
-      "name": "Dr. Ada Lovelace",
-      "email": "ada.lovelace@modeluni.edu",
-      "password": "h$swf5m",
+      "id": "FAC007",
+      "name": "Dr. Fatima Khan",
+      "email": "fatima.khan@modeluni.edu",
+      "password": "h$r96w2t",
       "role": "faculty",
       "avatar": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150",
-      "createdAt": "2026-06-08T10:38:14.513Z"
+      "createdAt": "2024-01-15T00:00:00.000Z"
     },
     {
-      "id": "usr_fac008",
-      "name": "Prof. Nikola Tesla",
-      "email": "nikola.tesla@modeluni.edu",
-      "password": "h$qstn47",
+      "id": "FAC008",
+      "name": "Prof. Gurpreet Singh",
+      "email": "gurpreet.singh@modeluni.edu",
+      "password": "h$6kh593",
       "role": "faculty",
       "avatar": "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150",
-      "createdAt": "2026-06-08T10:38:14.513Z"
+      "createdAt": "2024-01-15T00:00:00.000Z"
     },
     {
-      "id": "usr_fac009",
-      "name": "Dr. Richard Feynman",
-      "email": "richard.feynman@modeluni.edu",
-      "password": "h$mbzmz",
+      "id": "FAC009",
+      "name": "Dr. Rohan D'Souza",
+      "email": "rohan.dsouza@modeluni.edu",
+      "password": "h$h8x5v0",
       "role": "faculty",
       "avatar": "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=150",
-      "createdAt": "2026-06-08T10:38:14.513Z"
+      "createdAt": "2024-01-15T00:00:00.000Z"
     },
     {
-      "id": "usr_fac010",
-      "name": "Dr. Grace Hopper",
-      "email": "gracehopper@modeluni.edu",
-      "password": "h$7h9aul",
+      "id": "FAC010",
+      "name": "Dr. Ananya Mukherjee",
+      "email": "ananya.mukherjee@modeluni.edu",
+      "password": "h$7s0g0h",
       "role": "faculty",
       "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150",
-      "createdAt": "2026-06-08T10:38:14.513Z"
+      "createdAt": "2024-01-15T00:00:00.000Z"
     },
     {
-      "id": "usr_fac011",
-      "name": "Dr. Claude Shannon",
-      "email": "claudeshannon@modeluni.edu",
-      "password": "h$rcsqn7",
+      "id": "FAC011",
+      "name": "Dr. Syed Zaid Ali",
+      "email": "zaid.ali@modeluni.edu",
+      "password": "h$7vupp2",
       "role": "faculty",
       "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150",
-      "createdAt": "2026-06-08T10:38:14.513Z"
+      "createdAt": "2024-01-15T00:00:00.000Z"
     },
     {
-      "id": "usr_fac012",
-      "name": "Dr. Barbara Liskov",
-      "email": "barbaraliskov@modeluni.edu",
-      "password": "h$c3v0ab",
+      "id": "FAC012",
+      "name": "Dr. Sneha Fernandes",
+      "email": "sneha.fernandes@modeluni.edu",
+      "password": "h$r3ccgv",
       "role": "faculty",
       "avatar": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150",
-      "createdAt": "2026-06-08T10:38:14.513Z"
+      "createdAt": "2024-01-15T00:00:00.000Z"
     },
     {
-      "id": "usr_fac013",
-      "name": "Dr. Donald Knuth",
-      "email": "donaldknuth@modeluni.edu",
-      "password": "h$276icc",
+      "id": "FAC013",
+      "name": "Dr. Vikramaditya Reddy",
+      "email": "vikram.reddy@modeluni.edu",
+      "password": "h$p5vb50",
       "role": "faculty",
       "avatar": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150",
-      "createdAt": "2026-06-08T10:38:14.513Z"
+      "createdAt": "2024-01-15T00:00:00.000Z"
     },
     {
-      "id": "usr_fac014",
-      "name": "Dr. Tim Berners-Lee",
-      "email": "timbernerslee@modeluni.edu",
-      "password": "h$1lkkm2",
+      "id": "FAC014",
+      "name": "Dr. Ayesha Siddiqui",
+      "email": "ayesha.siddiqui@modeluni.edu",
+      "password": "h$5hcz47",
       "role": "faculty",
       "avatar": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150",
-      "createdAt": "2026-06-08T10:38:14.513Z"
+      "createdAt": "2024-01-15T00:00:00.000Z"
     },
     {
-      "id": "usr_fac015",
-      "name": "Dr. Margaret Hamilton",
-      "email": "margarethamilton@modeluni.edu",
-      "password": "h$la760g",
+      "id": "FAC015",
+      "name": "Dr. Siddharth Jain",
+      "email": "siddharth.jain@modeluni.edu",
+      "password": "h$hcmi6o",
       "role": "faculty",
       "avatar": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150",
-      "createdAt": "2026-06-08T10:38:14.513Z"
+      "createdAt": "2024-01-15T00:00:00.000Z"
     },
     {
-      "id": "usr_fac016",
-      "name": "Dr. Linus Torvalds",
-      "email": "linustorvalds@modeluni.edu",
-      "password": "h$49lclo",
+      "id": "FAC016",
+      "name": "Dr. Jaspreet Kaur",
+      "email": "jaspreet.kaur@modeluni.edu",
+      "password": "h$6cvk1y",
       "role": "faculty",
       "avatar": "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150",
-      "createdAt": "2026-06-08T10:38:14.513Z"
+      "createdAt": "2024-01-15T00:00:00.000Z"
     },
     {
-      "id": "usr_fac017",
-      "name": "Dr. Katherine Johnson",
-      "email": "katherinejohnson@modeluni.edu",
-      "password": "h$cmcmrr",
+      "id": "FAC017",
+      "name": "Dr. Priya Nair",
+      "email": "priya.nair@modeluni.edu",
+      "password": "h$kxk83y",
       "role": "faculty",
       "avatar": "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150",
-      "createdAt": "2026-06-08T10:38:14.513Z"
+      "createdAt": "2024-01-15T00:00:00.000Z"
     },
     {
-      "id": "usr_fac018",
-      "name": "Dr. Dorothy Vaughan",
-      "email": "dorothyvaughan@modeluni.edu",
-      "password": "h$uylwbb",
+      "id": "FAC018",
+      "name": "Dr. Mohammad Imran",
+      "email": "mohammad.imran@modeluni.edu",
+      "password": "h$7gefik",
       "role": "faculty",
       "avatar": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150",
-      "createdAt": "2026-06-08T10:38:14.513Z"
+      "createdAt": "2024-01-15T00:00:00.000Z"
     },
     {
-      "id": "usr_fac019",
-      "name": "Dr. Mary Jackson",
-      "email": "maryjackson@modeluni.edu",
-      "password": "h$gz0t25",
+      "id": "FAC019",
+      "name": "Dr. Deepa Iyer",
+      "email": "deepa.iyer@modeluni.edu",
+      "password": "h$r5z2tv",
       "role": "faculty",
       "avatar": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150",
-      "createdAt": "2026-06-08T10:38:14.513Z"
+      "createdAt": "2024-01-15T00:00:00.000Z"
     },
     {
-      "id": "usr_fac020",
-      "name": "Dr. Wernher von Braun",
-      "email": "wernhervon@modeluni.edu",
-      "password": "h$39s8uc",
+      "id": "FAC020",
+      "name": "Dr. Manpreet Singh",
+      "email": "manpreet.singh@modeluni.edu",
+      "password": "h$6kh5al",
       "role": "faculty",
       "avatar": "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150",
-      "createdAt": "2026-06-08T10:38:14.513Z"
+      "createdAt": "2024-01-15T00:00:00.000Z"
     },
     {
-      "id": "usr_fac021",
-      "name": "Dr. Robert Oppenheimer",
-      "email": "robertoppenheimer@modeluni.edu",
-      "password": "h$rd0x4v",
+      "id": "FAC021",
+      "name": "Dr. Sameer Ahmed",
+      "email": "sameer.ahmed@modeluni.edu",
+      "password": "h$gmtsea",
       "role": "faculty",
       "avatar": "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=150",
-      "createdAt": "2026-06-08T10:38:14.513Z"
+      "createdAt": "2024-01-15T00:00:00.000Z"
     },
     {
-      "id": "usr_fac022",
-      "name": "Dr. Marie Curie",
-      "email": "mariecurie@modeluni.edu",
-      "password": "h$osccuk",
+      "id": "FAC022",
+      "name": "Dr. Kavita Bose",
+      "email": "kavita.bose@modeluni.edu",
+      "password": "h$s9x0gn",
       "role": "faculty",
       "avatar": "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=150",
-      "createdAt": "2026-06-08T10:38:14.513Z"
+      "createdAt": "2024-01-15T00:00:00.000Z"
     },
     {
-      "id": "usr_fac023",
-      "name": "Dr. Albert Einstein",
-      "email": "alberteinstein@modeluni.edu",
-      "password": "h$e1zlva",
+      "id": "FAC023",
+      "name": "Dr. Amitav Ghosh",
+      "email": "amitav.ghosh@modeluni.edu",
+      "password": "h$3vbt3a",
       "role": "faculty",
       "avatar": "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=150",
-      "createdAt": "2026-06-08T10:38:14.513Z"
+      "createdAt": "2024-01-15T00:00:00.000Z"
     },
     {
-      "id": "usr_fac024",
-      "name": "Dr. Niels Bohr",
-      "email": "nielsbohr@modeluni.edu",
-      "password": "h$z2p5ql",
+      "id": "FAC024",
+      "name": "Dr. Zubin Mehta",
+      "email": "zubin.mehta@modeluni.edu",
+      "password": "h$w1cusz",
       "role": "faculty",
       "avatar": "https://images.unsplash.com/photo-1542909168-82c3e7fdca5c?w=150",
-      "createdAt": "2026-06-08T10:38:14.513Z"
+      "createdAt": "2024-01-15T00:00:00.000Z"
     },
     {
-      "id": "usr_fac025",
-      "name": "Dr. Stephen Hawking",
-      "email": "stephenhawking@modeluni.edu",
-      "password": "h$81wsnq",
+      "id": "FAC025",
+      "name": "Dr. Arvind Swaminathan",
+      "email": "arvind.swaminathan@modeluni.edu",
+      "password": "h$g785su",
       "role": "faculty",
       "avatar": "https://images.unsplash.com/photo-1527983359383-4758693f760c?w=150",
-      "createdAt": "2026-06-08T10:38:14.513Z"
+      "createdAt": "2024-01-15T00:00:00.000Z"
     },
     {
-      "id": "usr_fac026",
-      "name": "Dr. Rosalind Franklin",
-      "email": "rosalindfranklin@modeluni.edu",
-      "password": "h$jnmpl9",
+      "id": "FAC026",
+      "name": "Dr. Zainab Begum",
+      "email": "zainab.begum@modeluni.edu",
+      "password": "h$ket1gw",
       "role": "faculty",
       "avatar": "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=150",
-      "createdAt": "2026-06-08T10:38:14.513Z"
+      "createdAt": "2024-01-15T00:00:00.000Z"
     },
     {
-      "id": "usr_fac027",
-      "name": "Dr. Rachel Carson",
-      "email": "rachelcarson@modeluni.edu",
-      "password": "h$potdb",
+      "id": "FAC027",
+      "name": "Dr. Kevin Thomas",
+      "email": "kevin.thomas@modeluni.edu",
+      "password": "h$yuqm6v",
       "role": "faculty",
       "avatar": "https://images.unsplash.com/photo-1554151228-14d9def656e4?w=150",
-      "createdAt": "2026-06-08T10:38:14.513Z"
+      "createdAt": "2024-01-15T00:00:00.000Z"
     },
     {
-      "id": "usr_stu001",
-      "name": "Alex Rivera",
-      "email": "alex.rivera@modeluni.edu",
-      "password": "h$anuzvl",
+      "id": "STU001",
+      "name": "Aarav Sharma",
+      "email": "aarav.sharma@modeluni.edu",
+      "password": "h$viwwm",
       "role": "student",
       "avatar": "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150",
-      "createdAt": "2026-06-08T10:38:14.514Z"
+      "createdAt": "2024-02-01T00:00:00.000Z"
     },
     {
-      "id": "usr_stu002",
-      "name": "Zoe Chen",
-      "email": "zoe.chen@modeluni.edu",
-      "password": "h$3iuy1e",
+      "id": "STU002",
+      "name": "Fatima Zohra",
+      "email": "fatima.zohra@modeluni.edu",
+      "password": "h$5wxkca",
       "role": "student",
       "avatar": "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150",
-      "createdAt": "2026-06-08T10:38:14.514Z"
+      "createdAt": "2024-02-01T00:00:00.000Z"
     },
     {
-      "id": "usr_stu003",
-      "name": "Liam Sterling",
-      "email": "liam.sterling@modeluni.edu",
-      "password": "h$s2xs5m",
+      "id": "STU003",
+      "name": "Jaspreet Singh",
+      "email": "jaspreet.singh@modeluni.edu",
+      "password": "h$809gqx",
       "role": "student",
       "avatar": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150",
-      "createdAt": "2026-06-08T10:38:14.514Z"
+      "createdAt": "2024-02-01T00:00:00.000Z"
     },
     {
-      "id": "usr_stu004",
-      "name": "Emily Watson",
-      "email": "emily.watson@modeluni.edu",
-      "password": "h$7y659u",
+      "id": "STU004",
+      "name": "Ananya Patel",
+      "email": "ananya.patel@modeluni.edu",
+      "password": "h$yj2oke",
       "role": "student",
       "avatar": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150",
-      "createdAt": "2026-06-08T10:38:14.514Z"
+      "createdAt": "2024-02-01T00:00:00.000Z"
     },
     {
-      "id": "usr_stu005",
-      "name": "Carlos Mendez",
-      "email": "carlos.mendez@modeluni.edu",
-      "password": "h$vyxidh",
+      "id": "STU005",
+      "name": "Mohammad Bilal",
+      "email": "mohammad.bilal@modeluni.edu",
+      "password": "h$it6el9",
       "role": "student",
       "avatar": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150",
-      "createdAt": "2026-06-08T10:38:14.514Z"
+      "createdAt": "2024-02-01T00:00:00.000Z"
     },
     {
-      "id": "usr_stu006",
-      "name": "Sophia Patel",
-      "email": "sophia.patel@modeluni.edu",
-      "password": "h$1bicwm",
+      "id": "STU006",
+      "name": "Priya Sharma",
+      "email": "priya.sharma@modeluni.edu",
+      "password": "h$a0qhwz",
       "role": "student",
       "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150",
-      "createdAt": "2026-06-08T10:38:14.514Z"
+      "createdAt": "2024-02-01T00:00:00.000Z"
     },
     {
-      "id": "usr_stu007",
-      "name": "Marcus Brody",
-      "email": "marcus.brody@modeluni.edu",
-      "password": "h$old9ds",
+      "id": "STU007",
+      "name": "Rohan D'Silva",
+      "email": "rohan.dsilva@modeluni.edu",
+      "password": "h$8q3os5",
       "role": "student",
       "avatar": "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150",
-      "createdAt": "2026-06-08T10:38:14.514Z"
+      "createdAt": "2024-02-01T00:00:00.000Z"
     },
     {
-      "id": "usr_stu008",
-      "name": "Elena Rostova",
-      "email": "elena.rost@modeluni.edu",
-      "password": "h$9fy1oz",
+      "id": "STU008",
+      "name": "Sara Ali",
+      "email": "sara.ali@modeluni.edu",
+      "password": "h$1bcduv",
       "role": "student",
       "avatar": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150",
-      "createdAt": "2026-06-08T10:38:14.514Z"
+      "createdAt": "2024-02-01T00:00:00.000Z"
     },
     {
-      "id": "usr_stu009",
-      "name": "Devon Miller",
-      "email": "devon.miller@modeluni.edu",
-      "password": "h$7oc0cx",
+      "id": "STU009",
+      "name": "Devendra Verma",
+      "email": "devendra.verma@modeluni.edu",
+      "password": "h$wqswts",
       "role": "student",
       "avatar": "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=150",
-      "createdAt": "2026-06-08T10:38:14.514Z"
+      "createdAt": "2024-02-01T00:00:00.000Z"
     },
     {
-      "id": "usr_stu010",
-      "name": "Nadia Petrova",
-      "email": "nadia.petrova@modeluni.edu",
-      "password": "h$b1twcy",
+      "id": "STU010",
+      "name": "Simran Kaur",
+      "email": "simran.kaur@modeluni.edu",
+      "password": "h$jpz3sj",
       "role": "student",
       "avatar": "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150",
-      "createdAt": "2026-06-08T10:38:14.514Z"
+      "createdAt": "2024-02-01T00:00:00.000Z"
     },
     {
-      "id": "usr_stu011",
-      "name": "Jackson Cole",
-      "email": "jackson.cole@modeluni.edu",
-      "password": "h$nfdh7t",
+      "id": "STU011",
+      "name": "Zaid Khan",
+      "email": "zaid.khan@modeluni.edu",
+      "password": "h$6pzkey",
       "role": "student",
       "avatar": "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=150",
-      "createdAt": "2026-06-08T10:38:14.514Z"
+      "createdAt": "2024-02-01T00:00:00.000Z"
     },
     {
-      "id": "usr_stu012",
+      "id": "STU012",
       "name": "Ravi Kumar",
       "email": "ravi.kumar@modeluni.edu",
       "password": "h$h479",
       "role": "student",
       "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150",
-      "createdAt": "2026-06-08T10:38:14.514Z"
+      "createdAt": "2024-02-01T00:00:00.000Z"
     },
     {
-      "id": "usr_stu013",
-      "name": "Maya Lin",
-      "email": "mayalin@modeluni.edu",
-      "password": "h$tmace6",
+      "id": "STU013",
+      "name": "Diya Menon",
+      "email": "diya.menon@modeluni.edu",
+      "password": "h$18w3rj",
       "role": "student",
       "avatar": "https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=150",
-      "createdAt": "2026-06-08T10:38:14.514Z"
+      "createdAt": "2024-02-01T00:00:00.000Z"
     },
     {
-      "id": "usr_stu014",
-      "name": "Ryan Patterson",
-      "email": "ryanpatterson@modeluni.edu",
-      "password": "h$gh411x",
+      "id": "STU014",
+      "name": "Rahul Deshmukh",
+      "email": "rahul.deshmukh@modeluni.edu",
+      "password": "h$z2895d",
       "role": "student",
       "avatar": "https://images.unsplash.com/photo-1504257404764-b2b1d311277a?w=150",
-      "createdAt": "2026-06-08T10:38:14.514Z"
+      "createdAt": "2024-02-01T00:00:00.000Z"
     },
     {
-      "id": "usr_stu015",
-      "name": "Chloe Henderson",
-      "email": "chloehenderson@modeluni.edu",
-      "password": "h$qe9rul",
+      "id": "STU015",
+      "name": "Aisha Sheikh",
+      "email": "aisha.sheikh@modeluni.edu",
+      "password": "h$atgfmk",
       "role": "student",
       "avatar": "https://images.unsplash.com/photo-1567532939604-b6b5b0db2604?w=150",
-      "createdAt": "2026-06-08T10:38:14.514Z"
+      "createdAt": "2024-02-01T00:00:00.000Z"
     },
     {
-      "id": "usr_stu016",
-      "name": "Jordan Brooks",
-      "email": "jordanbrooks@modeluni.edu",
-      "password": "h$qw1xs3",
+      "id": "STU016",
+      "name": "Ishaan Malhotra",
+      "email": "ishaan.malhotra@modeluni.edu",
+      "password": "h$9b66s1",
       "role": "student",
       "avatar": "https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?w=150",
-      "createdAt": "2026-06-08T10:38:14.514Z"
+      "createdAt": "2024-02-01T00:00:00.000Z"
     },
     {
-      "id": "usr_stu017",
-      "name": "Hannah Abbott",
-      "email": "hannahabbott@modeluni.edu",
-      "password": "h$8fawea",
+      "id": "STU017",
+      "name": "Meera Joshi",
+      "email": "meera.joshi@modeluni.edu",
+      "password": "h$r2waoq",
       "role": "student",
       "avatar": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150",
-      "createdAt": "2026-06-08T10:38:14.514Z"
+      "createdAt": "2024-02-01T00:00:00.000Z"
     },
     {
-      "id": "usr_stu018",
-      "name": "Cedric Diggory",
-      "email": "cedricdiggory@modeluni.edu",
-      "password": "h$d6tkih",
+      "id": "STU018",
+      "name": "Amanpreet Singh",
+      "email": "amanpreet.singh@modeluni.edu",
+      "password": "h$xb0oa",
       "role": "student",
       "avatar": "https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?w=150",
-      "createdAt": "2026-06-08T10:38:14.514Z"
+      "createdAt": "2024-02-01T00:00:00.000Z"
     },
     {
-      "id": "usr_stu019",
-      "name": "Luna Lovegood",
-      "email": "lunalovegood@modeluni.edu",
-      "password": "h$k7mqvs",
+      "id": "STU019",
+      "name": "Sana Malik",
+      "email": "sana.malik@modeluni.edu",
+      "password": "h$l6fmwt",
       "role": "student",
       "avatar": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150",
-      "createdAt": "2026-06-08T10:38:14.514Z"
+      "createdAt": "2024-02-01T00:00:00.000Z"
     },
     {
-      "id": "usr_stu020",
-      "name": "Harry Potter",
-      "email": "harrypotter@modeluni.edu",
-      "password": "h$kb54m2",
+      "id": "STU020",
+      "name": "Arjun Kapoor",
+      "email": "arjun.kapoor@modeluni.edu",
+      "password": "h$s79yns",
       "role": "student",
       "avatar": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150",
-      "createdAt": "2026-06-08T10:38:14.514Z"
+      "createdAt": "2024-02-01T00:00:00.000Z"
     },
     {
-      "id": "usr_stu021",
-      "name": "Hermione Granger",
-      "email": "hermionegranger@modeluni.edu",
-      "password": "h$ozk07a",
+      "id": "STU021",
+      "name": "Riya Sen",
+      "email": "riya.sen@modeluni.edu",
+      "password": "h$8vrkik",
       "role": "student",
       "avatar": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150",
-      "createdAt": "2026-06-08T10:38:14.514Z"
+      "createdAt": "2024-02-01T00:00:00.000Z"
     },
     {
-      "id": "usr_stu022",
-      "name": "Ron Weasley",
-      "email": "ronweasley@modeluni.edu",
-      "password": "h$28p60l",
+      "id": "STU022",
+      "name": "Hamza Raza",
+      "email": "hamza.raza@modeluni.edu",
+      "password": "h$t2q4gx",
       "role": "student",
       "avatar": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150",
-      "createdAt": "2026-06-08T10:38:14.514Z"
+      "createdAt": "2024-02-01T00:00:00.000Z"
     },
     {
-      "id": "usr_stu023",
-      "name": "Neville Longbottom",
-      "email": "nevillelongbottom@modeluni.edu",
-      "password": "h$5dm1we",
+      "id": "STU023",
+      "name": "Nikhil Pillai",
+      "email": "nikhil.pillai@modeluni.edu",
+      "password": "h$ist7mm",
       "role": "student",
       "avatar": "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150",
-      "createdAt": "2026-06-08T10:38:14.514Z"
+      "createdAt": "2024-02-01T00:00:00.000Z"
     },
     {
-      "id": "usr_stu024",
-      "name": "Ginny Weasley",
-      "email": "ginnyweasley@modeluni.edu",
-      "password": "h$fz0sah",
+      "id": "STU024",
+      "name": "Gurleen Kaur",
+      "email": "gurleen.kaur@modeluni.edu",
+      "password": "h$e2974o",
       "role": "student",
       "avatar": "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=150",
-      "createdAt": "2026-06-08T10:38:14.514Z"
+      "createdAt": "2024-02-01T00:00:00.000Z"
     },
     {
-      "id": "usr_stu025",
-      "name": "Draco Malfoy",
-      "email": "dracomalfoy@modeluni.edu",
-      "password": "h$6308io",
+      "id": "STU025",
+      "name": "Siddharth Shah",
+      "email": "siddharth.shah@modeluni.edu",
+      "password": "h$7gt2oo",
       "role": "student",
       "avatar": "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150",
-      "createdAt": "2026-06-08T10:38:14.514Z"
+      "createdAt": "2024-02-01T00:00:00.000Z"
     },
     {
-      "id": "usr_stu026",
-      "name": "Cho Chang",
-      "email": "chochang@modeluni.edu",
-      "password": "h$g8qja",
+      "id": "STU026",
+      "name": "Zoya Akhtar",
+      "email": "zoya.akhtar@modeluni.edu",
+      "password": "h$z9ran1",
       "role": "student",
       "avatar": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150",
-      "createdAt": "2026-06-08T10:38:14.514Z"
+      "createdAt": "2024-02-01T00:00:00.000Z"
     },
     {
-      "id": "usr_stu027",
-      "name": "Fleur Delacour",
-      "email": "fleurdelacour@modeluni.edu",
-      "password": "h$876f7p",
+      "id": "STU027",
+      "name": "Chris Mathew",
+      "email": "chris.mathew@modeluni.edu",
+      "password": "h$v9r8s6",
       "role": "student",
       "avatar": "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150",
-      "createdAt": "2026-06-08T10:38:14.514Z"
+      "createdAt": "2024-02-01T00:00:00.000Z"
     },
     {
-      "id": "usr_stu028",
-      "name": "Viktor Krum",
-      "email": "viktorkrum@modeluni.edu",
-      "password": "h$w0376l",
+      "id": "STU028",
+      "name": "Vikram Singh",
+      "email": "vikram.singh@modeluni.edu",
+      "password": "h$z93jr8",
       "role": "student",
       "avatar": "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150",
-      "createdAt": "2026-06-08T10:38:14.514Z"
+      "createdAt": "2024-02-01T00:00:00.000Z"
     },
     {
-      "id": "usr_stu029",
-      "name": "Peter Parker",
-      "email": "peterparker@modeluni.edu",
-      "password": "h$rti0mv",
+      "id": "STU029",
+      "name": "Parth Aggarwal",
+      "email": "parth.aggarwal@modeluni.edu",
+      "password": "h$f6329e",
       "role": "student",
       "avatar": "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=150",
-      "createdAt": "2026-06-08T10:38:14.514Z"
+      "createdAt": "2024-02-01T00:00:00.000Z"
     },
     {
-      "id": "usr_stu030",
-      "name": "Gwen Stacy",
-      "email": "gwenstacy@modeluni.edu",
-      "password": "h$fqgejk",
+      "id": "STU030",
+      "name": "Kavya Reddy",
+      "email": "kavya.reddy@modeluni.edu",
+      "password": "h$ywpj7z",
       "role": "student",
       "avatar": "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?w=150",
-      "createdAt": "2026-06-08T10:38:14.514Z"
+      "createdAt": "2024-02-01T00:00:00.000Z"
     },
     {
-      "id": "usr_stu031",
-      "name": "Miles Morales",
-      "email": "milesmorales@modeluni.edu",
-      "password": "h$se8l98",
+      "id": "STU031",
+      "name": "Mustafa Hussain",
+      "email": "mustafa.hussain@modeluni.edu",
+      "password": "h$o0yf5l",
       "role": "student",
       "avatar": "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=150",
-      "createdAt": "2026-06-08T10:38:14.514Z"
+      "createdAt": "2024-02-01T00:00:00.000Z"
     },
     {
-      "id": "usr_stu032",
-      "name": "Clark Kent",
-      "email": "clarkkent@modeluni.edu",
-      "password": "h$q9az9y",
+      "id": "STU032",
+      "name": "Karan Mehta",
+      "email": "karan.mehta@modeluni.edu",
+      "password": "h$4qe71u",
       "role": "student",
       "avatar": "https://images.unsplash.com/photo-1542909168-82c3e7fdca5c?w=150",
-      "createdAt": "2026-06-08T10:38:14.514Z"
+      "createdAt": "2024-02-01T00:00:00.000Z"
     },
     {
-      "id": "usr_stu033",
-      "name": "Bruce Wayne",
-      "email": "brucewayne@modeluni.edu",
-      "password": "h$3qn29h",
+      "id": "STU033",
+      "name": "Aditya Roy",
+      "email": "aditya.roy@modeluni.edu",
+      "password": "h$uyz35m",
       "role": "student",
       "avatar": "https://images.unsplash.com/photo-1527983359383-4758693f760c?w=150",
-      "createdAt": "2026-06-08T10:38:14.514Z"
+      "createdAt": "2024-02-01T00:00:00.000Z"
     },
     {
-      "id": "usr_stu034",
-      "name": "Diana Prince",
-      "email": "dianaprince@modeluni.edu",
-      "password": "h$wlk69e",
+      "id": "STU034",
+      "name": "Divya Nair",
+      "email": "divya.nair@modeluni.edu",
+      "password": "h$3h3dp8",
       "role": "student",
       "avatar": "https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?w=150",
-      "createdAt": "2026-06-08T10:38:14.514Z"
+      "createdAt": "2024-02-01T00:00:00.000Z"
     },
     {
-      "id": "usr_stu035",
-      "name": "Tony Stark",
-      "email": "tonystark@modeluni.edu",
-      "password": "h$r3sv6g",
+      "id": "STU035",
+      "name": "Tanmay Bhat",
+      "email": "tanmay.bhat@modeluni.edu",
+      "password": "h$h90uwq",
       "role": "student",
       "avatar": "https://images.unsplash.com/photo-1504257404764-b2b1d311277a?w=150",
-      "createdAt": "2026-06-08T10:38:14.514Z"
+      "createdAt": "2024-02-01T00:00:00.000Z"
     },
     {
-      "id": "usr_stu036",
-      "name": "Steve Rogers",
-      "email": "steverogers@modeluni.edu",
-      "password": "h$ww6hbg",
+      "id": "STU036",
+      "name": "Shivam Tripathi",
+      "email": "shivam.tripathi@modeluni.edu",
+      "password": "h$nltmy9",
       "role": "student",
       "avatar": "https://images.unsplash.com/photo-1501196354995-cbb51c65aaea?w=150",
-      "createdAt": "2026-06-08T10:38:14.514Z"
+      "createdAt": "2024-02-01T00:00:00.000Z"
     },
     {
-      "id": "usr_stu037",
-      "name": "Natasha Romanoff",
-      "email": "natasharomanoff@modeluni.edu",
-      "password": "h$fxwn10",
+      "id": "STU037",
+      "name": "Nida Fatima",
+      "email": "nida.fatima@modeluni.edu",
+      "password": "h$puoyfs",
       "role": "student",
       "avatar": "https://images.unsplash.com/photo-1554151228-14d9def656e4?w=150",
-      "createdAt": "2026-06-08T10:38:14.514Z"
+      "createdAt": "2024-02-01T00:00:00.000Z"
     },
     {
-      "id": "usr_stu038",
-      "name": "Aria Nakamura",
-      "email": "student@aegis.edu",
-      "password": "h$vbf6dk",
+      "id": "STU038",
+      "name": "Ananya Patel",
+      "email": "student@campusx.edu",
+      "password": "h$yj2on3",
       "role": "student",
       "avatar": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150",
-      "createdAt": "2026-06-08T10:38:14.514Z"
+      "createdAt": "2024-02-01T00:00:00.000Z"
     }
   ];
 

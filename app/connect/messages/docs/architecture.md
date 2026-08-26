@@ -1,13 +1,13 @@
-# AEGIS CONNECT - Enterprise Messaging & Meetings Platform
+# CAMPUSX CONNECT - Enterprise Messaging & Meetings Platform
 ## Technical Architecture Blueprint
 
-This document specifies the server, network, smart contract, database, and deployment specifications for the production implementation of the Aegis Connect Enterprise Messaging & Meetings ecosystem.
+This document specifies the server, network, smart contract, database, and deployment specifications for the production implementation of the CampusX Connect Enterprise Messaging & Meetings ecosystem.
 
 ---
 
 ## 1. WebRTC & Media Infrastructure
 
-To support high-quality voice lounges and group video conferences, Aegis Connect utilizes a hybrid **SFU (Selective Forwarding Unit)** and **Mesh** network architecture.
+To support high-quality voice lounges and group video conferences, CampusX Connect utilizes a hybrid **SFU (Selective Forwarding Unit)** and **Mesh** network architecture.
 
 ```mermaid
 graph TD
@@ -33,7 +33,7 @@ graph TD
 
 ## 2. Smart Contract Architectures
 
-ATT (Verifiable Attendance Tokens) and meeting metadata verification are secured via smart contracts deployed on the **Aegis Chain (Polygon Subnet)**.
+ATT (Verifiable Attendance Tokens) and meeting metadata verification are secured via smart contracts deployed on the **CampusX Chain (Polygon Subnet)**.
 
 ### Solidity Smart Contract Definition
 ```solidity
@@ -42,7 +42,7 @@ pragma solidity ^0.8.20;
 
 import "@openzeppelin/contracts/access/AccessControl.sol";
 
-contract AegisMeetingRegistry is AccessControl {
+contract CampusXMeetingRegistry is AccessControl {
     bytes32 public constant REGISTRAR_ROLE = keccak256("REGISTRAR_ROLE");
 
     struct Record {
@@ -90,7 +90,7 @@ contract AegisMeetingRegistry is AccessControl {
 
 ## 3. Database Schema
 
-Aegis Connect uses a high-performance **PostgreSQL** layout to handle relational messages and audit ledgers.
+CampusX Connect uses a high-performance **PostgreSQL** layout to handle relational messages and audit ledgers.
 
 ```sql
 -- Core Accounts & Profiles
@@ -186,8 +186,8 @@ Production configuration for running signaling and SFU servers inside a **Kubern
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: aegis-mediasoup-sfu
-  namespace: aegis-connect
+  name: campusx-mediasoup-sfu
+  namespace: campusx-connect
 spec:
   replicas: 3
   selector:
@@ -200,7 +200,7 @@ spec:
     spec:
       containers:
       - name: sfu-engine
-        image: aegis-registry.university.edu/connect/sfu:latest
+        image: campusx-registry.university.edu/connect/sfu:latest
         ports:
         - containerPort: 3000 # HTTP API
         - containerPort: 40000 # RTP Ports range start
@@ -224,7 +224,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: sfu-service
-  namespace: aegis-connect
+  namespace: campusx-connect
 spec:
   ports:
   - name: api

@@ -1,36 +1,36 @@
 ================================================================================
-AEGIS UNIVERSITY ERP - AUTHENTICATION REGISTRY
+CAMPUSX UNIVERSITY ERP - AUTHENTICATION REGISTRY
 ================================================================================
 
 This file contains the email (user ID) and password credentials for all accounts 
-pre-registered in the Aegis University ERP platform.
+pre-registered in the CampusX University ERP platform.
 
 --------------------------------------------------------------------------------
 1. DEFAULT DEMO ACCOUNTS
 --------------------------------------------------------------------------------
 Role: Administrator
-Name: Dr. Evelyn Sterling
-User ID (Email): admin@aegis.edu
+Name: Dr. Rajesh Sharma
+User ID (Email): admin@campusx.edu
 Password: admin123
 
 Role: Faculty Member
-Name: Prof. Marcus Chen
-User ID (Email): faculty@aegis.edu
+Name: Prof. Tariq Ansari
+User ID (Email): faculty@campusx.edu
 Password: faculty123
 
 Role: HOD (Department Head)
-Name: Prof. Sarah Jenkins
-User ID (Email): hod@aegis.edu
+Name: Prof. Sunita Verma
+User ID (Email): hod@campusx.edu
 Password: hod123
 
 Role: Placement Officer (TPO)
-Name: Dr. Arthur Pendelton
-User ID (Email): placement@aegis.edu
+Name: Dr. Rohan D'Souza
+User ID (Email): placement@campusx.edu
 Password: placement123
 
 Role: Student
-Name: Aria Nakamura
-User ID (Email): student@aegis.edu
+Name: Ananya Patel
+User ID (Email): student@campusx.edu
 Password: student123
 
 
@@ -39,271 +39,267 @@ Password: student123
 --------------------------------------------------------------------------------
 Role: Global Super Admin
 Name: Global Super Admin
-User ID (Email): superadmin@aegis.demo
+User ID (Email): superadmin@campusx.demo
 Password: Demo@123
 
 Role: Platform Admin
 Name: Platform Admin
-User ID (Email): platformadmin@aegis.demo
+User ID (Email): platformadmin@campusx.demo
 Password: Demo@123
 
 Role: University Admin
 Name: University Admin
-User ID (Email): admin@aegis.demo
+User ID (Email): admin@campusx.demo
 Password: Demo@123
 
 Role: Registrar
 Name: Registrar Officer
-User ID (Email): registrar@aegis.demo
+User ID (Email): registrar@campusx.demo
 Password: Demo@123
 
 Role: Dean
 Name: Dean of Faculty
-User ID (Email): dean@aegis.demo
+User ID (Email): dean@campusx.demo
 Password: Demo@123
 
 Role: HOD (Department Head)
-Name: Professor Jenkins (HOD)
-User ID (Email): hod@aegis.demo
+Name: Prof. Sunita Verma (HOD)
+User ID (Email): hod@campusx.demo
 Password: Demo@123
 
 Role: Faculty Member
-Name: Professor Sterling (Faculty)
-User ID (Email): faculty@aegis.demo
+Name: Dr. Rajesh Sharma (Faculty)
+User ID (Email): faculty@campusx.demo
 Password: Demo@123
 
 Role: Finance Manager
 Name: Finance Manager
-User ID (Email): finance@aegis.demo
+User ID (Email): finance@campusx.demo
 Password: Demo@123
 
 Role: Research Coordinator
 Name: Research Coordinator
-User ID (Email): research@aegis.demo
+User ID (Email): research@campusx.demo
 Password: Demo@123
 
 Role: Placement Officer
 Name: Placement Officer
-User ID (Email): placement@aegis.demo
+User ID (Email): placement@campusx.demo
 Password: Demo@123
 
 Role: Student
-Name: Alex Rivera (Student)
-User ID (Email): student@aegis.demo
+Name: Aarav Sharma (Student)
+User ID (Email): student@campusx.demo
 Password: Demo@123
 
 Role: Parent
 Name: Parent Account
-User ID (Email): parent@aegis.demo
+User ID (Email): parent@campusx.demo
 Password: Demo@123
 
 Role: Alumni
 Name: Alumni Account
-User ID (Email): alumni@aegis.demo
+User ID (Email): alumni@campusx.demo
 Password: Demo@123
 
 Role: Recruiter
 Name: Lead Recruiter
-User ID (Email): recruiter@aegis.demo
+User ID (Email): recruiter@campusx.demo
 Password: Demo@123
 
-
---------------------------------------------------------------------------------
-2. FACULTY ACCOUNTS (Total: 27)
---------------------------------------------------------------------------------
 ID: FAC001
-Name: Dr. Evelyn Sterling
-User ID (Email): evelyn.sterling@modeluni.edu
-Password: Sterling@FAC001
+Name: Dr. Rajesh Sharma
+User ID (Email): rajesh.sharma@modeluni.edu
+Password: Sharma@FAC001
 --------------------------------------------------
 ID: FAC002
-Name: Dr. Marcus Vance
-User ID (Email): marcus.vance@modeluni.edu
-Password: Vance@FAC002
+Name: Dr. Tariq Ansari
+User ID (Email): tariq.ansari@modeluni.edu
+Password: Ansari@FAC002
 --------------------------------------------------
 ID: FAC003
-Name: Dr. Sarah Connor
-User ID (Email): sarah.connor@modeluni.edu
-Password: Connor@FAC003
+Name: Dr. Sunita Verma
+User ID (Email): sunita.verma@modeluni.edu
+Password: Verma@FAC003
 --------------------------------------------------
 ID: FAC004
-Name: Dr. Raymond Park
-User ID (Email): raymond.park@modeluni.edu
-Password: Park@FAC004
+Name: Dr. Kabir Qureshi
+User ID (Email): kabir.qureshi@modeluni.edu
+Password: Qureshi@FAC004
 --------------------------------------------------
 ID: FAC005
-Name: Dr. Helena Rostova
-User ID (Email): helena.rostova@modeluni.edu
-Password: Rostova@FAC005
+Name: Dr. Harleen Kaur
+User ID (Email): harleen.kaur@modeluni.edu
+Password: Kaur@FAC005
 --------------------------------------------------
 ID: FAC006
-Name: Prof. Alan Turing
-User ID (Email): alan.turing@modeluni.edu
-Password: Turing@FAC006
+Name: Prof. Ramesh Shastri
+User ID (Email): ramesh.shastri@modeluni.edu
+Password: Shastri@FAC006
 --------------------------------------------------
 ID: FAC007
-Name: Dr. Ada Lovelace
-User ID (Email): ada.lovelace@modeluni.edu
-Password: Lovelace@FAC007
+Name: Dr. Fatima Khan
+User ID (Email): fatima.khan@modeluni.edu
+Password: Khan@FAC007
 --------------------------------------------------
 ID: FAC008
-Name: Prof. Nikola Tesla
-User ID (Email): nikola.tesla@modeluni.edu
-Password: Tesla@FAC008
+Name: Prof. Gurpreet Singh
+User ID (Email): gurpreet.singh@modeluni.edu
+Password: Singh@FAC008
 --------------------------------------------------
 ID: FAC009
-Name: Dr. Richard Feynman
-User ID (Email): richard.feynman@modeluni.edu
-Password: Feynman@FAC009
+Name: Dr. Rohan D'Souza
+User ID (Email): rohan.dsouza@modeluni.edu
+Password: D'Souza@FAC009
 --------------------------------------------------
 ID: FAC010
-Name: Dr. Grace Hopper
-User ID (Email): gracehopper@modeluni.edu
-Password: Hopper@FAC010
+Name: Dr. Ananya Mukherjee
+User ID (Email): ananya.mukherjee@modeluni.edu
+Password: Mukherjee@FAC010
 --------------------------------------------------
 ID: FAC011
-Name: Dr. Claude Shannon
-User ID (Email): claudeshannon@modeluni.edu
-Password: Shannon@FAC011
+Name: Dr. Syed Zaid Ali
+User ID (Email): zaid.ali@modeluni.edu
+Password: Ali@FAC011
 --------------------------------------------------
 ID: FAC012
-Name: Dr. Barbara Liskov
-User ID (Email): barbaraliskov@modeluni.edu
-Password: Liskov@FAC012
+Name: Dr. Sneha Fernandes
+User ID (Email): sneha.fernandes@modeluni.edu
+Password: Fernandes@FAC012
 --------------------------------------------------
 ID: FAC013
-Name: Dr. Donald Knuth
-User ID (Email): donaldknuth@modeluni.edu
-Password: Knuth@FAC013
+Name: Dr. Vikramaditya Reddy
+User ID (Email): vikram.reddy@modeluni.edu
+Password: Reddy@FAC013
 --------------------------------------------------
 ID: FAC014
-Name: Dr. Tim Berners-Lee
-User ID (Email): timbernerslee@modeluni.edu
-Password: BernersLee@FAC014
+Name: Dr. Ayesha Siddiqui
+User ID (Email): ayesha.siddiqui@modeluni.edu
+Password: Siddiqui@FAC014
 --------------------------------------------------
 ID: FAC015
-Name: Dr. Margaret Hamilton
-User ID (Email): margarethamilton@modeluni.edu
-Password: Hamilton@FAC015
+Name: Dr. Siddharth Jain
+User ID (Email): siddharth.jain@modeluni.edu
+Password: Jain@FAC015
 --------------------------------------------------
 ID: FAC016
-Name: Dr. Linus Torvalds
-User ID (Email): linustorvalds@modeluni.edu
-Password: Torvalds@FAC016
+Name: Dr. Jaspreet Kaur
+User ID (Email): jaspreet.kaur@modeluni.edu
+Password: Kaur@FAC016
 --------------------------------------------------
 ID: FAC017
-Name: Dr. Katherine Johnson
-User ID (Email): katherinejohnson@modeluni.edu
-Password: Johnson@FAC017
+Name: Dr. Priya Nair
+User ID (Email): priya.nair@modeluni.edu
+Password: Nair@FAC017
 --------------------------------------------------
 ID: FAC018
-Name: Dr. Dorothy Vaughan
-User ID (Email): dorothyvaughan@modeluni.edu
-Password: Vaughan@FAC018
+Name: Dr. Mohammad Imran
+User ID (Email): mohammad.imran@modeluni.edu
+Password: Imran@FAC018
 --------------------------------------------------
 ID: FAC019
-Name: Dr. Mary Jackson
-User ID (Email): maryjackson@modeluni.edu
-Password: Jackson@FAC019
+Name: Dr. Deepa Iyer
+User ID (Email): deepa.iyer@modeluni.edu
+Password: Iyer@FAC019
 --------------------------------------------------
 ID: FAC020
-Name: Dr. Wernher von Braun
-User ID (Email): wernhervon@modeluni.edu
-Password: Braun@FAC020
+Name: Dr. Manpreet Singh
+User ID (Email): manpreet.singh@modeluni.edu
+Password: Singh@FAC020
 --------------------------------------------------
 ID: FAC021
-Name: Dr. Robert Oppenheimer
-User ID (Email): robertoppenheimer@modeluni.edu
-Password: Oppenheimer@FAC021
+Name: Dr. Sameer Ahmed
+User ID (Email): sameer.ahmed@modeluni.edu
+Password: Ahmed@FAC021
 --------------------------------------------------
 ID: FAC022
-Name: Dr. Marie Curie
-User ID (Email): mariecurie@modeluni.edu
-Password: Curie@FAC022
+Name: Dr. Kavita Bose
+User ID (Email): kavita.bose@modeluni.edu
+Password: Bose@FAC022
 --------------------------------------------------
 ID: FAC023
-Name: Dr. Albert Einstein
-User ID (Email): alberteinstein@modeluni.edu
-Password: Einstein@FAC023
+Name: Dr. Amitav Ghosh
+User ID (Email): amitav.ghosh@modeluni.edu
+Password: Ghosh@FAC023
 --------------------------------------------------
 ID: FAC024
-Name: Dr. Niels Bohr
-User ID (Email): nielsbohr@modeluni.edu
-Password: Bohr@FAC024
+Name: Dr. Zubin Mehta
+User ID (Email): zubin.mehta@modeluni.edu
+Password: Mehta@FAC024
 --------------------------------------------------
 ID: FAC025
-Name: Dr. Stephen Hawking
-User ID (Email): stephenhawking@modeluni.edu
-Password: Hawking@FAC025
+Name: Dr. Arvind Swaminathan
+User ID (Email): arvind.swaminathan@modeluni.edu
+Password: Swaminathan@FAC025
 --------------------------------------------------
 ID: FAC026
-Name: Dr. Rosalind Franklin
-User ID (Email): rosalindfranklin@modeluni.edu
-Password: Franklin@FAC026
+Name: Dr. Zainab Begum
+User ID (Email): zainab.begum@modeluni.edu
+Password: Begum@FAC026
 --------------------------------------------------
 ID: FAC027
-Name: Dr. Rachel Carson
-User ID (Email): rachelcarson@modeluni.edu
-Password: Carson@FAC027
+Name: Dr. Kevin Thomas
+User ID (Email): kevin.thomas@modeluni.edu
+Password: Thomas@FAC027
 --------------------------------------------------
 
 --------------------------------------------------------------------------------
 3. STUDENT ACCOUNTS (Total: 38)
 --------------------------------------------------------------------------------
 ID: STU001
-Name: Alex Rivera
-User ID (Email): alex.rivera@modeluni.edu
-Password: Alex@STU001
+Name: Aarav Sharma
+User ID (Email): aarav.sharma@modeluni.edu
+Password: Aarav@STU001
 --------------------------------------------------
 ID: STU002
-Name: Zoe Chen
-User ID (Email): zoe.chen@modeluni.edu
-Password: Zoe@STU002
+Name: Fatima Zohra
+User ID (Email): fatima.zohra@modeluni.edu
+Password: Fatima@STU002
 --------------------------------------------------
 ID: STU003
-Name: Liam Sterling
-User ID (Email): liam.sterling@modeluni.edu
-Password: Liam@STU003
+Name: Jaspreet Singh
+User ID (Email): jaspreet.singh@modeluni.edu
+Password: Jaspreet@STU003
 --------------------------------------------------
 ID: STU004
-Name: Emily Watson
-User ID (Email): emily.watson@modeluni.edu
-Password: Emily@STU004
+Name: Ananya Patel
+User ID (Email): ananya.patel@modeluni.edu
+Password: Ananya@STU004
 --------------------------------------------------
 ID: STU005
-Name: Carlos Mendez
-User ID (Email): carlos.mendez@modeluni.edu
-Password: Carlos@STU005
+Name: Mohammad Bilal
+User ID (Email): mohammad.bilal@modeluni.edu
+Password: Mohammad@STU005
 --------------------------------------------------
 ID: STU006
-Name: Sophia Patel
-User ID (Email): sophia.patel@modeluni.edu
-Password: Sophia@STU006
+Name: Priya Sharma
+User ID (Email): priya.sharma@modeluni.edu
+Password: Priya@STU006
 --------------------------------------------------
 ID: STU007
-Name: Marcus Brody
-User ID (Email): marcus.brody@modeluni.edu
-Password: Marcus@STU007
+Name: Rohan D'Silva
+User ID (Email): rohan.dsilva@modeluni.edu
+Password: Rohan@STU007
 --------------------------------------------------
 ID: STU008
-Name: Elena Rostova
-User ID (Email): elena.rost@modeluni.edu
-Password: Elena@STU008
+Name: Sara Ali
+User ID (Email): sara.ali@modeluni.edu
+Password: Sara@STU008
 --------------------------------------------------
 ID: STU009
-Name: Devon Miller
-User ID (Email): devon.miller@modeluni.edu
-Password: Devon@STU009
+Name: Devendra Verma
+User ID (Email): devendra.verma@modeluni.edu
+Password: Devendra@STU009
 --------------------------------------------------
 ID: STU010
-Name: Nadia Petrova
-User ID (Email): nadia.petrova@modeluni.edu
-Password: Nadia@STU010
+Name: Simran Kaur
+User ID (Email): simran.kaur@modeluni.edu
+Password: Simran@STU010
 --------------------------------------------------
 ID: STU011
-Name: Jackson Cole
-User ID (Email): jackson.cole@modeluni.edu
-Password: Jackson@STU011
+Name: Zaid Khan
+User ID (Email): zaid.khan@modeluni.edu
+Password: Zaid@STU011
 --------------------------------------------------
 ID: STU012
 Name: Ravi Kumar
@@ -311,132 +307,132 @@ User ID (Email): ravi.kumar@modeluni.edu
 Password: Ravi@STU012
 --------------------------------------------------
 ID: STU013
-Name: Maya Lin
-User ID (Email): mayalin@modeluni.edu
-Password: Maya@STU013
+Name: Diya Menon
+User ID (Email): diya.menon@modeluni.edu
+Password: Diya@STU013
 --------------------------------------------------
 ID: STU014
-Name: Ryan Patterson
-User ID (Email): ryanpatterson@modeluni.edu
-Password: Ryan@STU014
+Name: Rahul Deshmukh
+User ID (Email): rahul.deshmukh@modeluni.edu
+Password: Rahul@STU014
 --------------------------------------------------
 ID: STU015
-Name: Chloe Henderson
-User ID (Email): chloehenderson@modeluni.edu
-Password: Chloe@STU015
+Name: Aisha Sheikh
+User ID (Email): aisha.sheikh@modeluni.edu
+Password: Aisha@STU015
 --------------------------------------------------
 ID: STU016
-Name: Jordan Brooks
-User ID (Email): jordanbrooks@modeluni.edu
-Password: Jordan@STU016
+Name: Ishaan Malhotra
+User ID (Email): ishaan.malhotra@modeluni.edu
+Password: Ishaan@STU016
 --------------------------------------------------
 ID: STU017
-Name: Hannah Abbott
-User ID (Email): hannahabbott@modeluni.edu
-Password: Hannah@STU017
+Name: Meera Joshi
+User ID (Email): meera.joshi@modeluni.edu
+Password: Meera@STU017
 --------------------------------------------------
 ID: STU018
-Name: Cedric Diggory
-User ID (Email): cedricdiggory@modeluni.edu
-Password: Cedric@STU018
+Name: Amanpreet Singh
+User ID (Email): amanpreet.singh@modeluni.edu
+Password: Amanpreet@STU018
 --------------------------------------------------
 ID: STU019
-Name: Luna Lovegood
-User ID (Email): lunalovegood@modeluni.edu
-Password: Luna@STU019
+Name: Sana Malik
+User ID (Email): sana.malik@modeluni.edu
+Password: Sana@STU019
 --------------------------------------------------
 ID: STU020
-Name: Harry Potter
-User ID (Email): harrypotter@modeluni.edu
-Password: Harry@STU020
+Name: Arjun Kapoor
+User ID (Email): arjun.kapoor@modeluni.edu
+Password: Arjun@STU020
 --------------------------------------------------
 ID: STU021
-Name: Hermione Granger
-User ID (Email): hermionegranger@modeluni.edu
-Password: Hermione@STU021
+Name: Riya Sen
+User ID (Email): riya.sen@modeluni.edu
+Password: Riya@STU021
 --------------------------------------------------
 ID: STU022
-Name: Ron Weasley
-User ID (Email): ronweasley@modeluni.edu
-Password: Ron@STU022
+Name: Hamza Raza
+User ID (Email): hamza.raza@modeluni.edu
+Password: Hamza@STU022
 --------------------------------------------------
 ID: STU023
-Name: Neville Longbottom
-User ID (Email): nevillelongbottom@modeluni.edu
-Password: Neville@STU023
+Name: Nikhil Pillai
+User ID (Email): nikhil.pillai@modeluni.edu
+Password: Nikhil@STU023
 --------------------------------------------------
 ID: STU024
-Name: Ginny Weasley
-User ID (Email): ginnyweasley@modeluni.edu
-Password: Ginny@STU024
+Name: Gurleen Kaur
+User ID (Email): gurleen.kaur@modeluni.edu
+Password: Gurleen@STU024
 --------------------------------------------------
 ID: STU025
-Name: Draco Malfoy
-User ID (Email): dracomalfoy@modeluni.edu
-Password: Draco@STU025
+Name: Siddharth Shah
+User ID (Email): siddharth.shah@modeluni.edu
+Password: Siddharth@STU025
 --------------------------------------------------
 ID: STU026
-Name: Cho Chang
-User ID (Email): chochang@modeluni.edu
-Password: Cho@STU026
+Name: Zoya Akhtar
+User ID (Email): zoya.akhtar@modeluni.edu
+Password: Zoya@STU026
 --------------------------------------------------
 ID: STU027
-Name: Fleur Delacour
-User ID (Email): fleurdelacour@modeluni.edu
-Password: Fleur@STU027
+Name: Chris Mathew
+User ID (Email): chris.mathew@modeluni.edu
+Password: Chris@STU027
 --------------------------------------------------
 ID: STU028
-Name: Viktor Krum
-User ID (Email): viktorkrum@modeluni.edu
-Password: Viktor@STU028
+Name: Vikram Singh
+User ID (Email): vikram.singh@modeluni.edu
+Password: Vikram@STU028
 --------------------------------------------------
 ID: STU029
-Name: Peter Parker
-User ID (Email): peterparker@modeluni.edu
-Password: Peter@STU029
+Name: Parth Aggarwal
+User ID (Email): parth.aggarwal@modeluni.edu
+Password: Parth@STU029
 --------------------------------------------------
 ID: STU030
-Name: Gwen Stacy
-User ID (Email): gwenstacy@modeluni.edu
-Password: Gwen@STU030
+Name: Kavya Reddy
+User ID (Email): kavya.reddy@modeluni.edu
+Password: Kavya@STU030
 --------------------------------------------------
 ID: STU031
-Name: Miles Morales
-User ID (Email): milesmorales@modeluni.edu
-Password: Miles@STU031
+Name: Mustafa Hussain
+User ID (Email): mustafa.hussain@modeluni.edu
+Password: Mustafa@STU031
 --------------------------------------------------
 ID: STU032
-Name: Clark Kent
-User ID (Email): clarkkent@modeluni.edu
-Password: Clark@STU032
+Name: Karan Mehta
+User ID (Email): karan.mehta@modeluni.edu
+Password: Karan@STU032
 --------------------------------------------------
 ID: STU033
-Name: Bruce Wayne
-User ID (Email): brucewayne@modeluni.edu
-Password: Bruce@STU033
+Name: Aditya Roy
+User ID (Email): aditya.roy@modeluni.edu
+Password: Aditya@STU033
 --------------------------------------------------
 ID: STU034
-Name: Diana Prince
-User ID (Email): dianaprince@modeluni.edu
-Password: Diana@STU034
+Name: Divya Nair
+User ID (Email): divya.nair@modeluni.edu
+Password: Divya@STU034
 --------------------------------------------------
 ID: STU035
-Name: Tony Stark
-User ID (Email): tonystark@modeluni.edu
-Password: Tony@STU035
+Name: Tanmay Bhat
+User ID (Email): tanmay.bhat@modeluni.edu
+Password: Tanmay@STU035
 --------------------------------------------------
 ID: STU036
-Name: Steve Rogers
-User ID (Email): steverogers@modeluni.edu
-Password: Steve@STU036
+Name: Shivam Tripathi
+User ID (Email): shivam.tripathi@modeluni.edu
+Password: Shivam@STU036
 --------------------------------------------------
 ID: STU037
-Name: Natasha Romanoff
-User ID (Email): natasharomanoff@modeluni.edu
-Password: Natasha@STU037
+Name: Nida Fatima
+User ID (Email): nida.fatima@modeluni.edu
+Password: Nida@STU037
 --------------------------------------------------
 ID: STU038
-Name: Aria Nakamura
-User ID (Email): student@aegis.edu
-Password: Aria@STU038
+Name: Ananya Patel
+User ID (Email): student@campusx.edu
+Password: Ananya@STU038
 --------------------------------------------------

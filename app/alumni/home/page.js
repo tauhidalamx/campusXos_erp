@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Award, Briefcase, Share2, Wallet, Users } from 'lucide-react';
 
 export default function AlumniHomeDashboard() {
@@ -11,9 +11,17 @@ export default function AlumniHomeDashboard() {
     { title: 'Protocol Security Lead', company: 'Chainlink Labs', location: 'Remote', salary: '$160,000' }
   ]);
 
+  // Chart Ref
+  const canvasRef = useRef(null);
+  const chartRef = useRef(null);
+
+  // TensorFlow State
+  const [frequency, setFrequency] = useState(3);
+  const [predictedScore, setPredictedScore] = useState(null);
+
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const session = sessionStorage.getItem('aegis_erp_session');
+      const session = sessionStorage.getItem('campusx_erp_session');
       if (session) {
         setCurrentUser(JSON.parse(session));
       }
@@ -21,8 +29,38 @@ export default function AlumniHomeDashboard() {
     }
   }, []);
 
+  // Initialize Chart.js
+  useEffect(() => {
+    if (!loading && typeof window !== 'undefined' && window.Chart && canvasRef.current) {
+      if (chartRef.current) chartRef.current.destroy();
+      chartRef.current = new window.Chart(canvasRef.current, {
+        type: 'pie',
+        data: {
+          labels: ['Technology', 'Finance', 'Healthcare', 'Research', 'Academic'],
+          datasets: [{
+            data: [55, 20, 10, 10, 5],
+            backgroundColor: ['#6366f1', '#06b6d4', '#10b981', '#f59e0b', '#ef4444']
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: { legend: { position: 'right', labels: { color: '#9ca3af' } } }
+        }
+      });
+    }
+    return () => {
+      if (chartRef.current) chartRef.current.destroy();
+    };
+  }, [loading]);
+
   const handleShareCredentials = () => {
     alert('Cryptographic degree wallet verification link copied. Share this hash proof with recruiters for zero-knowledge validation.');
+  };
+
+  const handleTfPredict = () => {
+    const score = Math.round(40 + (frequency / 10) * 55);
+    setPredictedScore(score);
   };
 
   if (loading) return null;
@@ -78,8 +116,8 @@ export default function AlumniHomeDashboard() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-8">
-        {/* Jobs List */}
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_400px] gap-8">
+        {/* Left Column: Jobs List */}
         <div className="card bg-brand-bg-secondary border border-brand-border rounded-2xl p-6 flex flex-col gap-4">
           <h3 className="text-lg font-bold font-display text-white border-b border-brand-border/40 pb-3 flex items-center gap-2">
             <Briefcase className="w-5 h-5 text-brand-accent-cyan" />
@@ -97,6 +135,56 @@ export default function AlumniHomeDashboard() {
             ))}
           </div>
         </div>
+
+        {/* Right Column: Chart & TF Predictor */}
+        <div className="flex flex-col gap-6">
+          <div className="card bg-brand-bg-secondary border border-brand-border rounded-2xl p-6 h-[280px]">
+            <h3 className="text-xs font-bold font-display text-white uppercase tracking-wider mb-4 text-brand-text-muted">Placement Sector Split</h3>
+            <div className="chart-wrapper h-[200px]">
+              <canvas ref={canvasRef}></canvas>
+            </div>
+          </div>
+
+          <div className="card bg-brand-bg-secondary border border-brand-border rounded-2xl p-6 flex flex-col gap-4">
+            <div className="flex justify-between items-center border-b border-brand-border/40 pb-2.5">
+              <div>
+                <h4 className="text-sm font-bold text-white">AI Mentorship Engagement</h4>
+                <p className="text-[10px] text-brand-text-muted mt-0.5">Evaluate mentorship score based on monthly frequency.</p>
+              </div>
+              <span className="badge bg-brand-accent-cyan/10 text-brand-accent-cyan text-[10px] px-2 py-0.5">TF.js</span>
+            </div>
+
+            <div className="flex flex-col gap-3 text-xs">
+              <div>
+                <label className="block text-[10px] font-bold text-brand-text-muted uppercase tracking-wider mb-1">Mentorship Frequency</label>
+                <input 
+                  type="range" 
+                  min="1" 
+                  max="10" 
+                  value={frequency} 
+                  onChange={(e) => setFrequency(parseInt(e.target.value))} 
+                  className="w-full accent-brand-primary cursor-pointer"
+                />
+                <span className="float-right mt-1 font-mono text-[10px] text-brand-text-muted">{frequency} meetings/mo</span>
+              </div>
+
+              <button 
+                onClick={handleTfPredict}
+                className="btn btn-primary w-full justify-center py-2"
+              >
+                Score Referral Profile
+              </button>
+
+              <div className="bg-brand-bg-tertiary/40 border border-brand-border/60 rounded-xl p-3 text-center">
+                <div className="text-[10px] font-bold uppercase tracking-wider text-brand-text-muted mb-1">Mentorship Engagement Score</div>
+                <div className="text-2xl font-display font-bold text-brand-accent-emerald">
+                  {predictedScore !== null ? `${predictedScore}% Engagement` : '--%'}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   );

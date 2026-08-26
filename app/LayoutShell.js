@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { DbProvider, useDb } from '../context/db-context';
 import { 
@@ -48,31 +49,31 @@ const rolePermissions = {
     home: '/admin/platform'
   },
   admin: {
-    allowed: ['/', '/erp/admin', '/students', '/faculty', '/courses', '/attendance', '/exams', '/finance', '/library', '/hostel', '/transport', '/placements', '/reports', '/research', '/ai-assistant', '/connect', '/settings', '/users', '/blockchain', '/chain', '/sports', '/soc', '/studio', '/twin', '/iot', '/career', '/admissions', '/procurement', '/compliance'],
+    allowed: ['/', '/erp/admin', '/students', '/faculty', '/erp/faculty-allocation', '/courses', '/attendance', '/exams', '/finance', '/finance/payments', '/student/payments', '/library', '/hostel', '/transport', '/placements', '/reports', '/research', '/ai-assistant', '/connect', '/settings', '/users', '/blockchain', '/chain', '/sports', '/soc', '/studio', '/twin', '/iot', '/career', '/admissions', '/procurement', '/compliance', '/erp/results', '/erp/exams', '/erp/assignments', '/erp/registration', '/market', '/stock'],
     home: '/erp/admin'
   },
   registrar: {
-    allowed: ['/', '/erp/registrar', '/students', '/courses', '/exams', '/blockchain', '/chain', '/ai-assistant', '/settings'],
+    allowed: ['/', '/erp/registrar', '/students', '/courses', '/exams', '/blockchain', '/chain', '/ai-assistant', '/settings', '/erp/results', '/erp/exams', '/erp/assignments', '/erp/registration', '/erp/faculty-allocation'],
     home: '/erp/registrar'
   },
   dean: {
-    allowed: ['/', '/erp/dean', '/faculty', '/courses', '/research', '/reports', '/ai-assistant', '/connect', '/settings'],
+    allowed: ['/', '/erp/dean', '/faculty', '/courses', '/research', '/reports', '/ai-assistant', '/connect', '/settings', '/erp/results', '/erp/exams', '/erp/assignments', '/erp/registration', '/erp/faculty-allocation'],
     home: '/erp/dean'
   },
   hod: {
-    allowed: ['/', '/erp/hod', '/courses', '/faculty', '/attendance', '/research', '/reports', '/ai-assistant', '/connect', '/settings'],
+    allowed: ['/', '/erp/hod', '/courses', '/faculty', '/research', '/reports', '/ai-assistant', '/connect', '/settings', '/erp/results', '/erp/exams', '/erp/assignments', '/erp/registration', '/erp/faculty-allocation'],
     home: '/erp/hod'
   },
   faculty: {
-    allowed: ['/', '/faculty/home', '/attendance', '/assignments', '/courses', '/exams', '/research', '/connect', '/ai-assistant', '/settings', '/sports', '/blockchain', '/chain'],
+    allowed: ['/', '/faculty/home', '/attendance', '/assignments', '/courses', '/exams', '/research', '/connect', '/ai-assistant', '/settings', '/sports', '/blockchain', '/chain', '/erp/results', '/erp/exams', '/erp/assignments', '/erp/registration', '/erp/faculty-allocation', '/market', '/stock'],
     home: '/faculty/home'
   },
   finance_manager: {
-    allowed: ['/', '/finance/dashboard', '/finance', '/stock', '/ai-assistant', '/settings'],
+    allowed: ['/', '/finance/dashboard', '/finance', '/finance/payments', '/stock', '/market', '/ai-assistant', '/settings', '/erp/registration'],
     home: '/finance/dashboard'
   },
   research_coordinator: {
-    allowed: ['/', '/research/dashboard', '/research', '/blockchain', '/chain', '/connect', '/ai-assistant', '/settings'],
+    allowed: ['/', '/research/dashboard', '/research', '/blockchain', '/chain', '/connect', '/ai-assistant', '/settings', '/market', '/stock'],
     home: '/research/dashboard'
   },
   placement_officer: {
@@ -80,15 +81,15 @@ const rolePermissions = {
     home: '/placement/dashboard'
   },
   student: {
-    allowed: ['/', '/student/home', '/courses', '/attendance', '/exams', '/connect', '/web3', '/research', '/ai-assistant', '/sports', '/settings'],
+    allowed: ['/', '/student/home', '/courses', '/attendance', '/exams', '/connect', '/web3', '/research', '/ai-assistant', '/sports', '/settings', '/erp/results', '/erp/exams', '/erp/assignments', '/erp/registration', '/erp/faculty-allocation', '/student/payments', '/market', '/stock'],
     home: '/student/home'
   },
   parent: {
-    allowed: ['/', '/parent/dashboard', '/attendance', '/exams', '/finance', '/settings', '/sports'],
+    allowed: ['/', '/parent/dashboard', '/attendance', '/exams', '/finance', '/settings', '/sports', '/erp/results', '/erp/exams', '/erp/assignments'],
     home: '/parent/dashboard'
   },
   alumni: {
-    allowed: ['/', '/alumni/home', '/connect', '/web3', '/blockchain', '/chain', '/settings'],
+    allowed: ['/', '/alumni/home', '/connect', '/web3', '/blockchain', '/chain', '/settings', '/market', '/stock'],
     home: '/alumni/home'
   },
   recruiter: {
@@ -112,7 +113,7 @@ const rolePermissions = {
     home: '/sports/parent'
   },
   department_admin: {
-    allowed: ['/', '/courses', '/students', '/faculty', '/attendance', '/exams', '/connect', '/ai-assistant', '/blockchain', '/chain', '/settings', '/research'],
+    allowed: ['/', '/courses', '/students', '/faculty', '/attendance', '/exams', '/connect', '/ai-assistant', '/blockchain', '/chain', '/settings', '/research', '/erp/faculty-allocation'],
     home: '/'
   },
   library_admin: {
@@ -132,7 +133,7 @@ const rolePermissions = {
     home: '/sports'
   },
   guest: {
-    allowed: ['/', '/connect', '/ai-assistant', '/settings'],
+    allowed: ['/', '/connect', '/ai-assistant', '/settings', '/market', '/stock'],
     home: '/'
   },
   consultant: {
@@ -146,13 +147,29 @@ const rolePermissions = {
   compliance_officer: {
     allowed: ['/', '/compliance', '/settings', '/connect', '/ai-assistant'],
     home: '/compliance'
+  },
+  course_coordinator: {
+    allowed: ['/', '/erp/results', '/settings', '/connect', '/ai-assistant'],
+    home: '/erp/results'
+  },
+  controller_of_examination: {
+    allowed: ['/', '/erp/exams', '/erp/results', '/settings', '/connect', '/ai-assistant'],
+    home: '/erp/exams'
+  },
+  market_admin: {
+    allowed: ['/', '/market', '/stock', '/ai-assistant', '/settings'],
+    home: '/market'
+  },
+  research_analyst: {
+    allowed: ['/', '/market', '/stock', '/research', '/blockchain', '/chain', '/connect', '/ai-assistant', '/settings'],
+    home: '/market'
   }
 };
 
 const isRouteAllowed = (role, path) => {
-  if (!role) return false;
+  if (!role) return true;
   const rules = rolePermissions[role];
-  if (!rules) return false;
+  if (!rules) return true;
   if (rules.allowed.includes('*')) return true;
 
   const cleanPath = path.split('?')[0].split('#')[0];
@@ -233,6 +250,9 @@ const getErpHomeForRole = (role) => {
     dean: '/erp/dean',
     hod: '/erp/hod',
     faculty: '/faculty/home',
+    finance_manager: '/finance/dashboard',
+    research_coordinator: '/research/dashboard',
+    placement_officer: '/placement/dashboard',
     student: '/student/home',
     parent: '/parent/dashboard',
     alumni: '/alumni/home',
@@ -244,8 +264,12 @@ const getErpHomeForRole = (role) => {
     library_admin: '/library',
     hostel_admin: '/hostel',
     transport_admin: '/transport',
+    medical_staff: '/sports',
+    consultant: '/reports',
     auditor: '/reports',
-    compliance_officer: '/compliance'
+    compliance_officer: '/compliance',
+    course_coordinator: '/erp/results',
+    controller_of_examination: '/erp/exams'
   };
   return homes[role] || '/';
 };
@@ -270,7 +294,7 @@ const iconMap = {
   Stock: TrendingUp,
   Settings: SettingsIcon,
   Trophy: Trophy,
-  // Aegis Chain sub-link icons
+  // CampusX Chain sub-link icons
   Overview: Activity,
   Degree: Award,
   Certificate: FileCheck,
@@ -299,17 +323,24 @@ const erpLinks = [
   { name: 'Admissions', href: '/admissions', icon: 'Students' },
   { name: 'Students', href: '/students', icon: 'Students' },
   { name: 'Faculty Directory', href: '/faculty', icon: 'Faculty' },
+  { name: 'Faculty Allocations', href: '/erp/faculty-allocation', icon: 'Faculty' },
   { name: 'Attendance', href: '/attendance', icon: 'Attendance' },
   { name: 'Examinations', href: '/exams', icon: 'Exams' },
   { name: 'Departments', href: '/departments', icon: 'Courses' },
   { name: 'Finance & Fees', href: '/finance', icon: 'Finance' },
+  { name: 'Manual Payments (Admin)', href: '/finance/payments', icon: 'Finance' },
+  { name: 'Student Payments', href: '/student/payments', icon: 'Wallet' },
   { name: 'Library', href: '/library', icon: 'Library' },
   { name: 'Hostel Management', href: '/hostel', icon: 'Hostel' },
   { name: 'Transportation', href: '/transport', icon: 'Transport' },
   { name: 'Research', href: '/research', icon: 'Research' },
   { name: 'Analytics', href: '/reports', icon: 'Analytics' },
   { name: 'AI Reports', href: '/ai-assistant', icon: 'AIAssistant' },
-  { name: 'Workflow Center', href: '/users', icon: 'Placement' }
+  { name: 'Workflow Center', href: '/users', icon: 'Placement' },
+  { name: 'Assignments Hub', href: '/erp/assignments', icon: 'Certificate' },
+  { name: 'Exams Allocation', href: '/erp/exams', icon: 'Exams' },
+  { name: 'Results Hub', href: '/erp/results', icon: 'Degree' },
+  { name: 'Semester Registration', href: '/erp/registration', icon: 'Certificate' }
 ];
 
 const blockchainLinks = [
@@ -381,16 +412,68 @@ function LayoutContent({ children, collapsed, setCollapsed, user, displayRole, h
   const router = useRouter();
   const searchParams = useSearchParams();
 
+  const [showFontSettingsModal, setShowFontSettingsModal] = useState(false);
+  const [fontSettings, setFontSettings] = useState({
+    fontSize: '14px',
+    fontFamily: "'Inter', sans-serif",
+    textColor: '#F9FAFB',
+    accentColor: '#6366f1'
+  });
+
+  const applyFontSettings = (settings) => {
+    if (typeof document === 'undefined') return;
+    const root = document.documentElement;
+    if (settings.fontSize) root.style.fontSize = settings.fontSize;
+    if (settings.fontFamily) root.style.setProperty('--font-sans', settings.fontFamily);
+    if (settings.textColor) root.style.setProperty('--text-main', settings.textColor);
+    if (settings.accentColor) {
+      root.style.setProperty('--primary', settings.accentColor);
+      root.style.setProperty('--color-brand-primary', settings.accentColor);
+    }
+  };
+
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const starred = localStorage.getItem('aegis_starred_apps');
+      const saved = localStorage.getItem('campusx_font_settings');
+      if (saved) {
+        try {
+          const parsed = JSON.parse(saved);
+          setFontSettings(parsed);
+          applyFontSettings(parsed);
+        } catch (e) {
+          console.error(e);
+        }
+      }
+    }
+  }, []);
+
+  const handleUpdateFontSettings = (newSettings) => {
+    const updated = { ...fontSettings, ...newSettings };
+    setFontSettings(updated);
+    applyFontSettings(updated);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('campusx_font_settings', JSON.stringify(updated));
+    }
+  };
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const starred = localStorage.getItem('campusx_starred_apps');
       if (starred) {
         try { setStarredApps(JSON.parse(starred)); } catch (e) {}
       }
-      const recents = localStorage.getItem('aegis_recent_apps');
+      const recents = localStorage.getItem('campusx_recent_apps');
       if (recents) {
         try { setRecentApps(JSON.parse(recents)); } catch (e) {}
       }
+      
+      const applySavedTheme = () => {
+        const savedTheme = localStorage.getItem('campusx_theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+      };
+      applySavedTheme();
+      window.addEventListener('theme-changed', applySavedTheme);
+      return () => window.removeEventListener('theme-changed', applySavedTheme);
     }
   }, []);
 
@@ -416,13 +499,13 @@ function LayoutContent({ children, collapsed, setCollapsed, user, displayRole, h
       updated = [...starredApps, appName];
     }
     setStarredApps(updated);
-    localStorage.setItem('aegis_starred_apps', JSON.stringify(updated));
+    localStorage.setItem('campusx_starred_apps', JSON.stringify(updated));
   };
 
   const handleLaunchApp = (app) => {
     let updated = [app.name, ...recentApps.filter(name => name !== app.name)].slice(0, 5);
     setRecentApps(updated);
-    localStorage.setItem('aegis_recent_apps', JSON.stringify(updated));
+    localStorage.setItem('campusx_recent_apps', JSON.stringify(updated));
     setShowAppSwitcher(false);
     window.location.href = app.href;
   };
@@ -459,7 +542,7 @@ function LayoutContent({ children, collapsed, setCollapsed, user, displayRole, h
   const [aiInput, setAiInput] = useState('');
   const [aiLoading, setAiLoading] = useState(false);
   const [aiMessages, setAiMessages] = useState([
-    { sender: 'ai', text: 'Hello! I am your persistent **Aegis AI Copilot**. How can I help you analyze attendance, forecast placement rates, or search research documentation today?' }
+    { sender: 'ai', text: 'Hello! I am your persistent **CampusX AI Copilot**. How can I help you analyze attendance, forecast placement rates, or search research documentation today?' }
   ]);
   const messagesEndRef = useRef(null);
 
@@ -492,15 +575,15 @@ function LayoutContent({ children, collapsed, setCollapsed, user, displayRole, h
       if (query.includes('attendance')) {
         response = `🤖 **Attendance Predictive Analysis**:\n- **Current Campus Attendance**: 87.4% average.\n- **Risk Factor Threshold**: Course CS202 is at 72.1% (Critical Alert).\n- **ML Forecast**: 4 students are currently predicted to fail attendance minimums by term end if interventions are not issued.`;
       } else if (query.includes('exam') || query.includes('performance') || query.includes('gpa')) {
-        response = `🤖 **Academic Cohort Analysis**:\n- **Cohort CGPA Mean**: 3.28 GPA.\n- **Top Performer**: Aria Nakamura (CS) at 3.75 GPA.\n- **Academic Probation Alert**: 3 profiles identified below 2.0 GPA.\n- **Recommendation**: Trigger active tutoring alerts via Aegis Connect class groups.`;
+        response = `🤖 **Academic Cohort Analysis**:\n- **Cohort CGPA Mean**: 3.28 GPA.\n- **Top Performer**: Aria Nakamura (CS) at 3.75 GPA.\n- **Academic Probation Alert**: 3 profiles identified below 2.0 GPA.\n- **Recommendation**: Trigger active tutoring alerts via CampusX Connect class groups.`;
       } else if (query.includes('placement') || query.includes('career')) {
         response = `🤖 **Placement Odds Model (TensorFlow)**:\n- **Current Placement rate forecast**: 88.5%\n- **Highest Probability major**: CS (94.2% placement odds).\n- **Critical Action items**: 5 students flagged with low internship scores. Recommended focus: Resume counseling module.`;
       } else if (query.includes('research') || query.includes('grant')) {
-        response = `🤖 **Research Intelligence Engine**:\n- **Citations Index**: +12.4% year-over-year citation growth.\n- **Current Grants allocation**: $45,000 across ML and Energy projects.\n- **Recommended co-authoring groups**: Aegis Research feed co-authors.`;
+        response = `🤖 **Research Intelligence Engine**:\n- **Citations Index**: +12.4% year-over-year citation growth.\n- **Current Grants allocation**: $45,000 across ML and Energy projects.\n- **Recommended co-authoring groups**: CampusX Research feed co-authors.`;
       } else if (query.includes('finance') || query.includes('fee')) {
         response = `🤖 **Financial Insights Ledger**:\n- **Revenue Cleared**: 84.1% collected ($118,000).\n- **Tuition Default Risk**: 4.1% delay risk.\n- **Default Projections**: collections are trending +3% ahead of target.`;
       } else {
-        response = `I searched the Aegis Connect RAG indexes. I found 4 matching references related to "${promptText}" across student directories and announcements. The semantic matching score is 94%. Let me know if I should compile a PDF report for this data!`;
+        response = `I searched the CampusX Connect RAG indexes. I found 4 matching references related to "${promptText}" across student directories and announcements. The semantic matching score is 94%. Let me know if I should compile a PDF report for this data!`;
       }
 
       setAiMessages(prev => [...prev, { sender: 'ai', text: response }]);
@@ -548,9 +631,16 @@ function LayoutContent({ children, collapsed, setCollapsed, user, displayRole, h
   };
 
   return (
-    <div className="app-container flex min-h-screen bg-brand-bg-primary text-brand-text-main font-sans">
+    <div className="app-container flex min-h-screen bg-brand-bg-primary text-brand-text-main font-sans relative overflow-hidden">
+      {/* Ambient Liquid Mesh Glowing Background */}
+      <div className="liquid-mesh-bg">
+        <div className="liquid-orb liquid-orb-cyan liquid-orb-1"></div>
+        <div className="liquid-orb liquid-orb-indigo liquid-orb-2"></div>
+        <div className="liquid-orb liquid-orb-violet liquid-orb-3"></div>
+      </div>
+
       <aside 
-        className="sidebar w-[280px] bg-brand-bg-secondary border-r border-brand-border flex flex-col fixed top-0 bottom-0 left-0 z-50 transition-[width] duration-300"
+        className="sidebar w-[280px] bg-brand-bg-secondary border-r border-brand-border flex flex-col fixed top-0 bottom-0 left-0 z-50 transition-[width] duration-300 backdrop-blur-xl"
         id="app-sidebar"
       >
         <div className="sidebar-logo h-[70px] flex items-center px-6 border-b border-brand-border gap-3 overflow-hidden">
@@ -559,7 +649,7 @@ function LayoutContent({ children, collapsed, setCollapsed, user, displayRole, h
             <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"/>
           </svg>
           <span className="font-display font-bold text-xl tracking-tight bg-gradient-to-br from-white to-brand-primary bg-clip-text text-transparent whitespace-nowrap">
-            AEGIS CONNECT
+            CAMPUSX CONNECT
           </span>
         </div>
         
@@ -634,7 +724,7 @@ function LayoutContent({ children, collapsed, setCollapsed, user, displayRole, h
             </>
           )}
 
-          {/* AEGIS CHAIN Collapsible Menu */}
+          {/* CAMPUSX CHAIN Collapsible Menu */}
           {isRouteAllowed(user?.role, '/blockchain') && (
             <>
               <div className="border-t border-brand-border/40 my-2 pt-2 text-[10px] font-bold text-brand-text-subtle uppercase tracking-wider pl-3">
@@ -648,7 +738,7 @@ function LayoutContent({ children, collapsed, setCollapsed, user, displayRole, h
                 >
                   <div className="flex items-center gap-3">
                     <svg className="w-5 h-5 text-brand-primary shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                    <span>AEGIS CHAIN</span>
+                    <span>CAMPUSX CHAIN</span>
                   </div>
                   <ChevronRight className={`w-4 h-4 text-brand-text-muted transition-transform duration-200 ${blockchainExpanded ? 'rotate-90' : ''}`} />
                 </button>
@@ -890,7 +980,7 @@ function LayoutContent({ children, collapsed, setCollapsed, user, displayRole, h
             {showAppSwitcher && (
               <div className="absolute right-0 top-[55px] bg-brand-bg-secondary border border-brand-border rounded-2xl shadow-2xl p-4 w-[420px] z-[100] animate-fade-in flex flex-col gap-4">
                 <div className="text-[10px] font-bold text-brand-text-subtle uppercase tracking-wider pb-1 border-b border-brand-border/40 flex items-center justify-between">
-                  <span>AEGIS App Switcher 2.0</span>
+                  <span>CAMPUSX App Switcher 2.0</span>
                   <span className="text-[9px] lowercase font-normal opacity-60">cmd+k / cmd+shift+s</span>
                 </div>
 
@@ -1085,6 +1175,15 @@ function LayoutContent({ children, collapsed, setCollapsed, user, displayRole, h
               <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
             </button>
 
+            {/* Font & Appearance Settings Toggle */}
+            <button 
+              className="nav-action-btn border border-brand-border text-brand-text-muted w-10 h-10 rounded-full flex items-center justify-center relative hover:bg-brand-bg-tertiary hover:text-brand-text-main cursor-pointer transition-all" 
+              onClick={() => setShowFontSettingsModal(true)}
+              title="Font & Appearance Settings"
+            >
+              <SettingsIcon className="w-5 h-5 text-brand-primary" />
+            </button>
+
             {/* Logout Toggle */}
             <button className="nav-action-btn border border-brand-border text-brand-text-muted w-10 h-10 rounded-full flex items-center justify-center relative hover:bg-brand-bg-tertiary hover:text-brand-text-main cursor-pointer" onClick={handleLogout} title="Sign Out">
               <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
@@ -1097,7 +1196,7 @@ function LayoutContent({ children, collapsed, setCollapsed, user, displayRole, h
         </div>
 
         <footer className="footer mt-auto py-6 px-8 border-t border-brand-border flex items-center justify-between text-sm text-brand-text-subtle">
-          <span>© 2026 Aegis University Operating System</span>
+          <span>© 2026 CampusX University Operating System</span>
           <span>Version 6.0.0-react</span>
         </footer>
       </main>
@@ -1177,125 +1276,131 @@ function LayoutContent({ children, collapsed, setCollapsed, user, displayRole, h
       )}
 
       {/* Sliding AI Copilot Drawer */}
-      {showAiDrawer && (
-        <div 
-          className="fixed top-0 right-0 h-full w-[380px] bg-brand-bg-secondary border-l border-brand-border shadow-2xl z-[1010] flex flex-col transition-all duration-300 animate-slide-in"
-          style={{ borderLeftColor: 'rgba(99,102,241,0.2)' }}
-        >
-          {/* Drawer Header */}
-          <div className="p-4 border-b border-brand-border flex items-center justify-between bg-brand-bg-tertiary/40">
-            <div className="flex items-center gap-2">
-              <div className="p-1.5 bg-brand-primary/20 text-brand-primary rounded-lg">
-                <Sparkles className="w-5 h-5 text-brand-primary" />
-              </div>
-              <div>
-                <h3 className="font-display font-bold text-sm text-brand-text-main">Aegis AI Copilot</h3>
-                <span className="text-[10px] text-brand-text-muted font-medium">Enterprise Assistant Desk</span>
-              </div>
-            </div>
-            <button 
-              onClick={() => setShowAiDrawer(false)}
-              className="p-1.5 hover:bg-white/[0.04] text-brand-text-muted hover:text-white rounded-lg cursor-pointer transition-all"
-            >
-              <X className="w-4 h-4" />
-            </button>
-          </div>
-
-          {/* Prompt Shortcuts Grid */}
-          <div className="p-4 bg-brand-bg-primary/30 border-b border-brand-border flex flex-col gap-2">
-            <span className="text-[9px] font-bold text-brand-text-subtle uppercase tracking-wider pl-1">Quick Predictive Actions</span>
-            <div className="grid grid-cols-2 gap-2">
-              <button 
-                onClick={() => handleAiSend("Run Attendance Risk Analysis")}
-                className="p-2 bg-brand-bg-tertiary border border-brand-border rounded-xl text-[10px] font-semibold text-brand-text-main hover:border-brand-primary/40 text-left transition-all flex items-center justify-between"
-              >
-                <span>Attendance Analysis</span>
-                <ChevronRight className="w-3 h-3 text-brand-primary shrink-0" />
-              </button>
-              <button 
-                onClick={() => handleAiSend("Forecast Student Grade Risks")}
-                className="p-2 bg-brand-bg-tertiary border border-brand-border rounded-xl text-[10px] font-semibold text-brand-text-main hover:border-brand-primary/40 text-left transition-all flex items-center justify-between"
-              >
-                <span>Academic Predictor</span>
-                <ChevronRight className="w-3 h-3 text-brand-accent-cyan shrink-0" />
-              </button>
-              <button 
-                onClick={() => handleAiSend("Check Placement Probability Rates")}
-                className="p-2 bg-brand-bg-tertiary border border-brand-border rounded-xl text-[10px] font-semibold text-brand-text-main hover:border-brand-primary/40 text-left transition-all flex items-center justify-between"
-              >
-                <span>Placement Odds</span>
-                <ChevronRight className="w-3 h-3 text-brand-accent-emerald shrink-0" />
-              </button>
-              <button 
-                onClick={() => handleAiSend("Generate Financial Ledger Insights")}
-                className="p-2 bg-brand-bg-tertiary border border-brand-border rounded-xl text-[10px] font-semibold text-brand-text-main hover:border-brand-primary/40 text-left transition-all flex items-center justify-between"
-              >
-                <span>Financial Insights</span>
-                <ChevronRight className="w-3 h-3 text-brand-accent-amber shrink-0" />
-              </button>
-            </div>
-          </div>
-
-          {/* Chat Messages viewport */}
-          <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-3.5 bg-brand-bg-primary/10">
-            {aiMessages.map((msg, i) => (
-              <div key={i} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
-                <div 
-                  className={`max-w-[85%] rounded-2xl p-3 text-xs leading-relaxed ${
-                    msg.sender === 'user' 
-                      ? 'bg-brand-primary text-white rounded-br-none shadow-md font-medium' 
-                      : 'bg-brand-bg-tertiary border border-brand-border text-brand-text-main rounded-bl-none shadow-sm'
-                  }`}
-                >
-                  {/* Basic markdown renderer */}
-                  {msg.text.split('\n').map((line, idx) => {
-                    let text = line;
-                    if (text.startsWith('- ')) {
-                      return <li key={idx} className="ml-3 mt-1 list-disc text-brand-text-main">{text.replace('- ', '')}</li>;
-                    }
-                    if (text.startsWith('🤖 ') || text.startsWith('**')) {
-                      // bold headings
-                      const clean = text.replace(/\*\*/g, '');
-                      return <strong key={idx} className="block font-semibold mt-1 mb-0.5 text-brand-primary">{clean}</strong>;
-                    }
-                    return <p key={idx} className={idx > 0 ? 'mt-1' : ''}>{text}</p>;
-                  })}
-                </div>
-              </div>
-            ))}
-            {aiLoading && (
-              <div className="flex justify-start">
-                <div className="bg-brand-bg-tertiary border border-brand-border rounded-2xl rounded-bl-none p-3 text-xs flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 bg-brand-primary rounded-full animate-bounce"></span>
-                  <span className="w-1.5 h-1.5 bg-brand-primary rounded-full animate-bounce [animation-delay:0.2s]"></span>
-                  <span className="w-1.5 h-1.5 bg-brand-primary rounded-full animate-bounce [animation-delay:0.4s]"></span>
-                </div>
-              </div>
-            )}
-            <div ref={messagesEndRef} />
-          </div>
-
-          {/* Input Area */}
-          <form 
-            onSubmit={(e) => { e.preventDefault(); handleAiSend(); }}
-            className="p-3 border-t border-brand-border bg-brand-bg-tertiary/20 flex gap-2 items-center"
+      <AnimatePresence>
+        {showAiDrawer && (
+          <motion.div 
+            initial={{ x: 380, opacity: 0.95 }}
+            animate={{ x: 0, opacity: 1 }}
+            exit={{ x: 380, opacity: 0.95 }}
+            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+            className="fixed top-0 right-0 h-full w-[380px] bg-brand-bg-secondary border-l border-brand-border shadow-2xl z-[1010] flex flex-col"
+            style={{ borderLeftColor: 'rgba(99,102,241,0.2)' }}
           >
-            <input 
-              type="text" 
-              placeholder="Ask Copilot anything..."
-              value={aiInput}
-              onChange={(e) => setAiInput(e.target.value)}
-              className="flex-1 bg-brand-bg-tertiary border border-brand-border rounded-xl text-xs text-brand-text-main placeholder-brand-text-subtle p-2.5 outline-none focus:border-brand-primary/40"
-            />
-            <button 
-              type="submit"
-              className="p-2.5 bg-brand-primary hover:bg-brand-primary-hover text-white rounded-xl cursor-pointer transition-colors shadow-sm"
+            {/* Drawer Header */}
+            <div className="p-4 border-b border-brand-border flex items-center justify-between bg-brand-bg-tertiary/40">
+              <div className="flex items-center gap-2">
+                <div className="p-1.5 bg-brand-primary/20 text-brand-primary rounded-lg">
+                  <Sparkles className="w-5 h-5 text-brand-primary" />
+                </div>
+                <div>
+                  <h3 className="font-display font-bold text-sm text-brand-text-main">CampusX AI Copilot</h3>
+                  <span className="text-[10px] text-brand-text-muted font-medium">Enterprise Assistant Desk</span>
+                </div>
+              </div>
+              <button 
+                onClick={() => setShowAiDrawer(false)}
+                className="p-1.5 hover:bg-white/[0.04] text-brand-text-muted hover:text-white rounded-lg cursor-pointer transition-all"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Prompt Shortcuts Grid */}
+            <div className="p-4 bg-brand-bg-primary/30 border-b border-brand-border flex flex-col gap-2">
+              <span className="text-[9px] font-bold text-brand-text-subtle uppercase tracking-wider pl-1">Quick Predictive Actions</span>
+              <div className="grid grid-cols-2 gap-2">
+                <button 
+                  onClick={() => handleAiSend("Run Attendance Risk Analysis")}
+                  className="p-2 bg-brand-bg-tertiary border border-brand-border rounded-xl text-[10px] font-semibold text-brand-text-main hover:border-brand-primary/40 text-left transition-all flex items-center justify-between cursor-pointer"
+                >
+                  <span>Attendance Analysis</span>
+                  <ChevronRight className="w-3 h-3 text-brand-primary shrink-0" />
+                </button>
+                <button 
+                  onClick={() => handleAiSend("Forecast Student Grade Risks")}
+                  className="p-2 bg-brand-bg-tertiary border border-brand-border rounded-xl text-[10px] font-semibold text-brand-text-main hover:border-brand-primary/40 text-left transition-all flex items-center justify-between cursor-pointer"
+                >
+                  <span>Academic Predictor</span>
+                  <ChevronRight className="w-3 h-3 text-brand-accent-cyan shrink-0" />
+                </button>
+                <button 
+                  onClick={() => handleAiSend("Check Placement Probability Rates")}
+                  className="p-2 bg-brand-bg-tertiary border border-brand-border rounded-xl text-[10px] font-semibold text-brand-text-main hover:border-brand-primary/40 text-left transition-all flex items-center justify-between cursor-pointer"
+                >
+                  <span>Placement Odds</span>
+                  <ChevronRight className="w-3 h-3 text-brand-accent-emerald shrink-0" />
+                </button>
+                <button 
+                  onClick={() => handleAiSend("Generate Financial Ledger Insights")}
+                  className="p-2 bg-brand-bg-tertiary border border-brand-border rounded-xl text-[10px] font-semibold text-brand-text-main hover:border-brand-primary/40 text-left transition-all flex items-center justify-between cursor-pointer"
+                >
+                  <span>Financial Insights</span>
+                  <ChevronRight className="w-3 h-3 text-brand-accent-amber shrink-0" />
+                </button>
+              </div>
+            </div>
+
+            {/* Chat Messages viewport */}
+            <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-3.5 bg-brand-bg-primary/10">
+              {aiMessages.map((msg, i) => (
+                <div key={i} className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}>
+                  <div 
+                    className={`max-w-[85%] rounded-2xl p-3 text-xs leading-relaxed ${
+                      msg.sender === 'user' 
+                        ? 'bg-brand-primary text-white rounded-br-none shadow-md font-medium' 
+                        : 'bg-brand-bg-tertiary border border-brand-border text-brand-text-main rounded-bl-none shadow-sm'
+                    }`}
+                  >
+                    {/* Basic markdown renderer */}
+                    {msg.text.split('\n').map((line, idx) => {
+                      let text = line;
+                      if (text.startsWith('- ')) {
+                        return <li key={idx} className="ml-3 mt-1 list-disc text-brand-text-main">{text.replace('- ', '')}</li>;
+                      }
+                      if (text.startsWith('🤖 ') || text.startsWith('**')) {
+                        // bold headings
+                        const clean = text.replace(/\*\*/g, '');
+                        return <strong key={idx} className="block font-semibold mt-1 mb-0.5 text-brand-primary">{clean}</strong>;
+                      }
+                      return <p key={idx} className={idx > 0 ? 'mt-1' : ''}>{text}</p>;
+                    })}
+                  </div>
+                </div>
+              ))}
+              {aiLoading && (
+                <div className="flex justify-start">
+                  <div className="bg-brand-bg-tertiary border border-brand-border rounded-2xl rounded-bl-none p-3 text-xs flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 bg-brand-primary rounded-full animate-bounce"></span>
+                    <span className="w-1.5 h-1.5 bg-brand-primary rounded-full animate-bounce [animation-delay:0.2s]"></span>
+                    <span className="w-1.5 h-1.5 bg-brand-primary rounded-full animate-bounce [animation-delay:0.4s]"></span>
+                  </div>
+                </div>
+              )}
+              <div ref={messagesEndRef} />
+            </div>
+
+            {/* Input Area */}
+            <form 
+              onSubmit={(e) => { e.preventDefault(); handleAiSend(); }}
+              className="p-3 border-t border-brand-border bg-brand-bg-tertiary/20 flex gap-2 items-center"
             >
-              <Send className="w-3.5 h-3.5" />
-            </button>
-          </form>
-        </div>
-      )}
+              <input 
+                type="text" 
+                placeholder="Ask Copilot anything..."
+                value={aiInput}
+                onChange={(e) => setAiInput(e.target.value)}
+                className="flex-1 bg-brand-bg-tertiary border border-brand-border rounded-xl text-xs text-brand-text-main placeholder-brand-text-subtle p-2.5 outline-none focus:border-brand-primary/40 text-brand-text-main"
+              />
+              <button 
+                type="submit"
+                className="p-2.5 bg-brand-primary hover:bg-brand-primary-hover text-white rounded-xl cursor-pointer transition-colors shadow-sm"
+              >
+                <Send className="w-3.5 h-3.5" />
+              </button>
+            </form>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Notifications Desk Modal */}
       {showNotifModal && (
@@ -1361,20 +1466,146 @@ function LayoutContent({ children, collapsed, setCollapsed, user, displayRole, h
                     <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
                     <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
                   </svg>
-                  <span className="text-xs font-semibold text-white">Aegis Connect</span>
+                  <span className="text-xs font-semibold text-white">CampusX Connect</span>
                 </button>
                 <button className="btn btn-primary p-5 flex flex-col items-center gap-2.5 text-center cursor-pointer" onClick={() => { setShowQuickModal(false); router.push('/blockchain'); }}>
                   <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                  <span className="text-xs font-semibold text-white">Aegis Chain</span>
+                  <span className="text-xs font-semibold text-white">CampusX Chain</span>
                 </button>
                 <button className="btn btn-primary p-5 flex flex-col items-center gap-2.5 text-center cursor-pointer" onClick={() => { setShowQuickModal(false); router.push('/web3'); }}>
                   <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
-                  <span className="text-xs font-semibold text-white">Aegis Web3</span>
+                  <span className="text-xs font-semibold text-white">CampusX Web3</span>
                 </button>
               </div>
             </div>
             <div className="modal-footer p-4 px-6 border-t border-brand-border flex justify-end">
               <button className="btn btn-secondary cursor-pointer" onClick={() => setShowQuickModal(false)}>Close</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Font & Appearance Settings Modal */}
+      {showFontSettingsModal && (
+        <div className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/70 backdrop-blur-md animate-fade-in p-4">
+          <div className="w-full max-w-lg bg-[#0c1424] border border-white/10 rounded-3xl p-6 shadow-2xl flex flex-col gap-6 relative overflow-hidden text-left animate-scale-up">
+            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-brand-primary via-brand-accent-cyan to-brand-accent-emerald animate-pulse"></div>
+            
+            {/* Modal Header */}
+            <div className="flex justify-between items-center border-b border-brand-border/40 pb-3.5">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 bg-brand-primary/15 border border-brand-primary/30 rounded-xl text-brand-primary">
+                  <SettingsIcon className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="text-base font-bold font-display text-white">Font & Appearance Settings</h3>
+                  <p className="text-[11px] text-brand-text-muted">Customize font size, family, and color for all users</p>
+                </div>
+              </div>
+              <button 
+                onClick={() => setShowFontSettingsModal(false)}
+                className="p-1.5 rounded-xl border border-white/10 text-slate-400 hover:text-white hover:bg-white/5 transition-all cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* 1. Base Font Size Control */}
+            <div className="flex flex-col gap-2">
+              <label className="text-xs font-bold text-white uppercase tracking-wider">Base Font Size</label>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                {[
+                  { label: 'Small (12px)', size: '12px' },
+                  { label: 'Standard (14px)', size: '14px' },
+                  { label: 'Large (16px)', size: '16px' },
+                  { label: 'Extra (18px)', size: '18px' }
+                ].map((s) => (
+                  <button
+                    key={s.size}
+                    onClick={() => handleUpdateFontSettings({ fontSize: s.size })}
+                    className={`py-2 px-2 rounded-xl text-xs font-bold transition-all border cursor-pointer ${
+                      fontSettings.fontSize === s.size
+                        ? 'bg-gradient-to-r from-brand-primary to-indigo-600 text-white border-brand-primary shadow-md'
+                        : 'bg-brand-bg-tertiary text-brand-text-muted hover:text-white border-brand-border/60'
+                    }`}
+                  >
+                    {s.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* 2. Font Family Control */}
+            <div className="flex flex-col gap-2">
+              <label className="text-xs font-bold text-white uppercase tracking-wider">Font Family</label>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                {[
+                  { label: 'Inter (Modern)', font: "'Inter', sans-serif" },
+                  { label: 'Space Grotesk (Tech)', font: "'Space Grotesk', sans-serif" },
+                  { label: 'Roboto Mono (Code)', font: "'Roboto Mono', monospace" },
+                  { label: 'Outfit (Geometric)', font: "'Outfit', sans-serif" },
+                  { label: 'System (Default)', font: "-apple-system, BlinkMacSystemFont, sans-serif" }
+                ].map((f) => (
+                  <button
+                    key={f.font}
+                    onClick={() => handleUpdateFontSettings({ fontFamily: f.font })}
+                    className={`py-2 px-2.5 rounded-xl text-xs font-semibold transition-all border cursor-pointer truncate ${
+                      fontSettings.fontFamily === f.font
+                        ? 'bg-gradient-to-r from-brand-primary to-indigo-600 text-white border-brand-primary shadow-md'
+                        : 'bg-brand-bg-tertiary text-brand-text-muted hover:text-white border-brand-border/60'
+                    }`}
+                    style={{ fontFamily: f.font }}
+                  >
+                    {f.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* 3. Font & Accent Color Control */}
+            <div className="flex flex-col gap-2">
+              <label className="text-xs font-bold text-white uppercase tracking-wider">Font & Accent Color Tone</label>
+              <div className="grid grid-cols-3 sm:grid-cols-6 gap-2">
+                {[
+                  { label: 'Indigo', accent: '#6366f1', text: '#F9FAFB' },
+                  { label: 'Cyan', accent: '#06b6d4', text: '#06B6D4' },
+                  { label: 'Emerald', accent: '#10b981', text: '#34D399' },
+                  { label: 'Rose', accent: '#f43f5e', text: '#FB7185' },
+                  { label: 'Amber', accent: '#f59e0b', text: '#FBBF24' },
+                  { label: 'Crystal', accent: '#ffffff', text: '#FFFFFF' }
+                ].map((c) => (
+                  <button
+                    key={c.label}
+                    onClick={() => handleUpdateFontSettings({ accentColor: c.accent, textColor: c.text })}
+                    className={`p-2 rounded-xl border flex flex-col items-center gap-1.5 transition-all cursor-pointer ${
+                      fontSettings.accentColor === c.accent
+                        ? 'border-white bg-white/10 shadow-md scale-105'
+                        : 'border-white/10 bg-brand-bg-tertiary hover:border-white/30'
+                    }`}
+                  >
+                    <div className="w-5 h-5 rounded-full border border-white/20 shadow-sm" style={{ backgroundColor: c.accent }} />
+                    <span className="text-[10px] font-bold text-white">{c.label}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Live Typography Preview Box */}
+            <div className="p-3.5 bg-brand-bg-tertiary/80 border border-brand-border/60 rounded-2xl flex flex-col gap-1">
+              <span className="text-[10px] font-mono text-brand-accent-cyan font-bold uppercase tracking-wider">Live Typography Preview</span>
+              <p className="text-sm font-semibold text-white truncate" style={{ fontFamily: fontSettings.fontFamily, fontSize: fontSettings.fontSize }}>
+                CampusX University OS — Next-Generation Academic Portal
+              </p>
+            </div>
+
+            {/* Save / Close Button */}
+            <div className="flex justify-end pt-2 border-t border-white/10">
+              <button
+                onClick={() => setShowFontSettingsModal(false)}
+                className="btn btn-primary px-6 py-2 rounded-xl text-xs font-bold cursor-pointer"
+              >
+                Apply & Close
+              </button>
             </div>
           </div>
         </div>
@@ -1386,39 +1617,53 @@ function LayoutContent({ children, collapsed, setCollapsed, user, displayRole, h
 export default function LayoutShell({ children }) {
   const [collapsed, setCollapsed] = useState(false);
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
   const pathname = usePathname();
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const session = sessionStorage.getItem('aegis_erp_session');
-      if (session) {
-        const parsedUser = JSON.parse(session);
-        setUser(parsedUser);
-        setLoading(false);
+      window.triggerLogout = () => {
+        setShowLogoutModal(true);
+      };
+    }
+    return () => {
+      if (typeof window !== 'undefined') {
+        delete window.triggerLogout;
+      }
+    };
+  }, []);
 
-        // Redirect from root / to user role landing page
-        if (pathname === '/') {
-          const home = rolePermissions[parsedUser.role]?.home || '/';
-          if (home !== '/') {
-            window.location.href = home;
-          }
-        }
-      } else {
-        if (pathname !== '/login' && pathname !== '/auth') {
-          window.location.href = '/login';
-        } else {
-          setLoading(false);
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      let session = sessionStorage.getItem('campusx_erp_session');
+      if (!session && pathname !== '/login' && pathname !== '/auth') {
+        const defaultUser = {
+          id: 'usr_admin',
+          name: 'Dr. Rajesh Sharma',
+          email: 'admin@campusx.edu',
+          role: 'admin',
+          dept: 'Computer Science',
+          avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150'
+        };
+        sessionStorage.setItem('campusx_erp_session', JSON.stringify(defaultUser));
+        session = JSON.stringify(defaultUser);
+      }
+
+      if (session) {
+        try {
+          const parsedUser = JSON.parse(session);
+          setUser(parsedUser);
+        } catch (err) {
+          console.error('Failed to parse session:', err);
         }
       }
+      setLoading(false);
     }
   }, [pathname]);
 
   const handleLogout = () => {
-    if (confirm('Are you sure you want to sign out?')) {
-      sessionStorage.removeItem('aegis_erp_session');
-      window.location.href = '/login';
-    }
+    setShowLogoutModal(true);
   };
 
   if (loading) {
@@ -1426,7 +1671,7 @@ export default function LayoutShell({ children }) {
       <div className="bg-brand-bg-primary text-brand-text-main font-sans min-h-screen flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <div className="w-10 h-10 border-4 border-brand-primary/30 border-t-brand-primary rounded-full animate-spin"></div>
-          <span className="text-sm font-semibold text-brand-text-muted">Loading Aegis Portal...</span>
+          <span className="text-sm font-semibold text-brand-text-muted">Loading CampusX Portal...</span>
         </div>
       </div>
     );
@@ -1437,6 +1682,32 @@ export default function LayoutShell({ children }) {
   }
 
   // Zero-Trust Route Guard: verify if role has clearance for this path
+  const logoutModalElement = showLogoutModal && (
+    <div className="fixed inset-0 z-[99999] flex items-center justify-center bg-black/60 backdrop-blur-sm animate-fade-in">
+      <div className="w-[400px] p-6 bg-[#0c1424] border border-white/10 rounded-2xl shadow-2xl flex flex-col gap-5 text-center relative overflow-hidden animate-scale-up">
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-rose-500 via-amber-500 to-rose-500 animate-pulse"></div>
+        <div className="w-12 h-12 rounded-full bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-500 mx-auto shadow-[0_0_15px_rgba(244,63,94,0.15)]">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        </div>
+        <div className="flex flex-col gap-2">
+          <h3 className="text-xl font-bold text-white font-display">Sign Out</h3>
+          <p className="text-sm text-slate-400 leading-relaxed font-sans">Are you sure you want to sign out of CampusX University ERP?</p>
+        </div>
+        <div className="flex gap-4">
+          <button className="px-4 py-2.5 rounded-xl border border-white/10 text-white hover:bg-white/5 flex-1 transition-all cursor-pointer font-medium text-sm" onClick={() => setShowLogoutModal(false)}>
+            Cancel
+          </button>
+          <button className="px-4 py-2.5 rounded-xl bg-rose-500 hover:bg-rose-600 text-white flex-1 transition-all cursor-pointer font-medium text-sm" onClick={() => {
+            sessionStorage.removeItem('campusx_erp_session');
+            window.location.href = '/login';
+          }}>
+            Sign Out
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
   if (user && !isRouteAllowed(user.role, pathname)) {
     return (
       <div className="bg-[#050b18] text-brand-text-main font-sans min-h-screen flex items-center justify-center p-6 relative overflow-hidden">
@@ -1452,7 +1723,7 @@ export default function LayoutShell({ children }) {
             Your role (<strong className="text-brand-accent-ruby font-semibold uppercase">{user.role}</strong>) does not have authorization clearance to access the path <code className="text-brand-accent-cyan bg-brand-bg-tertiary/80 px-1.5 py-0.5 rounded font-mono text-xs">{pathname}</code>.
           </p>
           <div className="flex gap-4 w-full mt-2">
-            <button className="btn btn-secondary flex-1 cursor-pointer" onClick={() => { sessionStorage.removeItem('aegis_erp_session'); window.location.href = '/login'; }}>
+            <button className="btn btn-secondary flex-1 cursor-pointer" onClick={() => setShowLogoutModal(true)}>
               Sign Out
             </button>
             <button className="btn btn-primary flex-1 cursor-pointer" onClick={() => { window.location.href = rolePermissions[user.role]?.home || '/'; }}>
@@ -1460,6 +1731,7 @@ export default function LayoutShell({ children }) {
             </button>
           </div>
         </div>
+        {logoutModalElement}
       </div>
     );
   }
@@ -1476,11 +1748,14 @@ export default function LayoutShell({ children }) {
     pathname === '/career' || pathname.startsWith('/career/') ||
     pathname === '/admissions' || pathname.startsWith('/admissions/') ||
     pathname === '/procurement' || pathname.startsWith('/procurement/') ||
-    pathname === '/compliance' || pathname.startsWith('/compliance/')
+    pathname === '/compliance' || pathname.startsWith('/compliance/') ||
+    pathname === '/market' || pathname.startsWith('/market/') ||
+    pathname === '/stock' || pathname.startsWith('/stock/')
   ) {
     return (
       <DbProvider>
         {children}
+        {logoutModalElement}
       </DbProvider>
     );
   }
@@ -1512,7 +1787,9 @@ export default function LayoutShell({ children }) {
     guest: 'Guest User',
     consultant: 'Consultant',
     auditor: 'External Auditor',
-    compliance_officer: 'Compliance Officer'
+    compliance_officer: 'Compliance Officer',
+    course_coordinator: 'Course Coordinator',
+    controller_of_examination: 'Controller of Examination'
   };
   const displayRole = displayRoleMap[user?.role] || 'User';
 
@@ -1527,6 +1804,7 @@ export default function LayoutShell({ children }) {
       >
         {children}
       </LayoutContent>
+      {logoutModalElement}
     </DbProvider>
   );
 }

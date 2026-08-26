@@ -1,13 +1,16 @@
 /* ========================================================================
-   Aegis University ERP — Core Component Styling System
-   Glassmorphic dark-indigo visual language and responsive design
+   CampusX University ERP — Core Component Styling System
+   State-of-the-Art Liquid Glass UI & Glassmorphism 2.0 Design System
    ======================================================================== */
 
-/* Glassmorphic Cards with Premium Glow and Elevation Transitions */
+/* Liquid Glass Cards with Specular Highlights & Fluid Glow */
 @utility card {
-  @apply bg-brand-bg-secondary/70 border border-brand-border/60 rounded-[20px] p-6 shadow-[0_4px_30px_rgba(0,0,0,0.3)] transition-all duration-300 backdrop-blur-md;
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.03);
+  @apply bg-brand-bg-secondary/70 border border-brand-border/60 rounded-[20px] p-5 shadow-2xl transition-all duration-300 backdrop-blur-xl;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow), inset 0 1px 1px 0 var(--glass-specular);
   position: relative;
+  overflow: hidden;
 }
 
 .card::before {
@@ -15,102 +18,152 @@
   position: absolute;
   top: 0; left: 0; right: 0;
   height: 2px;
-  background: linear-gradient(90deg, transparent 15%, var(--color-brand-primary) 40%, var(--color-brand-accent-cyan) 60%, transparent 85%);
-  opacity: 0.12;
-  transition: opacity 0.3s;
+  background: linear-gradient(90deg, transparent 10%, var(--primary) 40%, var(--accent-cyan) 60%, transparent 90%);
+  opacity: 0.35;
+  transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   pointer-events: none;
 }
 
+.card::after {
+  content: '';
+  position: absolute;
+  top: -50%; left: -50%; width: 200%; height: 200%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, transparent 60%);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
 .card:hover {
-  @apply border-brand-primary/30 -translate-y-[2px];
-  box-shadow: 0 10px 30px -10px rgba(99, 102, 241, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.05);
+  @apply border-brand-primary/40 -translate-y-[3px];
+  box-shadow: 0 16px 40px -10px var(--primary-glow), inset 0 1px 1.5px 0 var(--glass-specular);
 }
 
 .card:hover::before {
-  opacity: 0.55;
+  opacity: 0.85;
 }
 
-/* Page Header Typography */
+.card:hover::after {
+  opacity: 1;
+}
+
+/* Page Header Typography with Dynamic Refraction Gradient */
 @utility page-header {
-  @apply flex justify-between items-center gap-4 flex-wrap pb-2 border-b border-brand-border/30;
+  @apply flex justify-between items-center gap-3.5 flex-wrap pb-3.5 border-b border-brand-border/40;
 }
 
 .page-header h1 {
-  @apply font-display text-3xl font-bold tracking-tight bg-gradient-to-r from-white via-slate-100 to-brand-primary bg-clip-text text-transparent;
+  @apply font-display text-2xl font-bold tracking-tight bg-gradient-to-r from-brand-text-main via-brand-primary to-brand-accent-cyan bg-clip-text text-transparent;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.05));
 }
 
 .page-header p {
-  @apply text-brand-text-muted text-sm mt-1;
+  @apply text-brand-text-muted text-xs mt-0.5 font-medium;
 }
 
 /* KPI Cards Layout */
 @utility kpi-grid {
-  @apply grid grid-cols-[repeat(auto-fit,minmax(240px,1fr))] gap-6;
+  @apply grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-5;
 }
 
 @utility kpi-card {
-  @apply flex justify-between items-start relative overflow-hidden;
+  @apply flex justify-between items-start relative overflow-hidden backdrop-blur-xl rounded-[20px] p-5;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow), inset 0 1px 1px 0 var(--glass-specular);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .kpi-card::after {
   content: '';
   position: absolute;
-  top: 0; right: 0;
-  width: 120px; height: 120px;
-  background: radial-gradient(circle, rgba(99, 102, 241, 0.05) 0%, transparent 70%);
+  top: -20px; right: -20px;
+  width: 100px; height: 100px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%);
   pointer-events: none;
+  transition: transform 0.5s ease;
+}
+
+.kpi-card:hover {
+  @apply border-brand-primary/40 -translate-y-[3px];
+  box-shadow: 0 16px 40px -10px var(--primary-glow), inset 0 1px 1.5px 0 var(--glass-specular);
+}
+
+.kpi-card:hover::after {
+  transform: scale(1.3);
 }
 
 @utility kpi-details {
-  @apply flex flex-col;
+  @apply flex flex-col gap-1 py-1;
 }
 
 @utility kpi-label {
-  @apply text-brand-text-muted text-xs font-semibold uppercase tracking-wider;
+  @apply text-brand-text-muted text-[10px] font-bold uppercase tracking-wider py-1 px-1.5 block;
 }
 
 @utility kpi-value {
-  @apply font-display text-[2rem] font-bold mt-2 tracking-tight text-white leading-none;
+  @apply font-display text-[1.75rem] font-extrabold my-1 py-1 px-1.5 tracking-tight text-brand-text-main leading-tight block;
 }
 
 @utility kpi-growth {
-  @apply flex items-center gap-1 text-xs mt-1.5 font-semibold;
+  @apply flex items-center gap-1.5 text-[11px] py-1 px-1.5 font-semibold text-brand-text-subtle;
 }
 
 @utility kpi-icon {
-  @apply w-12 h-12 rounded-xl flex items-center justify-center bg-brand-bg-tertiary text-brand-primary border border-brand-border/60 transition-transform duration-300;
+  @apply w-11 h-11 rounded-xl flex items-center justify-center bg-brand-bg-tertiary text-brand-primary border border-brand-border/60 transition-all duration-300;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4);
 }
 
 .kpi-card:hover .kpi-icon {
-  @apply scale-110 text-white bg-brand-primary;
-  box-shadow: 0 0 15px rgba(99, 102, 241, 0.4);
+  @apply scale-105 text-white bg-brand-primary;
+  box-shadow: 0 0 20px var(--primary-glow);
 }
 
-/* Premium Navigation Links & Buttons */
+/* Premium Liquid Sheen Buttons */
 @utility btn {
-  @apply inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl font-semibold text-sm cursor-pointer transition-all duration-300 border-none font-sans active:scale-95;
+  @apply inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl font-semibold text-xs cursor-pointer transition-all duration-300 border-none font-sans active:scale-95 relative overflow-hidden;
 }
 
 @utility btn-primary {
   @apply bg-brand-primary text-white hover:bg-brand-primary-hover;
-  box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3);
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+  box-shadow: 0 6px 20px -4px var(--primary-glow), inset 0 1px 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%; width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+  transition: left 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-primary:hover::before {
+  left: 100%;
 }
 
 .btn-primary:hover {
-  box-shadow: 0 6px 20px rgba(99, 102, 241, 0.45);
+  box-shadow: 0 10px 25px -4px var(--primary-glow), inset 0 1px 1px 0 rgba(255, 255, 255, 0.6);
+  transform: translateY(-1px);
 }
 
 @utility btn-secondary {
-  @apply bg-brand-bg-tertiary text-brand-text-main border border-brand-border/80 hover:bg-white/[0.04] hover:border-white/20;
+  @apply bg-brand-bg-tertiary text-brand-text-main border border-brand-border/80 hover:bg-brand-bg-tertiary/90 hover:border-brand-primary/40;
+  backdrop-filter: blur(12px);
+  box-shadow: inset 0 1px 1px 0 var(--glass-specular);
 }
 
 @utility btn-sm {
-  @apply px-3.5 py-2 text-xs rounded-lg;
+  @apply px-3 py-1.5 text-[11px] rounded-lg;
 }
 
-/* Redesigned Tables with Hover Highlight Gradients */
+/* Redesigned Liquid Glass Tables */
 @utility table-container {
-  @apply overflow-x-auto rounded-[20px] border border-brand-border/60 bg-brand-bg-secondary/40 backdrop-blur-md shadow-lg;
+  @apply overflow-x-auto rounded-[20px] border border-brand-border/60 bg-brand-bg-secondary/40 backdrop-blur-xl shadow-xl;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow), inset 0 1px 1px 0 var(--glass-specular);
 }
 
 table {
@@ -118,11 +171,11 @@ table {
 }
 
 th {
-  @apply bg-white/[0.02] border-b border-brand-border/60 text-brand-text-muted font-bold p-4 text-xs tracking-wider uppercase;
+  @apply bg-brand-bg-tertiary/60 border-b border-brand-border/60 text-brand-text-muted font-bold px-3.5 py-2.5 text-[11px] tracking-wider uppercase backdrop-blur-md;
 }
 
 td {
-  @apply p-4 border-b border-brand-border/40 text-brand-text-main text-sm transition-colors duration-200;
+  @apply px-3.5 py-3 border-b border-brand-border/40 text-brand-text-main text-xs transition-colors duration-200;
 }
 
 tr:last-child td {
@@ -130,32 +183,33 @@ tr:last-child td {
 }
 
 tr:hover td {
-  @apply bg-brand-primary/5 text-white;
-  box-shadow: inset 2.5px 0 0 var(--color-brand-primary);
+  @apply bg-brand-primary/10 text-brand-primary;
+  box-shadow: inset 3px 0 0 var(--primary);
 }
 
-/* Pill Badges */
+/* Glass Pill Badges */
 @utility badge {
-  @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold tracking-wide border;
+  @apply inline-flex items-center px-3.5 py-1 rounded-full text-xs font-bold tracking-wide border backdrop-blur-md;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.3);
 }
 
 @utility badge-success {
-  @apply bg-brand-accent-emerald/10 text-brand-accent-emerald border-brand-accent-emerald/20;
+  @apply bg-brand-accent-emerald/15 text-brand-accent-emerald border-brand-accent-emerald/30;
 }
 
 @utility badge-warning {
-  @apply bg-brand-accent-amber/10 text-brand-accent-amber border-brand-accent-amber/20;
+  @apply bg-brand-accent-amber/15 text-brand-accent-amber border-brand-accent-amber/30;
 }
 
 @utility badge-danger {
-  @apply bg-brand-accent-ruby/10 text-brand-accent-ruby border-brand-accent-ruby/20;
+  @apply bg-brand-accent-ruby/15 text-brand-accent-ruby border-brand-accent-ruby/30;
 }
 
 @utility badge-info {
-  @apply bg-brand-accent-cyan/10 text-brand-accent-cyan border-brand-accent-cyan/20;
+  @apply bg-brand-accent-cyan/15 text-brand-accent-cyan border-brand-accent-cyan/30;
 }
 
-/* Sleek Forms & Input Elements */
+/* Sleek Liquid Glass Forms & Input Elements */
 @utility form-group {
   @apply flex flex-col gap-2 mb-4;
 }
@@ -165,12 +219,13 @@ tr:hover td {
 }
 
 .form-control, select, textarea {
-  @apply bg-brand-bg-tertiary/75 border border-brand-border/80 text-brand-text-main px-4 py-3 rounded-xl text-sm outline-none transition-all duration-300 focus:border-brand-primary/60 focus:bg-brand-bg-tertiary/90 focus:ring-2 focus:ring-brand-primary/10;
+  @apply bg-brand-bg-tertiary/75 border border-brand-border/80 text-brand-text-main px-4 py-3 rounded-xl text-sm outline-none transition-all duration-300 focus:border-brand-primary/60 focus:bg-brand-bg-tertiary/90 focus:ring-2 focus:ring-brand-primary/20 backdrop-blur-md;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05), inset 0 1px 1px 0 var(--glass-specular);
 }
 
 .form-control:focus, select:focus, textarea:focus {
-  @apply border-brand-primary/60;
-  box-shadow: 0 0 12px rgba(99, 102, 241, 0.12);
+  @apply border-brand-primary/80;
+  box-shadow: 0 0 18px var(--primary-glow), inset 0 1px 1px 0 var(--glass-specular);
 }
 
 select {
@@ -206,15 +261,18 @@ select {
   @apply w-5 h-5 border-2 border-brand-primary/25 border-t-brand-primary rounded-full animate-spin mr-3;
 }
 
-/* Modal Dialog System */
+/* Modal Dialog System with Liquid Glass Blur */
 @utility modal-overlay {
-  @apply fixed inset-0 bg-black/75 backdrop-blur-sm flex items-center justify-center z-[1000] opacity-0 pointer-events-none transition-opacity duration-300;
+  @apply fixed inset-0 bg-black/60 backdrop-blur-xl flex items-center justify-center z-[1000] opacity-0 pointer-events-none transition-opacity duration-300;
 }
 .modal-overlay.active {
   @apply opacity-100 pointer-events-auto;
 }
 @utility modal-container {
-  @apply bg-brand-bg-secondary/90 border border-brand-border/60 rounded-[20px] w-[90%] max-w-[600px] max-h-[85vh] flex flex-col scale-95 transition-transform duration-300 backdrop-blur-md shadow-2xl;
+  @apply bg-brand-bg-secondary/90 border border-brand-border/60 rounded-[28px] w-[90%] max-w-[600px] max-h-[85vh] flex flex-col scale-95 transition-transform duration-300 backdrop-blur-2xl shadow-2xl;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--glass-shadow), inset 0 1px 1px 0 var(--glass-specular);
 }
 .modal-overlay.active .modal-container {
   @apply scale-100;
@@ -223,7 +281,7 @@ select {
   @apply p-5 px-6 border-b border-brand-border flex items-center justify-between;
 }
 @utility modal-title {
-  @apply font-display text-xl font-semibold text-white;
+  @apply font-display text-xl font-semibold text-brand-text-main;
 }
 @utility modal-close {
   @apply bg-transparent border-none text-brand-text-muted cursor-pointer text-2xl flex items-center justify-center hover:text-brand-text-main transition-colors;
@@ -235,3 +293,44 @@ select {
   @apply p-4 px-6 border-t border-brand-border flex justify-end gap-3;
 }
 
+/* CAMPUSX OS Standardized Global Spacing & Layout Utilities */
+@utility page-shell {
+  @apply max-w-[1720px] mx-auto w-full px-4 md:px-6 lg:px-8 py-6 flex flex-col gap-6;
+}
+
+@utility page-header-bar {
+  @apply flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-brand-border/40;
+}
+
+@utility card-equal-grid {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 auto-rows-fr;
+}
+
+@utility card-header-row {
+  @apply flex items-center justify-between gap-3 pb-3 mb-3 border-b border-brand-border/40;
+}
+
+@utility card-footer-row {
+  @apply pt-3 mt-auto border-t border-brand-border/40 flex items-center justify-between gap-3 text-xs text-brand-text-muted;
+}
+
+@utility table-wrapper {
+  @apply w-full overflow-x-auto rounded-2xl border border-brand-border bg-brand-bg-secondary/60 backdrop-blur-md shadow-sm;
+}
+
+@utility chart-card-box {
+  @apply relative w-full h-[290px] p-3 flex flex-col justify-center items-center overflow-hidden;
+}
+
+@utility form-grid-layout {
+  @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5;
+}
+
+/* Sidebar Master Enterprise Upgrades */
+@utility sidebar-link-item {
+  @apply flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-xs text-brand-text-muted hover:text-brand-text-main hover:bg-brand-primary/10 transition-all duration-200 cursor-pointer min-h-[44px] relative overflow-hidden border border-transparent hover:border-brand-primary/20;
+}
+
+@utility sidebar-link-active {
+  @apply bg-brand-primary/15 text-brand-primary font-bold border-brand-primary/30 shadow-sm;
+}

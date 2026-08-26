@@ -22,7 +22,8 @@ import {
   Settings, 
   LogOut,
   ChevronRight,
-  Bot
+  Bot,
+  Video
 } from 'lucide-react';
 
 // Sidebar Link Metadata - exactly the 14 links grouped logically
@@ -31,6 +32,7 @@ const allSidebarLinks = [
   // CORE PORTAL
   { name: 'Overview', href: '/sports', icon: Trophy, roles: ['superadmin', 'admin', 'sports_director', 'coach', 'athlete', 'sports_parent', 'student', 'parent', 'faculty', 'medical_staff'], section: 'CORE PORTAL' },
   { name: 'Live Scores', href: '/sports/live', icon: Tv, roles: ['superadmin', 'admin', 'sports_director', 'coach', 'athlete', 'sports_parent', 'student', 'parent', 'faculty', 'medical_staff'], section: 'CORE PORTAL' },
+  { name: 'Live Stream Studio', href: '/sports/live/studio', icon: Video, roles: ['superadmin', 'admin', 'sports_director', 'coach', 'athlete', 'sports_parent', 'student', 'parent', 'faculty', 'medical_staff', 'broadcast_operator'], section: 'CORE PORTAL' },
   { name: 'Matches', href: '/sports/matches', icon: Calendar, roles: ['superadmin', 'admin', 'sports_director', 'coach', 'athlete', 'sports_parent', 'student', 'parent', 'faculty', 'medical_staff'], section: 'CORE PORTAL' },
   { name: 'Teams', href: '/sports/teams', icon: Activity, roles: ['superadmin', 'admin', 'sports_director', 'coach', 'athlete', 'student', 'faculty'], section: 'CORE PORTAL' },
   { name: 'Athletes', href: '/sports/athletes', icon: Users, roles: ['superadmin', 'admin', 'sports_director', 'coach', 'medical_staff'], section: 'CORE PORTAL' },
@@ -38,6 +40,7 @@ const allSidebarLinks = [
   // PERFORMANCE & HEALTH
   { name: 'Fitness Logs', href: '/sports/fitness', icon: Heart, roles: ['superadmin', 'admin', 'sports_director', 'coach', 'athlete', 'sports_parent', 'medical_staff'], section: 'PERFORMANCE & HEALTH' },
   { name: 'Performance Analytics', href: '/sports/analytics', icon: BarChart2, roles: ['superadmin', 'admin', 'sports_director', 'coach', 'athlete', 'sports_parent'], section: 'PERFORMANCE & HEALTH' },
+  { name: 'AI Highlights', href: '/sports/highlights', icon: Video, roles: ['superadmin', 'admin', 'sports_director', 'coach', 'athlete', 'sports_parent', 'student', 'parent', 'faculty'], section: 'PERFORMANCE & HEALTH' },
   { name: 'Training', href: '/sports/training', icon: Clipboard, roles: ['superadmin', 'admin', 'sports_director', 'coach', 'athlete'], section: 'PERFORMANCE & HEALTH' },
   { name: 'AI Coach', href: '/sports/ai-coach', icon: Bot, roles: ['superadmin', 'admin', 'sports_director', 'coach', 'athlete', 'student'], section: 'PERFORMANCE & HEALTH' },
 
@@ -54,12 +57,13 @@ export default function SportsLayout({ children }) {
   const [loading, setLoading] = useState(true);
   const [showAppSwitcher, setShowAppSwitcher] = useState(false);
   const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const [activeStreams, setActiveStreams] = useState([]);
   const pathname = usePathname();
   const router = useRouter();
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const session = sessionStorage.getItem('aegis_erp_session');
+      const session = sessionStorage.getItem('campusx_erp_session');
       if (session) {
         setUser(JSON.parse(session));
         setLoading(false);
@@ -69,10 +73,35 @@ export default function SportsLayout({ children }) {
     }
   }, [router]);
 
+  useEffect(() => {
+    let interval;
+    if (user) {
+      const fetchActiveStreams = async () => {
+        try {
+          const res = await fetch('/api/sports/streams/live-active');
+          const data = await res.json();
+          if (data.success) {
+            setActiveStreams(data.streams || []);
+          }
+        } catch (e) {
+          console.error(e);
+        }
+      };
+      
+      fetchActiveStreams();
+      interval = setInterval(fetchActiveStreams, 5000);
+    }
+    return () => clearInterval(interval);
+  }, [user]);
+
   const handleLogout = () => {
-    if (confirm('Are you sure you want to sign out from Aegis Sports?')) {
-      sessionStorage.removeItem('aegis_erp_session');
-      window.location.href = '/login';
+    if (typeof window !== 'undefined' && window.triggerLogout) {
+      window.triggerLogout();
+    } else {
+      if (confirm('Are you sure you want to sign out from CampusX Sports?')) {
+        sessionStorage.removeItem('campusx_erp_session');
+        window.location.href = '/login';
+      }
     }
   };
 
@@ -102,7 +131,7 @@ export default function SportsLayout({ children }) {
       <div className="min-h-screen bg-[#071126] text-white flex items-center justify-center font-sans">
         <div className="flex flex-col items-center gap-4">
           <div className="w-10 h-10 border-4 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin"></div>
-          <span className="text-sm font-semibold text-slate-400">Booting Aegis Sports OS...</span>
+          <span className="text-sm font-semibold text-slate-400">Booting CampusX Sports OS...</span>
         </div>
       </div>
     );
@@ -138,7 +167,7 @@ export default function SportsLayout({ children }) {
           <div className="flex items-center gap-2">
             <Trophy className="w-5 h-5 text-indigo-500 animate-pulse shrink-0" />
             <span className="font-extrabold text-base tracking-wider bg-gradient-to-r from-white via-indigo-200 to-indigo-400 bg-clip-text text-transparent lg:block md:hidden block">
-              AEGIS SPORTS
+              CAMPUSX SPORTS
             </span>
           </div>
           <span className="text-[9px] text-slate-400 font-semibold truncate lg:block md:hidden block w-full">
@@ -232,7 +261,7 @@ export default function SportsLayout({ children }) {
               </svg>
             </button>
             <div className="flex items-center gap-2 text-sm font-medium">
-              <span className="text-slate-400 font-bold tracking-wide text-xs">AEGIS SPORTS</span>
+              <span className="text-slate-400 font-bold tracking-wide text-xs">CAMPUSX SPORTS</span>
               <span className="text-slate-600">/</span>
               <span className="text-white text-[10px] font-bold bg-indigo-500/10 border border-indigo-500/20 px-2.5 py-1 rounded-full uppercase tracking-wider">
                 {getActiveSectionName()}
@@ -290,7 +319,7 @@ export default function SportsLayout({ children }) {
                 showAppSwitcher ? 'border-indigo-500 text-indigo-400 bg-indigo-500/10' : ''
               }`}
               onClick={() => setShowAppSwitcher(!showAppSwitcher)}
-              title="AEGIS Applications"
+              title="CAMPUSX Applications"
             >
               <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <rect x="3" y="3" width="7" height="7"/>
@@ -304,7 +333,7 @@ export default function SportsLayout({ children }) {
             {showAppSwitcher && (
               <div className="absolute right-0 top-[48px] bg-[#0B1736] border border-slate-800 rounded-2xl shadow-2xl p-4 w-72 z-50 animate-fade-in">
                 <div className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-3 pb-1 border-b border-slate-800/80">
-                  AEGIS OS Switcher
+                  CAMPUSX OS Switcher
                 </div>
                 <div className="grid grid-cols-3 gap-2">
                   <Link 
@@ -347,6 +376,28 @@ export default function SportsLayout({ children }) {
 
         {/* Dynamic Page body viewport */}
         <main className="flex-1 overflow-y-auto p-6 custom-scrollbar relative bg-[#071126] max-w-none">
+          {activeStreams.length > 0 && (
+            <div className="mb-6 p-4 rounded-2xl bg-gradient-to-r from-rose-500/10 via-indigo-500/10 to-[#0B1736] border border-rose-500/30 flex items-center justify-between animate-pulse">
+              <div className="flex items-center gap-3">
+                <span className="flex h-2.5 w-2.5 relative">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-rose-500"></span>
+                </span>
+                <div>
+                  <span className="text-[10px] font-bold text-rose-400 uppercase tracking-widest block">Live Broadcast Underway</span>
+                  <span className="text-xs font-semibold text-white">
+                    {activeStreams[0].sport}: {activeStreams[0].team_a || 'Home Team'} vs {activeStreams[0].team_b || 'Away Team'}
+                  </span>
+                </div>
+              </div>
+              <Link 
+                href={`/sports/live/watch/${activeStreams[0].match_id}`}
+                className="px-4 py-1.5 bg-rose-600 hover:bg-rose-500 text-white rounded-xl text-xs font-bold transition-all shadow-lg shadow-rose-600/20"
+              >
+                Watch Stream
+              </Link>
+            </div>
+          )}
           {children}
         </main>
       </div>

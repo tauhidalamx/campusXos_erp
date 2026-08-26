@@ -23,7 +23,7 @@ export default function ResearchPage() {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const session = sessionStorage.getItem('aegis_erp_session');
+      const session = sessionStorage.getItem('campusx_erp_session');
       if (session) {
         setCurrentUser(JSON.parse(session));
       }
@@ -61,7 +61,7 @@ export default function ResearchPage() {
     setPublications([pub, ...publications]);
     setNewPub({ title: '', lead: '', journal: '', topic: 'Artificial Intelligence' });
     setShowAddModal(false);
-    alert('Research publication logged successfully into Aegis Academic Index!');
+    alert('Research publication logged successfully into CampusX Academic Index!');
   };
 
   const handleCitationIncrement = (id) => {
