@@ -48,12 +48,20 @@ export default function StudentsPage() {
   // Anomaly/Success Predictor stats
   const [successPrediction, setSuccessPrediction] = useState(null);
 
+  // Defensive array assignments
+  const safeStudents = Array.isArray(students) ? students : [];
+
   // Apply filters to students list
-  const filteredStudents = students.filter(s => {
-    const matchSearch = s.name.toLowerCase().includes(searchTerm.toLowerCase())
-      || s.id.toLowerCase().includes(searchTerm.toLowerCase())
-      || (s.phone && s.phone.includes(searchTerm))
-      || s.email.toLowerCase().includes(searchTerm.toLowerCase());
+  const filteredStudents = safeStudents.filter(s => {
+    if (!s) return false;
+    const nameStr = s.name || '';
+    const idStr = s.id || '';
+    const emailStr = s.email || '';
+    const phoneStr = s.phone || '';
+    const matchSearch = nameStr.toLowerCase().includes(searchTerm.toLowerCase())
+      || idStr.toLowerCase().includes(searchTerm.toLowerCase())
+      || phoneStr.includes(searchTerm)
+      || emailStr.toLowerCase().includes(searchTerm.toLowerCase());
     const matchDept = filterDept === 'ALL' || s.dept === filterDept;
     const matchStatus = filterStatus === 'ALL' || s.status === filterStatus;
     const matchGender = filterGender === 'ALL' || s.gender === filterGender;

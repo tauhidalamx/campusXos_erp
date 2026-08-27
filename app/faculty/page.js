@@ -55,11 +55,21 @@ export default function FacultyPage() {
   const chartRef = useRef(null);
   const canvasRef = useRef(null);
 
+  // Defensive array assignments
+  const safeFaculty = Array.isArray(faculty) ? faculty : [];
+  const safeCourses = Array.isArray(courses) ? courses : [];
+  const safeStudents = Array.isArray(students) ? students : [];
+  const safeDepartments = Array.isArray(departments) ? departments : [];
+
   // Filter faculty
-  const filteredFaculty = faculty.filter(f => {
-    const matchSearch = f.name.toLowerCase().includes(searchTerm.toLowerCase())
-      || f.email.toLowerCase().includes(searchTerm.toLowerCase())
-      || f.id.toLowerCase().includes(searchTerm.toLowerCase());
+  const filteredFaculty = safeFaculty.filter(f => {
+    if (!f) return false;
+    const nameStr = f.name || '';
+    const emailStr = f.email || '';
+    const idStr = f.id || '';
+    const matchSearch = nameStr.toLowerCase().includes(searchTerm.toLowerCase())
+      || emailStr.toLowerCase().includes(searchTerm.toLowerCase())
+      || idStr.toLowerCase().includes(searchTerm.toLowerCase());
     const matchDept = filterDept === 'ALL' || f.dept === filterDept;
     return matchSearch && matchDept;
   });
@@ -71,9 +81,9 @@ export default function FacultyPage() {
 
     if (chartRef.current) chartRef.current.destroy();
 
-    const labels = filteredFaculty.map(f => f.name.split(' ').slice(1).join(' ')); // last names
-    const workloadData = filteredFaculty.map(f => f.workload);
-    const colors = filteredFaculty.map(f => f.workload > 15 ? '#f43f5e' : (f.workload > 12 ? '#f59e0b' : '#10b981'));
+    const labels = filteredFaculty.map(f => (f.name || 'Faculty').split(' ').slice(1).join(' ') || f.name || 'Faculty');
+    const workloadData = filteredFaculty.map(f => f.workload || 0);
+    const colors = filteredFaculty.map(f => (f.workload || 0) > 15 ? '#f43f5e' : ((f.workload || 0) > 12 ? '#f59e0b' : '#10b981'));
 
     chartRef.current = new Chart(canvasRef.current, {
       type: 'bar',
@@ -327,13 +337,14 @@ export default function FacultyPage() {
             else barColor = 'var(--color-brand-accent-emerald)';
 
             // Class attendance calculations
-            const coursesTaught = courses.filter(c => c.facultyId === fac.id);
+            const coursesTaught = safeCourses.filter(c => c && c.facultyId === fac.id);
             let totalAttendance = 0;
             let count = 0;
 
             coursesTaught.forEach(c => {
-              let enrolled = students.filter(s => s.courses.includes(c.code));
-              if (enrolled.length === 0) enrolled = students.filter(s => s.dept === c.dept);
+              if (!c) return;
+              let enrolled = safeStudents.filter(s => s && Array.isArray(s.courses) && s.courses.includes(c.code));
+              if (enrolled.length === 0) enrolled = safeStudents.filter(s => s && s.dept === c.dept);
               enrolled.forEach(s => {
                 totalAttendance += (s.attendance || 0);
                 count++;
@@ -341,20 +352,21 @@ export default function FacultyPage() {
             });
 
             const avgClassAttend = count > 0 ? Math.round(totalAttendance / count) : 90;
+            const coursesList = Array.isArray(fac.courses) ? fac.courses : [];
 
             return (
-              <div key={fac.id} className="card p-6 bg-brand-bg-secondary border border-brand-border rounded-2xl flex flex-col gap-4">
+              <div key={fac.id || Math.random()} className="card p-6 bg-brand-bg-secondary border border-brand-border rounded-2xl flex flex-col gap-4">
                 <div className="flex gap-4 items-center">
-                  <img src={fac.avatar} className="w-13 h-13 rounded-full object-cover border border-brand-border" alt="" />
+                  <img src={fac.avatar || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150'} className="w-13 h-13 rounded-full object-cover border border-brand-border" alt="" />
                   <div>
-                    <h4 className="m-0 font-display text-base font-semibold text-brand-text-main">{fac.name}</h4>
-                    <span className="text-[0.75rem] text-brand-text-muted font-medium">{fac.designation} ({fac.dept})</span>
+                    <h4 className="m-0 font-display text-base font-semibold text-brand-text-main">{fac.name || 'Faculty Member'}</h4>
+                    <span className="text-[0.75rem] text-brand-text-muted font-medium">{fac.designation || 'Professor'} ({fac.dept || 'CS'})</span>
                   </div>
                 </div>
                 
                 <div className="text-[0.8rem] text-brand-text-muted flex flex-col gap-1.5">
-                  <div><strong>Email:</strong> <a href={`mailto:${fac.email}`} className="text-brand-primary hover:underline">{fac.email}</a></div>
-                  <div><strong>Courses Taught:</strong> {fac.courses.length > 0 ? fac.courses.join(', ') : 'None assigned'}</div>
+                  <div><strong>Email:</strong> <a href={`mailto:${fac.email || ''}`} className="text-brand-primary hover:underline">{fac.email || 'N/A'}</a></div>
+                  <div><strong>Courses Taught:</strong> {coursesList.length > 0 ? coursesList.join(', ') : 'None assigned'}</div>
                   <div><strong>Class Attendance:</strong> <span className={`font-bold ${avgClassAttend < 75 ? 'text-brand-accent-ruby' : (avgClassAttend < 85 ? 'text-brand-accent-amber' : 'text-brand-accent-emerald')}`}>{avgClassAttend}%</span></div>
                 </div>
 
