@@ -358,7 +358,24 @@ if (fs.existsSync(dbPath)) {
 
     stmt.finalize();
     console.log('Successfully updated database.sqlite users table with all accounts.');
-    db.close();
+
+    // Also export full users snapshot to database_backup.json for Vercel/cold-start recovery
+    db.all(`SELECT * FROM users`, [], (err, rows) => {
+      if (!err && rows) {
+        const backupPath = path.join(__dirname, 'database_backup.json');
+        let existingBackup = {};
+        try {
+          if (fs.existsSync(backupPath)) {
+            existingBackup = JSON.parse(fs.readFileSync(backupPath, 'utf8'));
+          }
+        } catch (e) {}
+        existingBackup.users = rows;
+        fs.writeFileSync(backupPath, JSON.stringify(existingBackup, null, 2), 'utf8');
+        console.log(`Successfully updated ${backupPath} with ${rows.length} user records.`);
+      }
+      db.close();
+    });
   });
 }
+
 

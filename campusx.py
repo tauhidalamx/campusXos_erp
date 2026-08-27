@@ -241,10 +241,24 @@ def cmd_build():
     print_header("Compiling CampusX OS Target Ecosystem Binaries")
     tech = detect_technologies()
     
+    args = [a.lower() for a in sys.argv[2:]]
+    only_web = "web" in args or "next" in args or "dev" in args
+
+    # 0. Ensure dependencies are installed
+    if (tech["frontend_next"] or tech["backend_node"]) and not os.path.exists("node_modules"):
+        print_info("node_modules missing. Installing Node npm packages...")
+        run_cmd(["npm", "install"])
+
     # 1. Compile Next.js
     if tech["frontend_next"] and shutil.which("npm"):
       print_info("Building Next.js optimized production bundle...")
       run_cmd("npx next build && npx -y vite build")
+        
+    if only_web:
+        print_header("BUILD OUTPUT SUMMARY (WEB ONLY)")
+        print(f"✔ Frontend Next.js Built: {C_GREEN}Successfully{C_RESET}")
+        print(f"✔ Web Bundle Ready:       {C_GREEN}Production Ready{C_RESET}")
+        return
         
     # 2. Compile Solidity contracts
     if tech["blockchain_solidity"] and shutil.which("npx"):

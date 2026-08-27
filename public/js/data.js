@@ -1911,40 +1911,99 @@ window.UniversityDB = (function() {
   }
 ];
 
-  // Helper getters to manipulate simulated DB
+  // Helper getters to manipulate simulated DB with localStorage persistence and API sync
+  function getPersistent(key, defaultData) {
+    try {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        var stored = window.localStorage.getItem('campusx_db_' + key);
+        if (stored) {
+          return JSON.parse(stored);
+        }
+      }
+    } catch (e) {}
+    return defaultData;
+  }
+
+  function savePersistent(key, data) {
+    try {
+      if (typeof window !== 'undefined' && window.localStorage) {
+        window.localStorage.setItem('campusx_db_' + key, JSON.stringify(data));
+        if (typeof fetch !== 'undefined') {
+          fetch('/api/db/sync', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ key: key, data: data })
+          }).catch(function() {});
+        }
+      }
+    } catch (e) {}
+  }
+
+  if (typeof window !== 'undefined' && typeof fetch !== 'undefined') {
+    fetch('/api/db/sync')
+      .then(function(res) { return res.json(); })
+      .then(function(res) {
+        if (res && res.success && res.data && Array.isArray(res.data.kv_store)) {
+          res.data.kv_store.forEach(function(item) {
+            try {
+              if (item.key && item.value && window.localStorage) {
+                window.localStorage.setItem('campusx_db_' + item.key, typeof item.value === 'string' ? item.value : JSON.stringify(item.value));
+              }
+            } catch (e) {}
+          });
+        }
+      })
+      .catch(function() {});
+  }
+
   return {
-    getDepartments: () => DEPARTMENTS,
-    getFaculty: () => FACULTY,
-    getCourses: () => COURSES,
-    getStudents: () => STUDENTS,
-    getTransactions: () => TRANSACTIONS,
-    getExams: () => EXAMS,
-    getAnnouncements: () => ANNOUNCEMENTS,
+    getDepartments: () => getPersistent('departments', DEPARTMENTS),
+    getFaculty: () => getPersistent('faculty', FACULTY),
+    getCourses: () => getPersistent('courses', COURSES),
+    getStudents: () => getPersistent('students', STUDENTS),
+    getTransactions: () => getPersistent('transactions', TRANSACTIONS),
+    getExams: () => getPersistent('exams', EXAMS),
+    getAnnouncements: () => getPersistent('announcements', ANNOUNCEMENTS),
     getActivities: () => RECENT_ACTIVITIES,
 
-    // DB Modifiers
+    // DB Modifiers with Persistent Storage
     addStudent: (stu) => {
-      STUDENTS.push(stu);
+      const current = getPersistent('students', STUDENTS);
+      current.push(stu);
+      savePersistent('students', current);
     },
     updateStudent: (id, updatedData) => {
-      const idx = STUDENTS.findIndex(s => s.id === id);
+      const current = getPersistent('students', STUDENTS);
+      const idx = current.findIndex(s => s.id === id);
       if (idx !== -1) {
-        STUDENTS[idx] = { ...STUDENTS[idx], ...updatedData };
+        current[idx] = { ...current[idx], ...updatedData };
+        savePersistent('students', current);
       }
     },
     deleteStudent: (id) => {
-      const idx = STUDENTS.findIndex(s => s.id === id);
+      const current = getPersistent('students', STUDENTS);
+      const idx = current.findIndex(s => s.id === id);
       if (idx !== -1) {
-        STUDENTS.splice(idx, 1);
+        current.splice(idx, 1);
+        savePersistent('students', current);
         return true;
       }
       return false;
     },
+    addFaculty: (fac) => {
+      const current = getPersistent('faculty', FACULTY);
+      current.push(fac);
+      savePersistent('faculty', current);
+    },
     addTransaction: (tx) => {
-      TRANSACTIONS.unshift(tx);
+      const current = getPersistent('transactions', TRANSACTIONS);
+      current.unshift(tx);
+      savePersistent('transactions', current);
     },
     addAnnouncement: (ann) => {
-      ANNOUNCEMENTS.unshift(ann);
+      const current = getPersistent('announcements', ANNOUNCEMENTS);
+      current.unshift(ann);
+      savePersistent('announcements', current);
     },
     
     // AI Database Health & Profile Integrity Classifier

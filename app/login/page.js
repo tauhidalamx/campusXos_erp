@@ -1003,16 +1003,26 @@ export default function LoginPage() {
 
               {/* All Quick Demo Logins Section */}
               <div className="auth-demo-info mt-6 p-4 bg-[#f8fafc] rounded-2xl border-none text-center shadow-sm">
-                  <div className="flex items-center justify-between mb-3 pb-2 border-b border-slate-100">
-                    <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-700 font-display">Quick Demo Logins (Click to prefill)</span>
-                    <button 
-                      type="button" 
-                      onClick={() => handleOneClickLogin('admin@campusx.demo', 'Demo@123')}
-                      className="py-1 px-3 bg-[#4f46e5] hover:bg-[#4338ca] text-white rounded-lg text-[10px] font-bold transition-all shadow-sm flex items-center gap-1.5 cursor-pointer border-none"
-                    >
-                      <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-                      <span>1-Click Admin Login</span>
-                    </button>
+                  <div className="flex items-center justify-between mb-3 pb-2 border-b border-slate-100 flex-wrap gap-2">
+                    <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-700 font-display">Quick Demo Logins</span>
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <button 
+                        type="button" 
+                        onClick={() => handleOneClickLogin('admin@campusx.demo', 'Demo@123')}
+                        className="py-1 px-2.5 bg-[#4f46e5] hover:bg-[#4338ca] text-white rounded-lg text-[10px] font-bold transition-all shadow-sm flex items-center gap-1 cursor-pointer border-none"
+                      >
+                        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                        <span>1-Click Admin</span>
+                      </button>
+                      <button 
+                        type="button" 
+                        onClick={() => handleOneClickLogin('student@campusx.edu', 'student123')}
+                        className="py-1 px-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-[10px] font-bold transition-all shadow-sm flex items-center gap-1 cursor-pointer border-none"
+                      >
+                        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 14l9-5-9-5-9 5 9 5z"/><path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0112 20.055a11.952 11.952 0 01-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/></svg>
+                        <span>1-Click Student</span>
+                      </button>
+                    </div>
                   </div>
 
                   <div className="demo-creds-list grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-[200px] overflow-y-auto pr-1 text-left chat-scroll">

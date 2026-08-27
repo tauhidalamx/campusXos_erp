@@ -682,7 +682,36 @@ window.AuthSystem = (function () {
   }
 
   function _saveUsers(users) {
-    localStorage.setItem(USERS_KEY, JSON.stringify(users));
+    try {
+      localStorage.setItem(USERS_KEY, JSON.stringify(users));
+      if (typeof fetch !== 'undefined') {
+        fetch('/api/db/sync', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ key: 'users_db', data: users })
+        }).catch(function() {});
+      }
+    } catch (e) {}
+  }
+
+  if (typeof window !== 'undefined' && typeof fetch !== 'undefined') {
+    fetch('/api/db/sync?key=users_db')
+      .then(function(res) { return res.json(); })
+      .then(function(res) {
+        if (res && res.success && res.data && Array.isArray(res.data)) {
+          try {
+            var existing = _getUsers();
+            res.data.forEach(function(u) {
+              var idx = existing.findIndex(function(ex) { return ex.email === u.email; });
+              if (idx === -1) {
+                existing.push(u);
+              }
+            });
+            localStorage.setItem(USERS_KEY, JSON.stringify(existing));
+          } catch(e) {}
+        }
+      })
+      .catch(function() {});
   }
 
   function _generateId() {

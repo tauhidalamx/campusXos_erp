@@ -80,6 +80,20 @@ export default function SportsPage() {
       }
     }
 
+    // Initialize from local storage if available
+    let localAthletes = [], localTeams = [], localTournaments = [], localMatches = [];
+    if (typeof window !== 'undefined') {
+      try { localAthletes = JSON.parse(localStorage.getItem('campusx_sports_athletes') || '[]'); } catch(e){}
+      try { localTeams = JSON.parse(localStorage.getItem('campusx_sports_teams') || '[]'); } catch(e){}
+      try { localTournaments = JSON.parse(localStorage.getItem('campusx_sports_tournaments') || '[]'); } catch(e){}
+      try { localMatches = JSON.parse(localStorage.getItem('campusx_sports_matches') || '[]'); } catch(e){}
+      
+      if (localAthletes.length > 0) setAthletes(localAthletes);
+      if (localTeams.length > 0) setTeams(localTeams);
+      if (localTournaments.length > 0) setTournaments(localTournaments);
+      if (localMatches.length > 0) setMatches(localMatches);
+    }
+
     const fetchData = async () => {
       try {
         const [sumRes, athRes, teamRes, tourRes, matchRes, trainRes, facRes, scholRes, scoutRes] = await Promise.all([
@@ -95,10 +109,26 @@ export default function SportsPage() {
         ]);
 
         if (!sumRes.error) setSummary(sumRes);
-        if (!athRes.error) setAthletes(athRes);
-        if (!teamRes.error) setTeams(teamRes);
-        if (!tourRes.error) setTournaments(tourRes);
-        if (!matchRes.error) setMatches(matchRes);
+        if (!athRes.error && Array.isArray(athRes)) {
+          const merged = [...athRes];
+          localAthletes.forEach(l => { if (!merged.some(m => m.id === l.id)) merged.unshift(l); });
+          setAthletes(merged);
+        }
+        if (!teamRes.error && Array.isArray(teamRes)) {
+          const merged = [...teamRes];
+          localTeams.forEach(l => { if (!merged.some(m => m.id === l.id)) merged.unshift(l); });
+          setTeams(merged);
+        }
+        if (!tourRes.error && Array.isArray(tourRes)) {
+          const merged = [...tourRes];
+          localTournaments.forEach(l => { if (!merged.some(m => m.id === l.id)) merged.unshift(l); });
+          setTournaments(merged);
+        }
+        if (!matchRes.error && Array.isArray(matchRes)) {
+          const merged = [...matchRes];
+          localMatches.forEach(l => { if (!merged.some(m => m.id === l.id)) merged.unshift(l); });
+          setMatches(merged);
+        }
         if (!trainRes.error) setTraining(trainRes);
         if (!facRes.error) setFacilities(facRes);
         if (!scholRes.error) setScholarships(scholRes);
@@ -133,7 +163,11 @@ export default function SportsPage() {
       avatar: `https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150`
     };
 
-    setAthletes(prev => [athleteRecord, ...prev]);
+    setAthletes(prev => {
+      const next = [athleteRecord, ...prev];
+      if (typeof window !== 'undefined') localStorage.setItem('campusx_sports_athletes', JSON.stringify(next));
+      return next;
+    });
     setSummary(prev => ({ ...prev, total_athletes: (prev.total_athletes || 0) + 1 }));
     setNewAthlete({ name: '', email: '', sport: 'Basketball', status: 'Active', medical: 'No concerns.' });
     alert(`Athlete ${newAthlete.name} successfully registered on the CampusX Sports network!`);
@@ -173,7 +207,11 @@ export default function SportsPage() {
       stats: { wins: 0, losses: 0, win_rate: '100%' }
     };
 
-    setTeams(prev => [teamRecord, ...prev]);
+    setTeams(prev => {
+      const next = [teamRecord, ...prev];
+      if (typeof window !== 'undefined') localStorage.setItem('campusx_sports_teams', JSON.stringify(next));
+      return next;
+    });
     setSummary(prev => ({ ...prev, active_teams: (prev.active_teams || 0) + 1 }));
     setNewTeam({ name: '', sport: 'Basketball', captain_id: '' });
     alert(`Team "${newTeam.name}" created successfully.`);
@@ -202,7 +240,11 @@ export default function SportsPage() {
       standings: []
     };
 
-    setTournaments(prev => [tourRecord, ...prev]);
+    setTournaments(prev => {
+      const next = [tourRecord, ...prev];
+      if (typeof window !== 'undefined') localStorage.setItem('campusx_sports_tournaments', JSON.stringify(next));
+      return next;
+    });
     setNewTournament({ name: '', sport: 'Basketball', status: 'Upcoming' });
     alert(`Tournament "${newTournament.name}" registered.`);
 
@@ -224,7 +266,11 @@ export default function SportsPage() {
       ...newMatch
     };
 
-    setMatches(prev => [matchRecord, ...prev]);
+    setMatches(prev => {
+      const next = [matchRecord, ...prev];
+      if (typeof window !== 'undefined') localStorage.setItem('campusx_sports_matches', JSON.stringify(next));
+      return next;
+    });
     setSummary(prev => ({ ...prev, upcoming_matches: (prev.upcoming_matches || 0) + 1 }));
     alert('Match fixture scheduled.');
 

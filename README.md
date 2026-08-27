@@ -39,49 +39,55 @@
 
 ## 🖼 Visual Showcase & Screenshots
 
-### 1. Executive Master ERP Dashboard
+### 1. Unified Auth & Security Login Gateway
+Features 1-Click Admin and 1-Click Student instant login buttons, TensorFlow.js anomaly detection, multi-factor authentication (MFA), and full Cloud Database auto-synchronization.
+![Unified Auth & Security Gateway](docs/screenshots/login_page.jpg)
+
+---
+
+### 2. Executive Master ERP Dashboard
 The central command hub for university leadership providing real-time metrics, financial health, enrollment trends, and institutional KPIs.
 ![Executive Master Dashboard](docs/screenshots/hero_dashboard.jpg)
 
 ---
 
-### 2. Global Super Admin Multi-Tenant Console
+### 3. Global Super Admin Multi-Tenant Console
 Monitors global campus clusters across Boston, London, Tokyo, Sydney, and Singapore with microservice latencies, CPU/RAM server loads, and live audit logs.
 ![Super Admin Console](docs/screenshots/super_admin_console.jpg)
 
 ---
 
-### 3. Student Portal & Academic Hub
+### 4. Student Portal & Academic Hub
 A personalized interface for students featuring live GPA dials, circular attendance rings, interactive class timetables, upcoming exam countdowns, and fee clearance badges.
 ![Student Portal](docs/screenshots/student_portal.jpg)
 
 ---
 
-### 4. Cybersecurity Operations Center (SOC)
+### 5. Cybersecurity Operations Center (SOC)
 24/7 SIEM monitoring console featuring a 3D global threat map, live intrusion detection event stream, AI threat defense matrix, and firewall policy status.
 ![SOC Cyber Threat Intelligence](docs/screenshots/soc_cyber_intel.jpg)
 
 ---
 
-### 5. Computer Vision & Tactical Sports AI
+### 6. Computer Vision & Tactical Sports AI
 Empowers coaches and sports directors with player bounding-box video tracking, sprint velocity vectors, fatigue prediction, tactical heatmaps, and substitution AI.
 ![Sports AI Analytics](docs/screenshots/sports_ai_analytics.jpg)
 
 ---
 
-### 6. Digital Twin 3D Building & IoT Control
+### 7. Digital Twin 3D Building & IoT Control
 Spatial 3D university blueprint tracking live HVAC energy consumption, solar panel power output, smart door access logs, and environmental air quality sensors.
 ![Digital Twin IoT](docs/screenshots/digital_twin_iot.jpg)
 
 ---
 
-### 7. CampusX Connect Collaboration Hub
+### 8. CampusX Connect Collaboration Hub
 Real-time communication suite integrating HD video meetings, class discussion channels, live collaborative code editor, and CampusX AI sidecar assistance.
 ![CampusX Connect Hub](docs/screenshots/campusx_connect.jpg)
 
 ---
 
-### 8. Web3 Blockchain Credential Vault
+### 9. Web3 Blockchain Credential Vault
 Verifies academic transcripts and student credentials against Ethereum smart contracts (`CredentialVault.sol`, `AttendanceSystem.sol`) with cryptographic hash validation.
 ![Blockchain Credential Vault](docs/screenshots/blockchain_vault.jpg)
 
@@ -210,23 +216,24 @@ To compile the web frontend, backend bundles, C++ desktop engine, and verify ful
 
 ## 🔑 Demo Credentials
 
-To explore all user roles, navigate to [`http://localhost:3000/login`](http://localhost:3000/login) and use any of the quick-login demo accounts below:
+To explore all user roles, navigate to [`http://localhost:3000/login`](http://localhost:3000/login) and use any of the 1-Click quick-login demo accounts below:
 
-| Role Persona | Email Address | Password | Target Dashboard |
-| :--- | :--- | :--- | :--- |
-| **Global Super Admin** | `superadmin@campusx.demo` | `DemoPass123!` | `/admin/global` |
-| **Platform Admin** | `admin@campusx.demo` | `DemoPass123!` | `/admin/platform` |
-| **University Admin** | `univadmin@campusx.demo` | `DemoPass123!` | `/erp/admin` |
-| **Registrar Officer** | `registrar@campusx.demo` | `DemoPass123!` | `/erp/registrar` |
-| **Dean of Faculty** | `dean@campusx.demo` | `DemoPass123!` | `/erp/dean` |
-| **HOD (Computer Science)** | `hod@campusx.demo` | `DemoPass123!` | `/erp/hod` |
-| **Faculty Member** | `faculty@campusx.demo` | `DemoPass123!` | `/faculty/home` |
-| **Student (Aarav Sharma)** | `student@campusx.demo` | `DemoPass123!` | `/student/home` |
-| **Parent Account** | `parent@campusx.demo` | `DemoPass123!` | `/parent/dashboard` |
-| **Lead Recruiter** | `recruiter@campusx.demo` | `DemoPass123!` | `/recruiter/dashboard` |
-| **Sports Director** | `sportsdirector@campusx.demo` | `DemoPass123!` | `/sports/director` |
-| **Athletic Coach** | `coach@campusx.demo` | `DemoPass123!` | `/sports/coach` |
-| **Student Athlete** | `athlete@campusx.demo` | `DemoPass123!` | `/sports/athlete` |
+| Role Persona | Email Address | Password | Target Dashboard | Quick Demo Button |
+| :--- | :--- | :--- | :--- | :--- |
+| **1-Click Student** | `student@campusx.edu` | `student123` | `/student/home` | ⚡ `1-Click Student` |
+| **1-Click Admin** | `admin@campusx.demo` | `Demo@123` | `/erp/admin` | ⚡ `1-Click Admin` |
+| **Global Super Admin** | `superadmin@campusx.demo` | `Demo@123` | `/admin/global` | Prefill |
+| **University Admin** | `univadmin@campusx.demo` | `Demo@123` | `/erp/admin` | Prefill |
+| **Registrar Officer** | `registrar@campusx.demo` | `Demo@123` | `/erp/registrar` | Prefill |
+| **Dean of Faculty** | `dean@campusx.demo` | `Demo@123` | `/erp/dean` | Prefill |
+| **HOD (Computer Science)** | `hod@campusx.demo` | `Demo@123` | `/erp/hod` | Prefill |
+| **Faculty Member** | `faculty@campusx.demo` | `Demo@123` | `/faculty/home` | Prefill |
+| **Student (Ananya Patel)** | `student@campusx.edu` | `student123` | `/student/home` | Prefill |
+| **Parent Account** | `parent@campusx.demo` | `Demo@123` | `/parent/dashboard` | Prefill |
+| **Lead Recruiter** | `recruiter@campusx.demo` | `Demo@123` | `/recruiter/dashboard` | Prefill |
+| **Sports Director** | `sportsdirector@campusx.demo` | `Demo@123` | `/sports/director` | Prefill |
+| **Athletic Coach** | `coach@campusx.demo` | `Demo@123` | `/sports/coach` | Prefill |
+| **Student Athlete** | `athlete@campusx.demo` | `Demo@123` | `/sports/athlete` | Prefill |
 
 ---
 
