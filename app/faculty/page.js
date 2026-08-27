@@ -243,7 +243,10 @@ export default function FacultyPage() {
     );
   }
 
-  if (currentUser.role !== 'admin' && currentUser.role !== 'hod' && currentUser.role !== 'dean') {
+  const adminRoles = ['admin', 'superadmin', 'platformadmin', 'univadmin', 'dean', 'hod', 'registrar', 'department_admin'];
+  const isFacultyAdmin = adminRoles.includes(currentUser.role);
+
+  if (!isFacultyAdmin && currentUser.role !== 'faculty') {
     return (
       <div className="card p-8 text-center bg-brand-bg-secondary border border-brand-border rounded-2xl animate-fade-in my-12">
         <div className="w-16 h-16 bg-brand-accent-ruby/10 text-brand-accent-ruby rounded-full flex items-center justify-center mx-auto mb-4 border border-brand-accent-ruby/20">
@@ -263,7 +266,7 @@ export default function FacultyPage() {
           <h1 className="text-3xl font-display font-bold text-brand-text-main">Faculty Directory</h1>
           <p className="text-brand-text-muted mt-1 text-sm">Manage faculty credentials, academic departments, research specializations, and teaching assignments.</p>
         </div>
-        {(currentUser?.role === 'admin' || currentUser?.role === 'dean' || currentUser?.role === 'hod') && (
+        {isFacultyAdmin && (
           <button className="btn btn-primary cursor-pointer flex items-center gap-2" onClick={() => setShowAddModal(true)}>
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="11" x2="22" y2="11"/><line x1="19" y1="8" x2="19" y2="14"/></svg>
             Add Faculty Member
@@ -349,9 +352,9 @@ export default function FacultyPage() {
                   </div>
                 </div>
                 
-                <div className="text-[0.85rem] text-brand-text-muted flex flex-col gap-1">
-                  <div><strong>Email:</strong> {fac.email}</div>
-                  <div><strong>ID:</strong> <code>{fac.id}</code></div>
+                <div className="text-[0.8rem] text-brand-text-muted flex flex-col gap-1.5">
+                  <div><strong>Email:</strong> <a href={`mailto:${fac.email}`} className="text-brand-primary hover:underline">{fac.email}</a></div>
+                  <div><strong>Courses Taught:</strong> {fac.courses.length > 0 ? fac.courses.join(', ') : 'None assigned'}</div>
                   <div><strong>Class Attendance:</strong> <span className={`font-bold ${avgClassAttend < 75 ? 'text-brand-accent-ruby' : (avgClassAttend < 85 ? 'text-brand-accent-amber' : 'text-brand-accent-emerald')}`}>{avgClassAttend}%</span></div>
                 </div>
 
@@ -366,7 +369,7 @@ export default function FacultyPage() {
                   </div>
                 </div>
 
-                {(currentUser?.role === 'admin' || currentUser?.role === 'dean' || currentUser?.role === 'hod') && (
+                {isFacultyAdmin && (
                   <div className="flex gap-2 mt-auto pt-2">
                     <button className="btn btn-secondary btn-sm flex-1 cursor-pointer" onClick={() => openWorkloadModal(fac)}>Class Workload</button>
                     <button className="btn btn-secondary btn-sm flex-1 cursor-pointer" onClick={() => alert('Publications database link is down for maintenance.')}>Research</button>

@@ -272,7 +272,10 @@ export default function StudentsPage() {
     );
   }
 
-  if (currentUser.role !== 'admin' && currentUser.role !== 'hod' && currentUser.role !== 'faculty') {
+  const adminRoles = ['admin', 'superadmin', 'platformadmin', 'univadmin', 'dean', 'hod', 'registrar', 'department_admin'];
+  const isStudentAdmin = adminRoles.includes(currentUser.role);
+
+  if (!isStudentAdmin && currentUser.role !== 'faculty') {
     return (
       <div className="card p-8 text-center bg-brand-bg-secondary border border-brand-border rounded-2xl animate-fade-in my-12">
         <div className="w-16 h-16 bg-brand-accent-ruby/10 text-brand-accent-ruby rounded-full flex items-center justify-center mx-auto mb-4 border border-brand-accent-ruby/20">
@@ -292,7 +295,7 @@ export default function StudentsPage() {
           <h1 className="text-3xl font-display font-bold text-brand-text-main">Student Registry</h1>
           <p className="text-brand-text-muted mt-1 text-sm">Complete student lifecycle management — admissions, profiles, academics, and records.</p>
         </div>
-        {currentUser?.role === 'admin' && (
+        {isStudentAdmin && (
           <button className="btn btn-primary cursor-pointer flex items-center gap-2" onClick={openAddModalForm}>
             <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="16" y1="11" x2="22" y2="11"/></svg>
             Enroll Student
@@ -420,7 +423,7 @@ export default function StudentsPage() {
                           >
                             View Profile
                           </button>
-                          {currentUser?.role === 'admin' && (
+                          {isStudentAdmin && (
                             <button 
                               className="w-full text-left px-3 py-2 text-xs font-semibold text-brand-primary hover:bg-brand-primary/10 rounded-lg cursor-pointer flex items-center gap-2"
                               onClick={() => { setActiveKebabId(null); openEditModal(stu); }}
