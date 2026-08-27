@@ -304,23 +304,18 @@ export default function LoginPage() {
     })
     .then(data => {
       setSigninLoading(false);
-      if (data.success) {
-        if (data.mustChangePassword) {
-          setTempUser({ email: emailLower, oldPassword: signinPassword, role: data.user.role });
-          setMustChange(true);
-        } else {
-          const sessionData = {
-            id: data.user.id,
-            name: data.user.name,
-            email: data.user.email,
-            role: data.user.role,
-            avatar: data.user.avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150",
-            loginAt: new Date().toISOString()
-          };
-          sessionStorage.setItem(SESSION_KEY, JSON.stringify(sessionData));
-          setSystemBooting(true);
-          startBootSequence(sessionData);
-        }
+      if (data.success && data.user) {
+        const sessionData = {
+          id: data.user.id,
+          name: data.user.name,
+          email: data.user.email,
+          role: data.user.role,
+          avatar: data.user.avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150",
+          loginAt: new Date().toISOString()
+        };
+        sessionStorage.setItem(SESSION_KEY, JSON.stringify(sessionData));
+        setSystemBooting(true);
+        startBootSequence(sessionData);
       }
     })
     .catch(err => {
@@ -512,9 +507,9 @@ export default function LoginPage() {
         clearInterval(interval);
         setTimeout(() => {
           redirectUser(session.role);
-        }, 300);
+        }, 100);
       }
-    }, 250);
+    }, 80);
   };
 
   // MFA Submit Verification
