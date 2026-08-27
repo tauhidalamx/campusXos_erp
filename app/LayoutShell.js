@@ -1620,6 +1620,7 @@ export default function LayoutShell({ children }) {
   const [loading, setLoading] = useState(false);
   const [showLogoutModal, setShowLogoutModal] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
 
   useEffect(() => {
     if (typeof window !== 'undefined') {

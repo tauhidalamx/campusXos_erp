@@ -273,5 +273,37 @@ export function DbProvider({ children }) {
 }
 
 export function useDb() {
-  return useContext(DbContext);
+  const context = useContext(DbContext);
+  if (!context) {
+    return {
+      students: [],
+      faculty: [],
+      courses: [],
+      transactions: [],
+      exams: [],
+      announcements: [],
+      activities: [],
+      departments: [],
+      addStudent: () => {},
+      updateStudent: () => {},
+      deleteStudent: () => {},
+      addFaculty: () => {},
+      updateFaculty: () => {},
+      deleteFaculty: () => {},
+      addCourse: () => {},
+      updateCourse: () => {},
+      deleteCourse: () => {},
+      addExam: () => {},
+      updateExam: () => {},
+      deleteExam: () => {},
+      addDepartment: () => {},
+      updateDepartment: () => {},
+      deleteDepartment: () => {},
+      addTransaction: () => {},
+      addAnnouncement: () => {},
+      deleteAnnouncement: () => {},
+      addActivity: () => {}
+    };
+  }
+  return context;
 }

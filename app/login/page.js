@@ -679,16 +679,16 @@ export default function LoginPage() {
 
 
       {/* Main Container Card */}
-      <div className="auth-container w-full max-w-5xl grid grid-cols-1 md:grid-cols-12 bg-white rounded-3xl overflow-hidden shadow-2xl border border-slate-200/80 my-auto">
+      <div className="auth-container w-full max-w-5xl grid grid-cols-1 md:grid-cols-12 bg-white rounded-3xl overflow-hidden shadow-2xl border-none my-auto">
         
         {/* Brand Left Panel */}
-        <div className="auth-brand md:col-span-5 relative hidden md:flex flex-col justify-between p-10 overflow-hidden bg-[#eef3fb] border-r border-slate-200/80 text-slate-800">
-          <div className="dot-grid absolute inset-0 opacity-40 pointer-events-none"></div>
+        <div className="auth-brand md:col-span-5 relative hidden md:flex flex-col justify-between p-10 overflow-hidden bg-[#eef3fb] border-none text-slate-800">
+          <div className="dot-grid absolute inset-0 opacity-30 pointer-events-none"></div>
 
           <div className="brand-content relative z-10 flex flex-col justify-center h-full">
             
             {/* Top Logo */}
-            <div className="brand-logo w-16 h-16 rounded-2xl bg-indigo-100 text-indigo-600 flex items-center justify-center mb-6 shadow-sm mx-auto border border-indigo-200/60">
+            <div className="brand-logo w-16 h-16 rounded-2xl bg-indigo-100/80 text-indigo-600 flex items-center justify-center mb-6 shadow-sm mx-auto border-none">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8">
                 <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
                 <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"/>
@@ -705,8 +705,8 @@ export default function LoginPage() {
 
             {/* Three Feature Cards */}
             <div className="brand-features flex flex-col gap-4 w-full">
-              <div className="brand-feature bg-white/90 backdrop-blur-sm border border-slate-200/80 shadow-sm p-4 rounded-2xl flex items-start gap-4 hover:shadow-md transition-all">
-                <div className="feature-icon w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0 border border-indigo-100">
+              <div className="brand-feature bg-white/90 backdrop-blur-sm border-none shadow-sm p-4 rounded-2xl flex items-start gap-4 hover:shadow-md transition-all">
+                <div className="feature-icon w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0 border-none">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
                 </div>
                 <div className="feature-text flex flex-col">
@@ -715,8 +715,8 @@ export default function LoginPage() {
                 </div>
               </div>
               
-              <div className="brand-feature bg-white/90 backdrop-blur-sm border border-slate-200/80 shadow-sm p-4 rounded-2xl flex items-start gap-4 hover:shadow-md transition-all">
-                <div className="feature-icon w-10 h-10 rounded-xl bg-cyan-50 text-cyan-600 flex items-center justify-center shrink-0 border border-cyan-100">
+              <div className="brand-feature bg-white/90 backdrop-blur-sm border-none shadow-sm p-4 rounded-2xl flex items-start gap-4 hover:shadow-md transition-all">
+                <div className="feature-icon w-10 h-10 rounded-xl bg-cyan-50 text-cyan-600 flex items-center justify-center shrink-0 border-none">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
                 </div>
                 <div className="feature-text flex flex-col">
@@ -725,8 +725,8 @@ export default function LoginPage() {
                 </div>
               </div>
 
-              <div className="brand-feature bg-white/90 backdrop-blur-sm border border-slate-200/80 shadow-sm p-4 rounded-2xl flex items-start gap-4 hover:shadow-md transition-all">
-                <div className="feature-icon w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 border border-emerald-100">
+              <div className="brand-feature bg-white/90 backdrop-blur-sm border-none shadow-sm p-4 rounded-2xl flex items-start gap-4 hover:shadow-md transition-all">
+                <div className="feature-icon w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 border-none">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
                 </div>
                 <div className="feature-text flex flex-col">
@@ -738,14 +738,14 @@ export default function LoginPage() {
           </div>
         </div>
 
-        {/* Form Right Panel */}
-        <div className="auth-form-panel md:col-span-7 flex flex-col justify-between p-6 md:p-8 bg-white relative overflow-y-auto">
+        {/* Form Right Panel (Visual starts cleanly at Welcome Back) */}
+        <div className="auth-form-panel md:col-span-7 flex flex-col justify-between p-8 md:p-10 bg-white relative overflow-y-auto">
           
           {/* Force Password Change Overlay */}
           {mustChange && tempUser && (
             <div className="absolute inset-0 bg-white z-50 p-8 md:p-12 flex flex-col justify-center fade-in">
               <div className="mb-6">
-                <div className="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center text-amber-600 mb-4 border border-amber-200">
+                <div className="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center text-amber-600 mb-4 border-none">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
                 </div>
                 <h2 className="text-2xl font-bold text-slate-900 font-display mb-1">Update Security Credentials</h2>
@@ -760,7 +760,7 @@ export default function LoginPage() {
                     onChange={(e) => setNewPassword(e.target.value)}
                     required 
                     placeholder="New Password" 
-                    className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-4 py-3.5 pr-11 text-sm text-slate-900 outline-none focus:border-[#4f46e5] focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all placeholder-slate-400"
+                    className="w-full bg-[#f4f6fb] border-none rounded-2xl px-4 py-3.5 pr-11 text-sm text-slate-900 outline-none focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all placeholder-slate-400"
                   />
                   <button 
                     type="button" 
@@ -778,7 +778,7 @@ export default function LoginPage() {
                 <button 
                   type="submit" 
                   disabled={changeLoading}
-                  className="w-full py-3.5 bg-[#4f46e5] hover:bg-[#4338ca] text-white rounded-2xl font-bold text-sm transition-all shadow-lg shadow-indigo-500/25 cursor-pointer disabled:opacity-50"
+                  className="w-full py-3.5 bg-[#4f46e5] hover:bg-[#4338ca] text-white rounded-2xl font-bold text-sm transition-all shadow-lg shadow-indigo-500/25 cursor-pointer disabled:opacity-50 border-none"
                 >
                   {changeLoading ? 'Updating Password...' : 'Save & Proceed to Workspace'}
                 </button>
@@ -786,32 +786,21 @@ export default function LoginPage() {
             </div>
           )}
 
-          {/* Mobile-only Header */}
-          <div className="mobile-brand flex md:hidden flex-col items-center gap-2 mb-6">
-            <div className="brand-logo w-12 h-12 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center border border-indigo-200">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
-                <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
-                <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"/>
-              </svg>
-            </div>
-            <h1 className="brand-title text-xl font-extrabold tracking-tight text-slate-900 font-display">CAMPUSX OS</h1>
-          </div>
-
-          {/* Header Title & Subtitle FIRST */}
-          <div className="auth-header-section mb-4">
-            <h2 className="text-2xl md:text-3xl font-bold text-slate-900 font-display mb-1">
+          {/* Header Title & Subtitle FIRST (Visual starts here) */}
+          <div className="auth-header-section mb-6">
+            <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 font-display mb-1.5 tracking-tight">
               {activeTab === 'signin' ? 'Welcome Back' : 'Create Access Credentials'}
             </h2>
-            <p className="text-xs md:text-sm text-slate-500">
+            <p className="text-xs md:text-sm text-slate-500 font-medium">
               {activeTab === 'signin' ? 'Enter your credentials or choose a SSO provider to log in' : 'Register a new identity on the CampusX mesh network'}
             </p>
           </div>
 
-          {/* Upper Segmented Pill Tab Switcher SECOND */}
-          <div className="auth-tab-switcher bg-[#f1f4f9] p-1.5 rounded-2xl border border-slate-200/70 flex items-center mb-6 shrink-0 w-full shadow-sm">
+          {/* Borderless Segmented Tab Switcher SECOND */}
+          <div className="auth-tab-switcher bg-[#f4f6fb] p-1.5 rounded-2xl flex items-center mb-6 shrink-0 w-full border-none">
             <button 
               type="button"
-              className={`flex-1 py-2.5 px-6 text-xs font-bold rounded-xl transition-all duration-200 cursor-pointer text-center flex items-center justify-center gap-2 ${activeTab === 'signin' ? 'bg-[#4f46e5] text-white shadow-md shadow-indigo-500/20' : 'text-slate-600 hover:text-slate-900 bg-transparent'}`}
+              className={`flex-1 py-2.5 px-6 text-xs font-bold rounded-xl transition-all duration-200 cursor-pointer text-center flex items-center justify-center gap-2 border-none ${activeTab === 'signin' ? 'bg-[#4f46e5] text-white shadow-md shadow-indigo-500/20' : 'text-slate-600 hover:text-slate-900 bg-transparent'}`}
               onClick={() => { setActiveTab('signin'); setSigninError(''); }}
             >
               <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
@@ -819,7 +808,7 @@ export default function LoginPage() {
             </button>
             <button 
               type="button"
-              className={`flex-1 py-2.5 px-6 text-xs font-bold rounded-xl transition-all duration-200 cursor-pointer text-center flex items-center justify-center gap-2 ${activeTab === 'signup' ? 'bg-[#4f46e5] text-white shadow-md shadow-indigo-500/20' : 'text-slate-600 hover:text-slate-900 bg-transparent'}`}
+              className={`flex-1 py-2.5 px-6 text-xs font-bold rounded-xl transition-all duration-200 cursor-pointer text-center flex items-center justify-center gap-2 border-none ${activeTab === 'signup' ? 'bg-[#4f46e5] text-white shadow-md shadow-indigo-500/20' : 'text-slate-600 hover:text-slate-900 bg-transparent'}`}
               onClick={() => { setActiveTab('signup'); setSigninError(''); }}
             >
               <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="17" y1="11" x2="23" y2="11"/></svg>
@@ -832,42 +821,57 @@ export default function LoginPage() {
             <div className="auth-form-container fade-in flex-1 flex flex-col justify-between">
               <div>
                 <form onSubmit={handleSignIn}>
-                  {/* Email Input */}
-                  <div className="auth-input-group relative mb-4">
-                    <input 
-                      type="email" 
-                      value={signinEmail}
-                      onChange={(e) => setSigninEmail(e.target.value)}
-                      required 
-                      placeholder="Email Address" 
-                      className="w-full bg-[#f8fafc] border border-slate-200 rounded-2xl px-4 py-3.5 pl-11 text-sm text-slate-900 outline-none focus:border-[#4f46e5] focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all placeholder-slate-400 shadow-sm"
-                    />
-                    <div className="absolute left-3.5 top-0 bottom-0 flex items-center pointer-events-none text-slate-400">
-                      <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                  {/* Standalone Borderless Email Address & Icon Group */}
+                  <div className="mb-4">
+                    <label className="block text-xs font-bold text-slate-700 mb-1.5 font-display">
+                      Email Address
+                    </label>
+                    <div className="flex items-center gap-3 bg-[#f4f6fb] rounded-2xl p-2.5 hover:bg-[#ebedf5] transition-all">
+                      <div className="w-10 h-10 rounded-xl bg-white text-indigo-600 flex items-center justify-center shrink-0 shadow-sm">
+                        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                      </div>
+                      <input 
+                        type="email" 
+                        value={signinEmail}
+                        onChange={(e) => setSigninEmail(e.target.value)}
+                        required 
+                        placeholder="admin@campusx.demo" 
+                        className="flex-1 bg-transparent border-none text-sm text-slate-900 outline-none placeholder-slate-400 font-medium"
+                      />
                     </div>
                   </div>
 
-                  {/* Password Input */}
-                  <div className="auth-input-group relative mb-4">
-                    <input 
-                      type={signinShowPassword ? "text" : "password"} 
-                      value={signinPassword}
-                      onChange={(e) => setSigninPassword(e.target.value)}
-                      required 
-                      placeholder="Password" 
-                      className="w-full bg-[#f8fafc] border border-slate-200 rounded-2xl px-4 py-3.5 pr-11 text-sm text-slate-900 outline-none focus:border-[#4f46e5] focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all placeholder-slate-400 shadow-sm"
-                    />
-                    <button 
-                      type="button" 
-                      onClick={() => setSigninShowPassword(!signinShowPassword)}
-                      className="password-toggle absolute right-4 top-4 text-slate-400 hover:text-slate-700 cursor-pointer bg-transparent border-none"
-                    >
-                      {signinShowPassword ? (
-                        <svg className="eye-closed w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
-                      ) : (
-                        <svg className="eye-open w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                      )}
-                    </button>
+                  {/* Standalone Borderless Password Group */}
+                  <div className="mb-4">
+                    <label className="block text-xs font-bold text-slate-700 mb-1.5 font-display">
+                      Password
+                    </label>
+                    <div className="flex items-center gap-3 bg-[#f4f6fb] rounded-2xl p-2.5 hover:bg-[#ebedf5] transition-all">
+                      <div className="w-10 h-10 rounded-xl bg-white text-slate-600 flex items-center justify-center shrink-0 shadow-sm">
+                        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                      </div>
+                      <div className="relative flex-1 flex items-center">
+                        <input 
+                          type={signinShowPassword ? "text" : "password"} 
+                          value={signinPassword}
+                          onChange={(e) => setSigninPassword(e.target.value)}
+                          required 
+                          placeholder="••••••••••••" 
+                          className="w-full bg-transparent border-none pr-9 text-sm text-slate-900 outline-none placeholder-slate-400 font-medium"
+                        />
+                        <button 
+                          type="button" 
+                          onClick={() => setSigninShowPassword(!signinShowPassword)}
+                          className="password-toggle absolute right-2 text-slate-400 hover:text-slate-700 cursor-pointer bg-transparent border-none"
+                        >
+                          {signinShowPassword ? (
+                            <svg className="eye-closed w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                          ) : (
+                            <svg className="eye-open w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                          )}
+                        </button>
+                      </div>
+                    </div>
                   </div>
 
                   {/* Options Row */}
@@ -889,7 +893,7 @@ export default function LoginPage() {
                   </button>
 
                   {signinError && (
-                    <div className="auth-error mt-3 p-3 bg-rose-50 border border-rose-200 text-rose-600 rounded-xl text-xs flex items-center gap-2">
+                    <div className="auth-error mt-3 p-3 bg-rose-50 border-none text-rose-600 rounded-xl text-xs flex items-center gap-2">
                       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4.5 h-4.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
                       <span>{signinError}</span>
                     </div>
@@ -897,13 +901,13 @@ export default function LoginPage() {
                 </form>
 
                 {/* SSO Divider */}
-                <div className="auth-divider flex items-center text-center my-5 text-[10px] font-bold tracking-wider text-slate-400 uppercase before:content-[''] before:flex-1 before:border-b before:border-slate-200 before:mr-4 after:content-[''] after:flex-1 after:border-b after:border-slate-200 after:ml-4">
+                <div className="auth-divider flex items-center text-center my-5 text-[10px] font-bold tracking-wider text-slate-400 uppercase before:content-[''] before:flex-1 before:border-b before:border-slate-100 before:mr-4 after:content-[''] after:flex-1 after:border-b after:border-slate-100 after:ml-4">
                   <span>OR SIGN IN USING SSO</span>
                 </div>
 
                 {/* SSO Buttons */}
                 <div className="social-buttons grid grid-cols-3 gap-3">
-                  <button type="button" className="social-btn flex items-center justify-center gap-2 py-2.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-2xl text-xs font-semibold shadow-sm transition-all cursor-pointer" onClick={() => handleSSO('Google')}>
+                  <button type="button" className="social-btn flex items-center justify-center gap-2 py-2.5 bg-[#f4f6fb] border-none hover:bg-[#ebedf5] text-slate-700 rounded-2xl text-xs font-semibold transition-all cursor-pointer" onClick={() => handleSSO('Google')}>
                     <svg viewBox="0 0 24 24" width="16" height="16">
                       <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
                       <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
@@ -912,7 +916,7 @@ export default function LoginPage() {
                     </svg>
                     Google
                   </button>
-                  <button type="button" className="social-btn flex items-center justify-center gap-2 py-2.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-2xl text-xs font-semibold shadow-sm transition-all cursor-pointer" onClick={() => handleSSO('Microsoft')}>
+                  <button type="button" className="social-btn flex items-center justify-center gap-2 py-2.5 bg-[#f4f6fb] border-none hover:bg-[#ebedf5] text-slate-700 rounded-2xl text-xs font-semibold transition-all cursor-pointer" onClick={() => handleSSO('Microsoft')}>
                     <svg viewBox="0 0 24 24" width="16" height="16">
                       <rect x="1" y="1" width="10" height="10" fill="#F25022"/>
                       <rect x="13" y="1" width="10" height="10" fill="#7FBA00"/>
@@ -921,7 +925,7 @@ export default function LoginPage() {
                     </svg>
                     Microsoft
                   </button>
-                  <button type="button" className="social-btn flex items-center justify-center gap-2 py-2.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-2xl text-xs font-semibold shadow-sm transition-all cursor-pointer" onClick={() => handleSSO('Passkey')}>
+                  <button type="button" className="social-btn flex items-center justify-center gap-2 py-2.5 bg-[#f4f6fb] border-none hover:bg-[#ebedf5] text-slate-700 rounded-2xl text-xs font-semibold transition-all cursor-pointer" onClick={() => handleSSO('Passkey')}>
                     <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-cyan-600"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
                     Passkey
                   </button>
@@ -929,8 +933,8 @@ export default function LoginPage() {
               </div>
 
               {/* All Quick Demo Logins Section */}
-              <div className="auth-demo-info mt-6 p-4 bg-[#f8fafc] rounded-2xl border border-slate-200/80 text-center shadow-sm">
-                  <div className="flex items-center justify-between mb-3 pb-2 border-b border-slate-200/70">
+              <div className="auth-demo-info mt-6 p-4 bg-[#f8fafc] rounded-2xl border-none text-center shadow-sm">
+                  <div className="flex items-center justify-between mb-3 pb-2 border-b border-slate-100">
                     <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-700 font-display">Quick Demo Logins (Click to prefill)</span>
                     <button 
                       type="button" 
