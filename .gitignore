@@ -7,7 +7,20 @@ node_modules/
 .cache/
 .do/
 build/
-builds/
+builds/*
+!builds/mac/
+!builds/mac/*.sh
+!builds/mac/*.py
+!builds/android/
+!builds/android/*.sh
+!builds/android/*.py
+!builds/android/*.spec
+!builds/windows/
+!builds/windows/*.bat
+builds/mac/AegisOS/
+builds/mac/AegisOS.app/
+builds/mac/build/
+builds/mac/build_m4/
 dist/
 cache/
 
@@ -17,7 +30,8 @@ cache/
 *.DS_Store
 
 # PyInstaller / Spec
-*.spec
+# Keep spec files tracked for builds
+
 
 # Database and Log files
 *.sqlite
