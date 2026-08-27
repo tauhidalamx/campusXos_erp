@@ -38,23 +38,14 @@
 
 ---
 
-## 🎬 Live System Walkthrough & Screen Recordings
+## 🎬 Live System Walkthrough & Screen Recording
 
-### 1. Full CampusX OS Autonomous Platform Tour
-Comprehensive automated recording showing multi-tenant authentication, 1-Click role switches, master ERP dashboards, and microservice route navigations.
-![Full CampusX OS Demo Tour](docs/videos/campusx_os_full_demo.webp)
+### CampusX OS Full System Walkthrough (Screen Recording 2026-08-27)
+Full 4-minute 20-second HD live screen recording demonstrating multi-tenant role authentication, master ERP dashboards, faculty directory photo uploads with Cloud DB synchronization, and microservice route navigations.
 
----
-
-### 2. Faculty Directory & Academic Administration Walkthrough
-Live recording of faculty search, department filtering, profile photo uploads with Cloud DB synchronization, and TensorFlow.js workload AI optimization dials.
-![Faculty Directory & Admin Walkthrough](docs/videos/faculty_directory_walkthrough.webp)
-
----
-
-### 3. Unified Split-Screen Auth & Security Gateway
-Live recording of the dark-indigo glassmorphic IAM gateway featuring animated background gradient orbs, TensorFlow anomaly detection, and 1-Click demo logins.
-![Unified Auth Gateway Walkthrough](docs/videos/login_gateway_walkthrough.webp)
+<video src="docs/videos/Screen_Recording_2026-08-27.mp4" controls width="100%" poster="docs/screenshots/hero_dashboard.png">
+  Your browser does not support the video tag.
+</video>
 
 ---
 
