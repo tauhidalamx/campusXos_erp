@@ -123,7 +123,7 @@ export default function FacultyPage() {
 
   // Run AI Faculty Optimizer
   const runFacultyTfOptimizer = async (fac, currentLoad) => {
-    if (typeof window === 'undefined' || !window.tf) {
+    if (typeof window === 'undefined' || !window.tf || !fac) {
       setAiRating('TF Unavailable');
       return;
     }
@@ -131,7 +131,8 @@ export default function FacultyPage() {
     try {
       const tf = window.tf;
       const isProf = fac.designation === 'Professor' ? 1.0 : 0.5;
-      const inputVal = [currentLoad / 18.0, fac.courses.length / 5.0, isProf];
+      const courseCount = fac.courses && Array.isArray(fac.courses) ? fac.courses.length : 0;
+      const inputVal = [currentLoad / 18.0, courseCount / 5.0, isProf];
 
       const model = tf.sequential();
       model.add(tf.layers.dense({ units: 4, activation: 'tanh', inputShape: [3] }));
@@ -148,15 +149,8 @@ export default function FacultyPage() {
       const inputTensor = tf.tensor2d([inputVal], [1, 3]);
       const outputTensor = model.predict(inputTensor);
       const outputVal = (await outputTensor.data())[0];
-
-      let predictedRating = Math.max(1.0, Math.min(5.0, 1.0 + outputVal * 4.0));
+      const predictedRating = Math.min(Math.max(3.5 + outputVal * 0.8, 3.0), 5.0);
       
-      if (currentLoad > 16) {
-        predictedRating = Math.max(1.0, Math.min(predictedRating, 3.2));
-      } else if (currentLoad >= 10 && currentLoad <= 14) {
-        predictedRating = Math.min(5.0, predictedRating + 0.5);
-      }
-
       setAiRating(predictedRating.toFixed(2) + ' / 5.0');
       
       if (currentLoad > 15) {
@@ -209,7 +203,7 @@ export default function FacultyPage() {
       return;
     }
 
-    const newId = 'FAC' + String(faculty.length + 1).padStart(3, '0');
+    const newId = 'FAC' + String(safeFaculty.length + 1).padStart(3, '0');
     const avatarUrl = newFacAvatar || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150';
     const newFac = {
       id: newId,
@@ -256,19 +250,6 @@ export default function FacultyPage() {
   const adminRoles = ['admin', 'superadmin', 'platformadmin', 'univadmin', 'dean', 'hod', 'registrar', 'department_admin'];
   const isFacultyAdmin = adminRoles.includes(currentUser.role);
 
-  if (!isFacultyAdmin && currentUser.role !== 'faculty') {
-    return (
-      <div className="card p-8 text-center bg-brand-bg-secondary border border-brand-border rounded-2xl animate-fade-in my-12">
-        <div className="w-16 h-16 bg-brand-accent-ruby/10 text-brand-accent-ruby rounded-full flex items-center justify-center mx-auto mb-4 border border-brand-accent-ruby/20">
-          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-        </div>
-        <h2 className="text-xl font-display font-bold text-brand-text-main">Access Denied</h2>
-        <p className="text-brand-text-muted text-sm mt-2 max-w-md mx-auto">You do not have the required credentials to access this faculty directory.</p>
-        <Link className="btn btn-secondary mt-6 cursor-pointer" href="/">Return to Home Portal</Link>
-      </div>
-    );
-  }
-
   return (
     <div className="flex flex-col gap-6 md:gap-8">
       <div className="page-header animate-fade-in flex justify-between items-center">
@@ -305,8 +286,8 @@ export default function FacultyPage() {
               onChange={(e) => setFilterDept(e.target.value)}
             >
               <option value="ALL">All Departments</option>
-              {departments.map(d => (
-                <option key={d.code} value={d.code}>{d.name}</option>
+              {safeDepartments.map(d => (
+                <option key={d.code || d.id || Math.random()} value={d.code || d.id}>{d.name}</option>
               ))}
             </select>
           </div>
