@@ -109,6 +109,30 @@ const PORT = process.env.PORT || 5000;
 // Middlewares
 app.use(cors());
 app.use(express.json());
+
+// Serve Uploads with Cloud Database Fallback Stream (for Vercel & Cloud persistence)
+app.get('/uploads/:filename', (req, res, next) => {
+  const localFilePath = path.join(uploadsDir, req.params.filename);
+  if (fs.existsSync(localFilePath)) {
+    return res.sendFile(localFilePath);
+  }
+  const key = `/uploads/${req.params.filename}`;
+  if (MongoKVStore) {
+    MongoKVStore.findOne({ key }).then(doc => {
+      if (doc && doc.value) {
+        const matches = String(doc.value).match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+        if (matches && matches.length === 3) {
+          const imgBuf = Buffer.from(matches[2], 'base64');
+          res.setHeader('Content-Type', matches[1]);
+          return res.send(imgBuf);
+        }
+      }
+      next();
+    }).catch(() => next());
+  } else {
+    next();
+  }
+});
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 app.use(express.static(path.join(__dirname, 'dist')));
 
@@ -140,6 +164,53 @@ const storage = multer.diskStorage({
   }
 });
 const upload = multer({ storage });
+
+// Universal Image Upload Endpoint (Saves to Disk & Cloud Database)
+app.post('/api/upload', (req, res) => {
+  upload.single('file')(req, res, (err) => {
+    if (err) {
+      return res.status(500).json({ error: 'File upload error: ' + err.message });
+    }
+    if (req.file) {
+      const avatarUrl = `/uploads/${req.file.filename}`;
+      try {
+        const fileBuf = fs.readFileSync(req.file.path);
+        const mimeType = req.file.mimetype || 'image/png';
+        const base64Data = `data:${mimeType};base64,${fileBuf.toString('base64')}`;
+        
+        // Save to SQLite kv_store
+        db.run(`INSERT OR REPLACE INTO kv_store (key, value, updated_at) VALUES (?, ?, ?)`, [avatarUrl, JSON.stringify(base64Data), new Date().toISOString()]);
+        
+        // Save to MongoDB Cloud Database
+        if (MongoKVStore) {
+          MongoKVStore.findByIdAndUpdate(avatarUrl, { _id: avatarUrl, key: avatarUrl, value: base64Data, updated_at: new Date().toISOString() }, { upsert: true }).catch(() => {});
+        }
+        return res.json({ success: true, url: avatarUrl, avatarUrl, base64: base64Data });
+      } catch (e) {
+        return res.json({ success: true, url: avatarUrl, avatarUrl });
+      }
+    }
+    if (req.body && req.body.image) {
+      try {
+        const matches = req.body.image.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+        if (matches && matches.length === 3) {
+          const ext = matches[1].split('/')[1] || 'png';
+          const filename = `img_${Date.now()}_${Math.random().toString(36).substring(2, 7)}.${ext}`;
+          const avatarUrl = `/uploads/${filename}`;
+          const filepath = path.join(uploadsDir, filename);
+          try { fs.writeFileSync(filepath, Buffer.from(matches[2], 'base64')); } catch (e) {}
+          
+          db.run(`INSERT OR REPLACE INTO kv_store (key, value, updated_at) VALUES (?, ?, ?)`, [avatarUrl, JSON.stringify(req.body.image), new Date().toISOString()]);
+          if (MongoKVStore) {
+            MongoKVStore.findByIdAndUpdate(avatarUrl, { _id: avatarUrl, key: avatarUrl, value: req.body.image, updated_at: new Date().toISOString() }, { upsert: true }).catch(() => {});
+          }
+          return res.json({ success: true, url: avatarUrl, avatarUrl, base64: req.body.image });
+        }
+      } catch (e) {}
+    }
+    return res.status(400).json({ error: 'No valid image file uploaded.' });
+  });
+});
 
 // Initialize SQLite database
 const isVercelEnv = process.env.VERCEL || process.env.AWS_LAMBDA_FUNCTION_NAME || process.env.NODE_ENV === 'production';

@@ -200,6 +200,7 @@ export default function FacultyPage() {
     }
 
     const newId = 'FAC' + String(faculty.length + 1).padStart(3, '0');
+    const avatarUrl = newFacAvatar || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150';
     const newFac = {
       id: newId,
       name: newFacName.trim(),
@@ -208,29 +209,30 @@ export default function FacultyPage() {
       designation: newFacDesignation,
       workload: parseInt(newFacWorkload) || 12,
       courses: [],
-      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150'
+      avatar: avatarUrl
     };
 
     addFaculty(newFac);
 
-    // Sync to backend SQLite
+    // Sync to backend SQLite & Cloud DB
     fetch('/api/users', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        id: `usr_${newFac.id.toLowerCase()}`,
-        name: newFac.name,
-        email: newFac.email,
+        id: newId,
+        name: newFacName.trim(),
+        email: newFacEmail.trim(),
         role: 'faculty',
-        password: `${newFac.name.split(' ')[0]}@${newFac.id}`,
-        avatar: newFac.avatar
+        avatar: avatarUrl,
+        department: newFacDept
       })
-    }).catch(err => console.error('Failed to sync faculty to backend:', err));
+    }).catch(err => console.error('Failed to sync faculty to server:', err));
 
     setShowAddModal(false);
     setNewFacName('');
     setNewFacEmail('');
-    alert(`Faculty member ${newFacName} enrolled with ID ${newId}`);
+    setNewFacAvatar('');
+    alert('Faculty member added successfully and synced to Cloud Database!');
   };
 
   if (!currentUser) {
@@ -499,6 +501,35 @@ export default function FacultyPage() {
                   </select>
                 </div>
               </div>
+              <div className="form-group flex flex-col gap-1.5">
+                <label className="form-label text-xs font-semibold text-brand-text-muted">Profile Photo / Avatar Upload</label>
+                <div className="flex items-center gap-2">
+                  {newFacAvatar && (
+                    <img src={newFacAvatar} alt="Preview" className="w-9 h-9 rounded-full object-cover border border-brand-border" />
+                  )}
+                  <input 
+                    type="file" 
+                    accept="image/*" 
+                    className="bg-brand-bg-tertiary border border-brand-border text-brand-text-main p-1.5 rounded-xl outline-none text-xs flex-1 cursor-pointer" 
+                    onChange={async (e) => {
+                      const file = e.target.files[0];
+                      if (!file) return;
+                      const bodyData = new FormData();
+                      bodyData.append('file', file);
+                      try {
+                        const res = await fetch('/api/upload', { method: 'POST', body: bodyData });
+                        const data = await res.json();
+                        if (data.url) {
+                          setNewFacAvatar(data.url);
+                        }
+                      } catch (err) {
+                        console.error('Failed to upload faculty image:', err);
+                      }
+                    }} 
+                  />
+                </div>
+              </div>
+
               <div className="form-group flex flex-col gap-1.5">
                 <label className="form-label text-xs font-semibold text-brand-text-muted">Initial Workload (Hours/Week)</label>
                 <input 
