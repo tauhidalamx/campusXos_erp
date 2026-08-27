@@ -13,6 +13,7 @@
 
 ## 📌 Interactive Table of Contents
 - [✨ Core Highlights](#-core-highlights)
+- [🎬 Live System Walkthrough & Screen Recordings](#-live-system-walkthrough--screen-recordings)
 - [🖼 Visual Showcase & Screenshots](#-visual-showcase--screenshots)
 - [👥 User Roles & Access Matrix](#-user-roles--access-matrix)
 - [🏗 System Architecture & Microservices](#-system-architecture--microservices)
@@ -34,6 +35,26 @@
 - 💬 **CampusX Connect Collaboration**: Embedded HD video/audio conferencing, real-time channels, interactive code snippet editor, and AI assistant sidecar.
 - 🔗 **Web3 Blockchain Credential Vault**: Immutable degree transcripts, fee settlement contracts, and attendance verification stored on Ethereum.
 - 💻 **Native C++ & Mobile Apps**: Native Qt/CMake C++ desktop application shell alongside Python/Kivy mobile client with Android Buildozer support.
+
+---
+
+## 🎬 Live System Walkthrough & Screen Recordings
+
+### 1. Full CampusX OS Autonomous Platform Tour
+Comprehensive automated recording showing multi-tenant authentication, 1-Click role switches, master ERP dashboards, and microservice route navigations.
+![Full CampusX OS Demo Tour](docs/videos/campusx_os_full_demo.webp)
+
+---
+
+### 2. Faculty Directory & Academic Administration Walkthrough
+Live recording of faculty search, department filtering, profile photo uploads with Cloud DB synchronization, and TensorFlow.js workload AI optimization dials.
+![Faculty Directory & Admin Walkthrough](docs/videos/faculty_directory_walkthrough.webp)
+
+---
+
+### 3. Unified Split-Screen Auth & Security Gateway
+Live recording of the dark-indigo glassmorphic IAM gateway featuring animated background gradient orbs, TensorFlow anomaly detection, and 1-Click demo logins.
+![Unified Auth Gateway Walkthrough](docs/videos/login_gateway_walkthrough.webp)
 
 ---
 
