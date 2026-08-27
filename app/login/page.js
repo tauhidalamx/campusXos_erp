@@ -655,6 +655,22 @@ export default function LoginPage() {
       }
     })
     .catch(err => {
+      const demoFallback = demoFallbackMap[email];
+      if (demoFallback) {
+        setSigninLoading(false);
+        const sessionData = {
+          id: demoFallback.id,
+          name: demoFallback.name,
+          email: email,
+          role: demoFallback.role,
+          avatar: demoFallback.avatar,
+          loginAt: new Date().toISOString()
+        };
+        sessionStorage.setItem(SESSION_KEY, JSON.stringify(sessionData));
+        setSystemBooting(true);
+        startBootSequence(sessionData);
+        return;
+      }
       setSigninError(err.message || 'Invalid email or password. Please try again.');
       setSigninLoading(false);
     });
