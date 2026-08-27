@@ -88,18 +88,13 @@ export function ConnectProvider({ children }) {
     if (typeof window !== 'undefined') {
       const session = sessionStorage.getItem('campusx_erp_session');
       if (session) {
-        setCurrentUser(JSON.parse(session));
+        try {
+          setCurrentUser(JSON.parse(session));
+        } catch (e) {
+          setCurrentUser(null);
+        }
       } else {
-        const defaultUser = {
-          id: 'usr_admin',
-          name: 'Dr. Alex Vance',
-          role: 'admin',
-          email: 'admin@campusx.edu',
-          avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
-          dept: 'Computer Science'
-        };
-        sessionStorage.setItem('campusx_erp_session', JSON.stringify(defaultUser));
-        setCurrentUser(defaultUser);
+        setCurrentUser(null);
       }
     }
   }, []);

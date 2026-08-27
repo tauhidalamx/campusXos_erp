@@ -12,9 +12,8 @@ export default function AnnouncementsPage() {
     if (typeof window !== 'undefined') {
       let session = sessionStorage.getItem('campusx_erp_session');
       if (!session) {
-        const defaultUser = { id: 'usr_admin', name: 'Dr. Alex Vance', role: 'admin', email: 'admin@campusx.edu' };
-        sessionStorage.setItem('campusx_erp_session', JSON.stringify(defaultUser));
-        session = JSON.stringify(defaultUser);
+        window.location.href = '/login';
+        return;
       }
       try {
         setCurrentUser(JSON.parse(session));

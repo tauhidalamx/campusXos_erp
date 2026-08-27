@@ -477,6 +477,16 @@ function LayoutContent({ children, collapsed, setCollapsed, user, displayRole, h
     }
   }, []);
 
+  const handleToggleQuickTheme = () => {
+    if (typeof window !== 'undefined') {
+      const current = document.documentElement.getAttribute('data-theme') || 'light';
+      const nextTheme = current === 'emerald' ? 'light' : 'emerald';
+      localStorage.setItem('campusx_theme', nextTheme);
+      document.documentElement.setAttribute('data-theme', nextTheme);
+      window.dispatchEvent(new Event('theme-changed'));
+    }
+  };
+
   useEffect(() => {
     const handleKeyDown = (e) => {
       const isCmdK = (e.metaKey || e.ctrlKey) && e.key === 'k';
@@ -1173,6 +1183,16 @@ function LayoutContent({ children, collapsed, setCollapsed, user, displayRole, h
             {/* Quick Actions Toggle */}
             <button className="nav-action-btn border border-brand-border text-brand-text-muted w-10 h-10 rounded-full flex items-center justify-center relative hover:bg-brand-bg-tertiary hover:text-brand-text-main cursor-pointer transition-all" onClick={() => setShowQuickModal(true)}>
               <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            </button>
+
+            {/* Theme 1 / Theme 2 Quick Switcher */}
+            <button 
+              className="nav-action-btn border border-brand-border text-brand-text-muted px-3 h-10 rounded-full flex items-center gap-1.5 hover:bg-brand-bg-tertiary hover:text-brand-text-main cursor-pointer transition-all text-xs font-semibold" 
+              onClick={handleToggleQuickTheme}
+              title="Switch between Theme 1 (Sapphire Light) and Theme 2 (Cyber Emerald Obsidian)"
+            >
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(16,185,129,0.8)]"></span>
+              <span className="hidden sm:inline">Theme 1/2</span>
             </button>
 
             {/* Font & Appearance Settings Toggle */}
