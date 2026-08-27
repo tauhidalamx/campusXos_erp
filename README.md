@@ -41,55 +41,43 @@
 
 ### 1. Unified Auth & Security Login Gateway
 Features 1-Click Admin and 1-Click Student instant login buttons, TensorFlow.js anomaly detection, multi-factor authentication (MFA), and full Cloud Database auto-synchronization.
-![Unified Auth & Security Gateway](docs/screenshots/login_page.jpg)
+![Unified Auth & Security Gateway](docs/screenshots/login_page.png)
 
 ---
 
 ### 2. Executive Master ERP Dashboard
 The central command hub for university leadership providing real-time metrics, financial health, enrollment trends, and institutional KPIs.
-![Executive Master Dashboard](docs/screenshots/hero_dashboard.jpg)
+![Executive Master Dashboard](docs/screenshots/hero_dashboard.png)
 
 ---
 
 ### 3. Global Super Admin Multi-Tenant Console
 Monitors global campus clusters across Boston, London, Tokyo, Sydney, and Singapore with microservice latencies, CPU/RAM server loads, and live audit logs.
-![Super Admin Console](docs/screenshots/super_admin_console.jpg)
+![Super Admin Console](docs/screenshots/super_admin_console.png)
 
 ---
 
 ### 4. Student Portal & Academic Hub
 A personalized interface for students featuring live GPA dials, circular attendance rings, interactive class timetables, upcoming exam countdowns, and fee clearance badges.
-![Student Portal](docs/screenshots/student_portal.jpg)
+![Student Portal](docs/screenshots/student_portal.png)
 
 ---
 
 ### 5. Cybersecurity Operations Center (SOC)
 24/7 SIEM monitoring console featuring a 3D global threat map, live intrusion detection event stream, AI threat defense matrix, and firewall policy status.
-![SOC Cyber Threat Intelligence](docs/screenshots/soc_cyber_intel.jpg)
+![SOC Cyber Threat Intelligence](docs/screenshots/soc_cyber_intel.png)
 
 ---
 
-### 6. Computer Vision & Tactical Sports AI
-Empowers coaches and sports directors with player bounding-box video tracking, sprint velocity vectors, fatigue prediction, tactical heatmaps, and substitution AI.
-![Sports AI Analytics](docs/screenshots/sports_ai_analytics.jpg)
+### 6. Admin Platform Gateway & Microservice Integrations
+Administrative management hub for configuring microservice integrations, API gateways, database connection pools, and platform subscriptions.
+![Admin Platform Gateway](docs/screenshots/admin_platform_gateway.png)
 
 ---
 
-### 7. Digital Twin 3D Building & IoT Control
-Spatial 3D university blueprint tracking live HVAC energy consumption, solar panel power output, smart door access logs, and environmental air quality sensors.
-![Digital Twin IoT](docs/screenshots/digital_twin_iot.jpg)
-
----
-
-### 8. CampusX Connect Collaboration Hub
-Real-time communication suite integrating HD video meetings, class discussion channels, live collaborative code editor, and CampusX AI sidecar assistance.
-![CampusX Connect Hub](docs/screenshots/campusx_connect.jpg)
-
----
-
-### 9. Web3 Blockchain Credential Vault
-Verifies academic transcripts and student credentials against Ethereum smart contracts (`CredentialVault.sol`, `AttendanceSystem.sol`) with cryptographic hash validation.
-![Blockchain Credential Vault](docs/screenshots/blockchain_vault.jpg)
+### 7. Microservice Integrations & Security Mesh
+Manages active microservice routes, JWT secrets, database connection pools, and platform subscriptions.
+![Admin Platform Integrations](docs/screenshots/admin_platform_integrations.png)
 
 ---
 
