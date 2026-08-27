@@ -934,8 +934,33 @@ export default function StudentsPage() {
                   </div>
                 </div>
                 <div className="form-group flex flex-col gap-1">
-                  <label className="form-label text-xs font-semibold text-brand-text-muted">Profile Image URL</label>
-                  <input type="text" className="bg-brand-bg-tertiary border border-brand-border text-brand-text-main p-2 rounded-xl outline-none" id="avatar" value={formData.avatar || ''} onChange={handleFormChange} />
+                  <label className="form-label text-xs font-semibold text-brand-text-muted">Profile Photo / Avatar Upload</label>
+                  <div className="flex items-center gap-2">
+                    {formData.avatar && (
+                      <img src={formData.avatar} alt="Preview" className="w-9 h-9 rounded-full object-cover border border-brand-border" />
+                    )}
+                    <input 
+                      type="file" 
+                      accept="image/*" 
+                      className="bg-brand-bg-tertiary border border-brand-border text-brand-text-main p-1.5 rounded-xl outline-none text-xs flex-1 cursor-pointer" 
+                      onChange={async (e) => {
+                        const file = e.target.files[0];
+                        if (!file) return;
+                        const bodyData = new FormData();
+                        bodyData.append('file', file);
+                        try {
+                          const res = await fetch('/api/upload', { method: 'POST', body: bodyData });
+                          const data = await res.json();
+                          if (data.url) {
+                            setFormData(prev => ({ ...prev, avatar: data.url }));
+                          }
+                        } catch (err) {
+                          console.error('Failed to upload image:', err);
+                        }
+                      }} 
+                    />
+                  </div>
+                  <input type="text" className="bg-brand-bg-tertiary border border-brand-border text-brand-text-main p-2 rounded-xl outline-none mt-1 text-xs" id="avatar" placeholder="Or enter image URL" value={formData.avatar || ''} onChange={handleFormChange} />
                 </div>
               </form>
             </div>
