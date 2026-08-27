@@ -697,7 +697,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="auth-page min-h-screen w-full bg-[#ebf0f7] flex flex-col items-center justify-start sm:justify-center p-3 sm:p-6 overflow-y-auto">
+    <div className="auth-container">
       {systemBooting && (
         <div className="system-loader-overlay">
           <div className="system-loader-card">
@@ -735,71 +735,63 @@ export default function LoginPage() {
           </div>
         </div>
       )}
-      
 
+      {/* Left Brand Panel */}
+      <div className="auth-brand">
+        <div className="orb orb-1"></div>
+        <div className="orb orb-2"></div>
+        <div className="orb orb-3"></div>
+        <div className="dot-grid"></div>
 
-      {/* Main Container Card */}
-      <div className="auth-container w-full max-w-5xl grid grid-cols-1 md:grid-cols-12 bg-white rounded-3xl overflow-hidden shadow-2xl border-none my-auto">
-        
-        {/* Brand Left Panel */}
-        <div className="auth-brand md:col-span-5 relative hidden md:flex flex-col justify-between p-10 overflow-hidden bg-[#eef3fb] border-none text-slate-800">
-          <div className="dot-grid absolute inset-0 opacity-30 pointer-events-none"></div>
+        <div className="brand-content">
+          <div className="brand-logo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+              <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"/>
+            </svg>
+          </div>
 
-          <div className="brand-content relative z-10 flex flex-col justify-center h-full">
-            
-            {/* Top Logo */}
-            <div className="brand-logo w-16 h-16 rounded-2xl bg-indigo-100/80 text-indigo-600 flex items-center justify-center mb-6 shadow-sm mx-auto border-none">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8">
-                <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
-                <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"/>
-              </svg>
+          <h1 className="brand-title">CAMPUSX OS</h1>
+          <p className="brand-tagline">
+            Role-Aware Enterprise IAM & Administrative Workspace
+          </p>
+
+          <div className="brand-features">
+            <div className="brand-feature">
+              <div className="feature-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              </div>
+              <div className="feature-text">
+                <strong>Zero Trust Architecture</strong>
+                <span>Automatic IAM role resolution, secure URL route guards, and granular verification.</span>
+              </div>
             </div>
 
-            <h1 className="brand-title text-3xl font-extrabold tracking-tight text-center mb-2 font-display">
-              <span className="text-slate-900">CAMPUSX </span>
-              <span className="text-[#6366f1]">OS</span>
-            </h1>
-            <p className="brand-tagline text-slate-500 text-sm text-center mb-10 max-w-xs mx-auto leading-relaxed">
-              Role-Aware Enterprise IAM & Administrative Workspace
-            </p>
-
-            {/* Three Feature Cards */}
-            <div className="brand-features flex flex-col gap-4 w-full">
-              <div className="brand-feature bg-white/90 backdrop-blur-sm border-none shadow-sm p-4 rounded-2xl flex items-start gap-4 hover:shadow-md transition-all">
-                <div className="feature-icon w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center shrink-0 border-none">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                </div>
-                <div className="feature-text flex flex-col">
-                  <strong className="text-sm font-bold text-slate-900">Zero Trust Architecture</strong>
-                  <span className="text-xs text-slate-500 mt-0.5 leading-relaxed">Automatic IAM role resolution, secure URL route guards, and granular blockchain verification.</span>
-                </div>
+            <div className="brand-feature">
+              <div className="feature-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
               </div>
-              
-              <div className="brand-feature bg-white/90 backdrop-blur-sm border-none shadow-sm p-4 rounded-2xl flex items-start gap-4 hover:shadow-md transition-all">
-                <div className="feature-icon w-10 h-10 rounded-xl bg-cyan-50 text-cyan-600 flex items-center justify-center shrink-0 border-none">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                </div>
-                <div className="feature-text flex flex-col">
-                  <strong className="text-sm font-bold text-slate-900">Unified Identity Hub</strong>
-                  <span className="text-xs text-slate-500 mt-0.5 leading-relaxed">Singular login for ERP, CONNECT, CHAIN, and WEB3. Automatically filters permissions, widgets, and links.</span>
-                </div>
+              <div className="feature-text">
+                <strong>Unified Identity Hub</strong>
+                <span>Singular login for ERP, CONNECT, CHAIN, and WEB3. Automatically filters permissions.</span>
               </div>
+            </div>
 
-              <div className="brand-feature bg-white/90 backdrop-blur-sm border-none shadow-sm p-4 rounded-2xl flex items-start gap-4 hover:shadow-md transition-all">
-                <div className="feature-icon w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 border-none">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                </div>
-                <div className="feature-text flex flex-col">
-                  <strong className="text-sm font-bold text-slate-900">Active Threat Detection</strong>
-                  <span className="text-xs text-slate-500 mt-0.5 leading-relaxed">Real-time local ML anomaly score models tracking password attempts, patterns, and login contexts.</span>
-                </div>
+            <div className="brand-feature">
+              <div className="feature-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              </div>
+              <div className="feature-text">
+                <strong>Active Threat Detection</strong>
+                <span>Real-time local ML anomaly score models tracking password attempts and login contexts.</span>
               </div>
             </div>
           </div>
         </div>
+      </div>
 
-        {/* Form Right Panel (Visual starts cleanly at Welcome Back) */}
-        <div className="auth-form-panel md:col-span-7 flex flex-col justify-between p-8 md:p-10 bg-white relative overflow-y-auto">
+      {/* Right Form Panel */}
+      <div className="auth-form-panel">
           
           {/* Force Password Change Overlay */}
           {mustChange && tempUser && (
@@ -1272,8 +1264,6 @@ export default function LoginPage() {
             <p>&copy; 2026 CampusX University Operating System. All rights reserved.</p>
           </div>
         </div>
-
-      </div>
     </div>
   );
 }
