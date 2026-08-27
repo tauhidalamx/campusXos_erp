@@ -63,33 +63,134 @@ A personalized interface for students featuring live GPA dials, circular attenda
 
 ---
 
-### 5. Cybersecurity Operations Center (SOC)
+### 5. Cybersecurity Operations Center (SOC) Architecture
 24/7 SIEM monitoring console featuring a 3D global threat map, live intrusion detection event stream, AI threat defense matrix, and firewall policy status.
-![SOC Cyber Threat Intelligence](docs/screenshots/soc_cyber_intel.png)
+
+```mermaid
+graph TD
+    subgraph Data Ingestion & Sensors
+        A[Gateway Telemetry] --> B[SIEM Log Ingestion Engine]
+        C[Honeypot Decoys] --> B
+        D[Firewall Audit Logs] --> B
+    end
+
+    subgraph AI Threat Processing Matrix
+        B --> E[TensorFlow.js Anomaly Classifier]
+        E --> F{Threat Level Assessment}
+        F -->|High / CRITICAL| G[Auto Isolation & IP Ban]
+        F -->|Medium / LOW| H[SIEM Audit Trail Event]
+    end
+
+    subgraph SOC Dashboard & Defense Actions
+        G --> I[3D Global Threat Map UI]
+        H --> I
+        I --> J[SOC Operator Console & Incident Response]
+    end
+```
 
 ---
 
-### 6. Computer Vision & Tactical Sports AI
+### 6. Computer Vision & Tactical Sports AI Architecture
 Empowers coaches and sports directors with player bounding-box video tracking, sprint velocity vectors, fatigue prediction, tactical heatmaps, and substitution AI.
-![Sports AI Analytics](docs/screenshots/sports_ai_analytics.png)
+
+```mermaid
+graph LR
+    subgraph Camera Feeds & Video Processing
+        Cam1[Field Camera Feed 1] --> CV[OpenCV / YOLOV8 Object Detector]
+        Cam2[Court Camera Feed 2] --> CV
+    end
+
+    subgraph AI Tactical Analytics Pipeline
+        CV --> Box[Player Bounding-Box Tracking]
+        Box --> Speed[Sprint Velocity & Acceleration Vectors]
+        Box --> Map[Positional Pitch Heatmaps]
+        Speed --> Fatigue[TensorFlow Fatigue & Strain Prediction]
+    end
+
+    subgraph Coach & Tactical Decision Support
+        Fatigue --> CoachUI[Sports OS Coach Dashboard]
+        Map --> CoachUI
+        CoachUI --> Sub[AI Substitution & Injury Risk Alert]
+    end
+```
 
 ---
 
-### 7. Digital Twin 3D Building & IoT Control
+### 7. Digital Twin 3D Building & IoT Control Architecture
 Spatial 3D university blueprint tracking live HVAC energy consumption, solar panel power output, smart door access logs, and environmental air quality sensors.
-![Digital Twin IoT](docs/screenshots/digital_twin_iot.png)
+
+```mermaid
+graph TD
+    subgraph Campus IoT Sensors & Hardware
+        S1[Smart Door Access Locks] --> Hub[IoT MQTT & CoAP Broker]
+        S2[HVAC & Energy Flow Meters] --> Hub
+        S3[Rooftop Solar Array Sensors] --> Hub
+        S4[Indoor Air Quality CO2/PM2.5 Sensors] --> Hub
+    end
+
+    subgraph Edge & Spatial Twin Processing
+        Hub --> Engine[Spatial 3D Twin Sync Engine]
+        Engine --> Physics[Energy Consumption & Air Quality Analytics]
+    end
+
+    subgraph Digital Twin Control Interface
+        Physics --> Blueprint[3D Interactive Building Blueprint UI]
+        Blueprint --> Controls[Smart Building Controls & Auto HVAC Tuning]
+    end
+```
 
 ---
 
-### 8. CampusX Connect Collaboration Hub
+### 8. CampusX Connect Collaboration Hub Architecture
 Real-time communication suite integrating HD video meetings, class discussion channels, live collaborative code editor, and CampusX AI sidecar assistance.
-![CampusX Connect Hub](docs/screenshots/campusx_connect.png)
+
+```mermaid
+graph TD
+    subgraph Real-Time Communication Layer
+        U1[Student Browser] <--> WebRTC[WebRTC Mesh HD Video / Audio]
+        U2[Faculty Browser] <--> WebRTC
+        U1 <--> WS[WebSocket Signaling Server]
+        U2 <--> WS
+    end
+
+    subgraph Collaboration & AI Sidecar
+        WS --> Room[Course Channels & DM Messaging]
+        WS --> Code[Live Collaborative Code Editor]
+        WS --> AI[CampusX AI Sidecar Assistant]
+    end
+
+    subgraph Data & Storage Backplane
+        Room --> DB[(SQLite / MongoDB Chat Store)]
+        Code --> DB
+        AI --> RAG[CampusX RAG Knowledge Base]
+    end
+```
 
 ---
 
-### 9. Web3 Blockchain Credential Vault
+### 9. Web3 Blockchain Credential Vault Architecture
 Verifies academic transcripts and student credentials against Ethereum smart contracts (`CredentialVault.sol`, `AttendanceSystem.sol`) with cryptographic hash validation.
-![Blockchain Credential Vault](docs/screenshots/blockchain_vault.png)
+
+```mermaid
+graph LR
+    subgraph Student / University IAM
+        Uni[University Registrar] --> Issuer[EIP-712 Degree Signature Engine]
+        Stu[Student DID Wallet] --> Issuer
+    end
+
+    subgraph Ethereum Blockchain Smart Contracts
+        Issuer --> Vault[CredentialVault.sol Smart Contract]
+        Issuer --> Att[AttendanceSystem.sol Smart Contract]
+        Vault --> Eth[(Ethereum Ledger / Sepolia Testnet)]
+        Att --> Eth
+    end
+
+    subgraph Public Verification Engine
+        Eth --> Verifier[Cryptographic Hash Verifier]
+        Employer[Third-Party Recruiter / Employer] --> Verifier
+        Verifier --> Result[Instant Authenticity & Hash Match Result]
+    end
+```
 
 ---
 
