@@ -43,9 +43,9 @@
 ### CampusX OS Full System Walkthrough (Screen Recording 2026-08-27)
 Full 4-minute 20-second HD live screen recording demonstrating multi-tenant role authentication, master ERP dashboards, faculty directory photo uploads with Cloud DB synchronization, and microservice route navigations.
 
-<video src="docs/videos/Screen_Recording_2026-08-27.mp4" controls width="100%" poster="docs/screenshots/hero_dashboard.png">
-  Your browser does not support the video tag.
-</video>
+![CampusX OS Live Screen Recording Walkthrough](docs/videos/Screen_Recording_2026-08-27.gif)
+
+* [▶️ Download / View HD MP4 Video Stream](docs/videos/Screen_Recording_2026-08-27.mp4)
 
 ---
 
