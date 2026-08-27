@@ -160,7 +160,7 @@ export default function SportsPage() {
       achievements: [newAthlete.sport + ' Varsity Roster'],
       ranking: athletes.length + 1,
       statistics: { matches_played: 0, points: 0 },
-      avatar: `https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150`
+      avatar: newAthlete.avatar || `https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150`
     };
 
     setAthletes(prev => {
@@ -169,7 +169,7 @@ export default function SportsPage() {
       return next;
     });
     setSummary(prev => ({ ...prev, total_athletes: (prev.total_athletes || 0) + 1 }));
-    setNewAthlete({ name: '', email: '', sport: 'Basketball', status: 'Active', medical: 'No concerns.' });
+    setNewAthlete({ name: '', email: '', sport: 'Basketball', status: 'Active', medical: 'No concerns.', avatar: '' });
     alert(`Athlete ${newAthlete.name} successfully registered on the CampusX Sports network!`);
 
     try {
@@ -1570,6 +1570,34 @@ export default function SportsPage() {
                   className="bg-[#071126] border border-slate-800 text-xs text-white rounded-lg px-3 py-1.5 outline-none"
                   required
                 />
+                <div className="flex items-center gap-1.5 bg-[#071126] border border-slate-800 rounded-lg px-2.5 py-1 text-xs">
+                  {newAthlete.avatar && (
+                    <img src={newAthlete.avatar} alt="Preview" className="w-5 h-5 rounded-full object-cover border border-slate-700" />
+                  )}
+                  <label className="text-[10px] text-indigo-400 font-semibold cursor-pointer shrink-0 hover:text-indigo-300">
+                    <span>{newAthlete.avatar ? 'Photo Uploaded ✓' : 'Upload Photo'}</span>
+                    <input 
+                      type="file" 
+                      accept="image/*" 
+                      className="hidden" 
+                      onChange={async (e) => {
+                        const file = e.target.files[0];
+                        if (!file) return;
+                        const bodyData = new FormData();
+                        bodyData.append('file', file);
+                        try {
+                          const res = await fetch('/api/upload', { method: 'POST', body: bodyData });
+                          const data = await res.json();
+                          if (data.url) {
+                            setNewAthlete(prev => ({ ...prev, avatar: data.url }));
+                          }
+                        } catch (err) {
+                          console.error('Failed to upload athlete photo:', err);
+                        }
+                      }}
+                    />
+                  </label>
+                </div>
                 <button 
                   type="submit"
                   className="px-3.5 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg text-xs font-semibold cursor-pointer shadow-md"
