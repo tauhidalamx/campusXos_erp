@@ -44,6 +44,7 @@ export default function FacultyPage() {
   const [newFacDept, setNewFacDept] = useState('CS');
   const [newFacDesignation, setNewFacDesignation] = useState('Professor');
   const [newFacWorkload, setNewFacWorkload] = useState(12);
+  const [newFacAvatar, setNewFacAvatar] = useState('');
 
   // AI Workload Optimization states
   const [aiRating, setAiRating] = useState('Calculating...');
@@ -479,8 +480,8 @@ export default function FacultyPage() {
                     value={newFacDept}
                     onChange={(e) => setNewFacDept(e.target.value)}
                   >
-                    {departments.map(d => (
-                      <option key={d.code} value={d.code}>{d.name}</option>
+                    {safeDepartments.map(d => (
+                      <option key={d.code || d.id || Math.random()} value={d.code || d.id}>{d.name}</option>
                     ))}
                   </select>
                 </div>
