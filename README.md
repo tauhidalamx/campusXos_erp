@@ -69,15 +69,27 @@ A personalized interface for students featuring live GPA dials, circular attenda
 
 ---
 
-### 6. Admin Platform Gateway & Microservice Integrations
-Administrative management hub for configuring microservice integrations, API gateways, database connection pools, and platform subscriptions.
-![Admin Platform Gateway](docs/screenshots/admin_platform_gateway.png)
+### 6. Computer Vision & Tactical Sports AI
+Empowers coaches and sports directors with player bounding-box video tracking, sprint velocity vectors, fatigue prediction, tactical heatmaps, and substitution AI.
+![Sports AI Analytics](docs/screenshots/sports_ai_analytics.png)
 
 ---
 
-### 7. Microservice Integrations & Security Mesh
-Manages active microservice routes, JWT secrets, database connection pools, and platform subscriptions.
-![Admin Platform Integrations](docs/screenshots/admin_platform_integrations.png)
+### 7. Digital Twin 3D Building & IoT Control
+Spatial 3D university blueprint tracking live HVAC energy consumption, solar panel power output, smart door access logs, and environmental air quality sensors.
+![Digital Twin IoT](docs/screenshots/digital_twin_iot.png)
+
+---
+
+### 8. CampusX Connect Collaboration Hub
+Real-time communication suite integrating HD video meetings, class discussion channels, live collaborative code editor, and CampusX AI sidecar assistance.
+![CampusX Connect Hub](docs/screenshots/campusx_connect.png)
+
+---
+
+### 9. Web3 Blockchain Credential Vault
+Verifies academic transcripts and student credentials against Ethereum smart contracts (`CredentialVault.sol`, `AttendanceSystem.sol`) with cryptographic hash validation.
+![Blockchain Credential Vault](docs/screenshots/blockchain_vault.png)
 
 ---
 
