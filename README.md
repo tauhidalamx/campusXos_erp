@@ -40,7 +40,7 @@
 
 ## 🎬 Live System Walkthrough & Screen Recording
 
-### CampusX OS Full System Walkthrough (Screen Recording 2026-08-27)
+### CampusX OS Full System Walkthrough (Screen Rec.)
 Full 4-minute 20-second HD live screen recording demonstrating multi-tenant role authentication, master ERP dashboards, faculty directory photo uploads with Cloud DB synchronization, and microservice route navigations.
 
 ![CampusX OS Live Screen Recording Walkthrough](docs/videos/Screen_Recording_2026-08-27.gif)
@@ -51,31 +51,28 @@ Full 4-minute 20-second HD live screen recording demonstrating multi-tenant role
 
 ## 🖼 Visual Showcase & Screenshots
 
-### 1. Unified Auth & Security Login Gateway
-Features 1-Click Admin and 1-Click Student instant login buttons, TensorFlow.js anomaly detection, multi-factor authentication (MFA), and full Cloud Database auto-synchronization.
-![Unified Auth & Security Gateway](docs/screenshots/login_page.png)
 
 ---
 
-### 2. Executive Master ERP Dashboard
+### 1. Executive Master ERP Dashboard
 The central command hub for university leadership providing real-time metrics, financial health, enrollment trends, and institutional KPIs.
 ![Executive Master Dashboard](docs/screenshots/hero_dashboard.png)
 
 ---
 
-### 3. Global Super Admin Multi-Tenant Console
+### 2. Global Super Admin Multi-Tenant Console
 Monitors global campus clusters across Boston, London, Tokyo, Sydney, and Singapore with microservice latencies, CPU/RAM server loads, and live audit logs.
 ![Super Admin Console](docs/screenshots/super_admin_console.png)
 
 ---
 
-### 4. Student Portal & Academic Hub
+### 3. Student Portal & Academic Hub
 A personalized interface for students featuring live GPA dials, circular attendance rings, interactive class timetables, upcoming exam countdowns, and fee clearance badges.
 ![Student Portal](docs/screenshots/student_portal.png)
 
 ---
 
-### 5. Cybersecurity Operations Center (SOC) Architecture
+### 4. Cybersecurity Operations Center (SOC) Architecture
 24/7 SIEM monitoring console featuring a 3D global threat map, live intrusion detection event stream, AI threat defense matrix, and firewall policy status.
 
 ```mermaid
@@ -102,7 +99,7 @@ graph TD
 
 ---
 
-### 6. Computer Vision & Tactical Sports AI Architecture
+### 5. Computer Vision & Tactical Sports AI Architecture
 Empowers coaches and sports directors with player bounding-box video tracking, sprint velocity vectors, fatigue prediction, tactical heatmaps, and substitution AI.
 
 ```mermaid
@@ -128,7 +125,7 @@ graph LR
 
 ---
 
-### 7. Digital Twin 3D Building & IoT Control Architecture
+### 6. Digital Twin 3D Building & IoT Control Architecture
 Spatial 3D university blueprint tracking live HVAC energy consumption, solar panel power output, smart door access logs, and environmental air quality sensors.
 
 ```mermaid
@@ -153,7 +150,7 @@ graph TD
 
 ---
 
-### 8. CampusX Connect Collaboration Hub Architecture
+### 7. CampusX Connect Collaboration Hub Architecture
 Real-time communication suite integrating HD video meetings, class discussion channels, live collaborative code editor, and CampusX AI sidecar assistance.
 
 ```mermaid
@@ -180,7 +177,7 @@ graph TD
 
 ---
 
-### 9. Web3 Blockchain Credential Vault Architecture
+### 8. Web3 Blockchain Credential Vault Architecture
 Verifies academic transcripts and student credentials against Ethereum smart contracts (`CredentialVault.sol`, `AttendanceSystem.sol`) with cryptographic hash validation.
 
 ```mermaid
