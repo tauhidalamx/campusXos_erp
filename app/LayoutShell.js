@@ -1638,16 +1638,10 @@ export default function LayoutShell({ children }) {
     if (typeof window !== 'undefined') {
       let session = sessionStorage.getItem('campusx_erp_session');
       if (!session && pathname !== '/login' && pathname !== '/auth') {
-        const defaultUser = {
-          id: 'usr_admin',
-          name: 'Dr. Rajesh Sharma',
-          email: 'admin@campusx.edu',
-          role: 'admin',
-          dept: 'Computer Science',
-          avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150'
-        };
-        sessionStorage.setItem('campusx_erp_session', JSON.stringify(defaultUser));
-        session = JSON.stringify(defaultUser);
+        setUser(null);
+        setLoading(false);
+        router.push('/login');
+        return;
       }
 
       if (session) {
@@ -1657,10 +1651,12 @@ export default function LayoutShell({ children }) {
         } catch (err) {
           console.error('Failed to parse session:', err);
         }
+      } else {
+        setUser(null);
       }
       setLoading(false);
     }
-  }, [pathname]);
+  }, [pathname, router]);
 
   const handleLogout = () => {
     setShowLogoutModal(true);

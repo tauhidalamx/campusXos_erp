@@ -929,8 +929,7 @@ export default function LoginPage() {
               </div>
 
               {/* All Quick Demo Logins Section */}
-              {isDev && (
-                <div className="auth-demo-info mt-6 p-4 bg-[#f8fafc] rounded-2xl border border-slate-200/80 text-center shadow-sm">
+              <div className="auth-demo-info mt-6 p-4 bg-[#f8fafc] rounded-2xl border border-slate-200/80 text-center shadow-sm">
                   <div className="flex items-center justify-between mb-3 pb-2 border-b border-slate-200/70">
                     <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-700 font-display">Quick Demo Logins (Click to prefill)</span>
                     <button 
@@ -1054,7 +1053,6 @@ export default function LoginPage() {
                     </div>
                   </div>
                 </div>
-              )}
             </div>
           ) : (
             /* Sign Up View */
