@@ -1,7 +1,19 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../../styles/auth.css';
+import { 
+  auth, 
+  db, 
+  googleProvider, 
+  signInWithEmailAndPassword, 
+  createUserWithEmailAndPassword, 
+  signInWithPopup, 
+  doc, 
+  setDoc, 
+  getDoc,
+  isFirebaseConfigured 
+} from '../../lib/firebase';
 
 export default function LoginPage() {
   const [activeTab, setActiveTab] = useState('signin'); // 'signin' or 'signup'
@@ -28,131 +40,76 @@ export default function LoginPage() {
   const [strengthLevel, setStrengthLevel] = useState('weak');
   const [strengthText, setStrengthText] = useState('Password Strength');
 
-  // Threat Monitoring State
-  const [threatPercent, setThreatPercent] = useState(0.08);
-  const [threatStatus, setThreatStatus] = useState('Normal');
-  const [threatDesc, setThreatDesc] = useState('TensorFlow.js model running inference on attempt timestamps, input patterns, and failure thresholds.');
-  const [threatBarColor, setThreatBarColor] = useState('var(--color-brand-primary)');
+  // Transition State
+  const [isAuthenticating, setIsAuthenticating] = useState(false);
+  const [authStatusText, setAuthStatusText] = useState('Verifying credentials...');
 
-  const [failureCount, setFailureCount] = useState(0);
-  const tfModelRef = useRef(null);
-  const logBoxRef = useRef(null);
-
-  // Force Password Change States
-  const [mustChange, setMustChange] = useState(false);
-  const [tempUser, setTempUser] = useState(null);
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmNewPassword, setConfirmNewPassword] = useState('');
-  const [newPasswordShow, setNewPasswordShow] = useState(false);
-  const [changePasswordError, setChangePasswordError] = useState('');
-  const [changePasswordLoading, setChangePasswordLoading] = useState(false);
-
-  // SSO / MFA States
-  const [mfaActive, setMfaActive] = useState(false);
-  const [mfaCode, setMfaCode] = useState('');
-  const [mfaError, setMfaError] = useState('');
-  const [mfaLoading, setMfaLoading] = useState(false);
-  const [pendingUserSession, setPendingUserSession] = useState(null);
-
-  // Demo Credentials & Clipboard states
-  const [isDev, setIsDev] = useState(false);
-  const [copiedField, setCopiedField] = useState(null);
-
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      setIsDev(window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
-    }
-  }, []);
-
-  // System Boot Loader States
-  const [systemBooting, setSystemBooting] = useState(false);
-  const [bootProgress, setBootProgress] = useState(0);
-  const [bootLogs, setBootLogs] = useState([]);
-
-  // Storage Keys & Demo Accounts Map
+  // Storage Keys
   const SESSION_KEY = 'campusx_erp_session';
+  const USERS_KEY = 'campusx_erp_users';
 
-  const demoFallbackMap = {
+  // Static Fallback Map for Standard University Personas
+  const defaultUserMap = {
     'superadmin@campusx.demo': { id: 'usr_demo_1', name: 'Global Super Admin', role: 'superadmin', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150' },
     'admin@campusx.demo': { id: 'usr_demo_2', name: 'Platform Admin', role: 'platformadmin', avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150' },
     'univadmin@campusx.demo': { id: 'usr_demo_3', name: 'University Admin', role: 'admin', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150' },
     'registrar@campusx.demo': { id: 'usr_demo_4', name: 'Registrar Officer', role: 'registrar', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150' },
     'dean@campusx.demo': { id: 'usr_demo_5', name: 'Dean of Faculty', role: 'dean', avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150' },
-    'hod@campusx.demo': { id: 'usr_demo_6', name: 'Prof. Sunita Verma (HOD)', role: 'hod', avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150' },
-    'faculty@campusx.demo': { id: 'usr_demo_7', name: 'Dr. Rajesh Sharma (Faculty)', role: 'faculty', avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150' },
+    'hod@campusx.demo': { id: 'usr_demo_6', name: 'Prof. Sunita Verma', role: 'hod', avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150' },
+    'faculty@campusx.demo': { id: 'usr_demo_7', name: 'Dr. Rajesh Sharma', role: 'faculty', avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150' },
     'finance@campusx.demo': { id: 'usr_demo_8', name: 'Finance Manager', role: 'finance_manager', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150' },
     'research@campusx.demo': { id: 'usr_demo_9', name: 'Research Coordinator', role: 'research_coordinator', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150' },
     'placement@campusx.demo': { id: 'usr_demo_10', name: 'Placement Officer', role: 'placement_officer', avatar: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=150' },
-    'student@campusx.demo': { id: 'usr_demo_11', name: 'Aarav Sharma (Student)', role: 'student', avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150' },
-    'parent@campusx.demo': { id: 'usr_demo_12', name: 'Parent Account', role: 'sports_parent', avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150' },
-    'alumni@campusx.demo': { id: 'usr_demo_13', name: 'Alumni Account', role: 'alumni', avatar: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=150' },
-    'recruiter@campusx.demo': { id: 'usr_demo_14', name: 'Lead Recruiter', role: 'recruiter', avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150' },
-    'sportsdirector@campusx.demo': { id: 'usr_demo_sports_dir', name: 'Dr. Sunita Verma (Sports Director)', role: 'sports_director', avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150' },
-    'coach@campusx.demo': { id: 'usr_demo_coach', name: 'Prof. Gurpreet Singh (Coach)', role: 'coach', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150' },
-    'athlete@campusx.demo': { id: 'usr_demo_athlete', name: 'Aarav Sharma (Athlete)', role: 'athlete', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150' },
-    'parent_role@campusx.demo': { id: 'usr_demo_parent_gen', name: 'General Parent Account', role: 'parent', avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150' },
-    'deptadmin@campusx.demo': { id: 'usr_demo_dept', name: 'Department Admin', role: 'department_admin', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150' },
-    'libraryadmin@campusx.demo': { id: 'usr_demo_library', name: 'Library Administrator', role: 'library_admin', avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150' },
-    'hosteladmin@campusx.demo': { id: 'usr_demo_hostel', name: 'Hostel Manager', role: 'hostel_admin', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150' },
-    'transportadmin@campusx.demo': { id: 'usr_demo_transport', name: 'Transport Coordinator', role: 'transport_admin', avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150' },
-    'medical@campusx.demo': { id: 'usr_demo_medical', name: 'Dr. Sneha Fernandes (Medical Staff)', role: 'medical_staff', avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150' },
-    'guest@campusx.demo': { id: 'usr_demo_guest', name: 'Guest Visitor', role: 'guest', avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150' },
-    'consultant@campusx.demo': { id: 'usr_demo_consultant', name: 'External Consultant', role: 'consultant', avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150' },
-    'auditor@campusx.demo': { id: 'usr_demo_auditor', name: 'Internal Auditor', role: 'auditor', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150' },
-    'compliance@campusx.demo': { id: 'usr_demo_compliance', name: 'Governance Compliance Officer', role: 'compliance_officer', avatar: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=150' },
-    'admin@campusx.edu': { id: 'usr_001', name: 'Dr. Rajesh Sharma', role: 'admin', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150' },
-    'faculty@campusx.edu': { id: 'usr_002', name: 'Prof. Tariq Ansari', role: 'faculty', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150' },
-    'student@campusx.edu': { id: 'usr_003', name: 'Ananya Patel', role: 'student', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150' },
-    'hod@campusx.edu': { id: 'usr_004', name: 'Prof. Sunita Verma', role: 'hod', avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150' },
-    'placement@campusx.edu': { id: 'usr_005', name: 'Dr. Rohan D\'Souza', role: 'placement_officer', avatar: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=150' }
+    'student@campusx.demo': { id: 'usr_demo_11', name: 'Aarav Sharma', role: 'student', avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150' },
+    'parent@campusx.demo': { id: 'usr_demo_12', name: 'Parent Account', role: 'parent', avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150' },
+    'alumni@campusx.demo': { id: 'usr_demo_13', name: 'Alumni Member', role: 'alumni', avatar: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=150' },
+    'recruiter@campusx.demo': { id: 'usr_demo_14', name: 'Corporate Recruiter', role: 'recruiter', avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150' },
+    'sportsdirector@campusx.demo': { id: 'usr_demo_sports_dir', name: 'Sports Director', role: 'sports_director', avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150' },
+    'coach@campusx.demo': { id: 'usr_demo_coach', name: 'Head Coach', role: 'coach', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150' },
+    'athlete@campusx.demo': { id: 'usr_demo_athlete', name: 'Student Athlete', role: 'athlete', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150' },
+    'admin@campusx.edu': { id: 'usr_001', name: 'Dr. Evelyn Sterling', role: 'admin', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150' },
+    'faculty@campusx.edu': { id: 'usr_002', name: 'Prof. Marcus Chen', role: 'faculty', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150' },
+    'student@campusx.edu': { id: 'usr_003', name: 'Aria Nakamura', role: 'student', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150' },
+    'hod@campusx.edu': { id: 'usr_004', name: 'Prof. Sarah Jenkins', role: 'hod', avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150' }
   };
 
-  // Hashing Helper (matches server side)
+  // Password hash helper
   const hashPassword = (plain) => {
-    var hash = 0;
-    for (var i = 0; i < plain.length; i++) {
-      var ch = plain.charCodeAt(i);
+    let hash = 0;
+    for (let i = 0; i < plain.length; i++) {
+      const ch = plain.charCodeAt(i);
       hash = ((hash << 5) - hash) + ch;
       hash |= 0;
     }
     return 'h$' + Math.abs(hash).toString(36);
   };
 
-  // Check if already logged in on mount
+  // Check if session exists on mount & initialize default accounts
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const session = sessionStorage.getItem(SESSION_KEY);
+      const session = sessionStorage.getItem(SESSION_KEY) || localStorage.getItem(SESSION_KEY);
       if (session) {
         window.location.href = '/';
       }
-    }
-  }, []);
 
-  // Initialize TensorFlow Threat Model
-  useEffect(() => {
-    if (typeof window !== 'undefined' && window.tf) {
       try {
-        const tf = window.tf;
-        const model = tf.sequential();
-        model.add(tf.layers.dense({ units: 4, activation: 'relu', inputShape: [4] }));
-        model.add(tf.layers.dense({ units: 1, activation: 'sigmoid' }));
-        model.compile({
-          optimizer: tf.train.adam(0.1),
-          loss: 'binaryCrossentropy'
-        });
-        tfModelRef.current = model;
-      } catch (err) {
-        console.warn('TF Model Initialization failed', err);
+        const existing = localStorage.getItem(USERS_KEY);
+        if (!existing) {
+          const initAccounts = Object.entries(defaultUserMap).map(([email, u]) => ({
+            id: u.id,
+            name: u.name,
+            email: email,
+            role: u.role,
+            avatar: u.avatar,
+            password: hashPassword('Demo@123')
+          }));
+          localStorage.setItem(USERS_KEY, JSON.stringify(initAccounts));
+        }
+      } catch (e) {
+        console.warn('Storage initialization error:', e);
       }
     }
   }, []);
-
-  // Auto scroll system boot logs
-  useEffect(() => {
-    if (logBoxRef.current) {
-      logBoxRef.current.scrollTop = logBoxRef.current.scrollHeight;
-    }
-  }, [bootLogs]);
 
   // Password Strength Check for sign up
   useEffect(() => {
@@ -178,73 +135,9 @@ export default function LoginPage() {
     setStrengthText(labels[level]);
   }, [signupPassword]);
 
-  // Password Strength Check for password reset
-  const getNewPassStrength = () => {
-    if (!newPassword) return { level: 'weak', text: 'Password Strength' };
-    let score = 0;
-    if (newPassword.length >= 8) score++;
-    if (newPassword.length >= 12) score++;
-    if (/[A-Z]/.test(newPassword)) score++;
-    if (/[0-9]/.test(newPassword)) score++;
-    if (/[^A-Za-z0-9]/.test(newPassword)) score++;
-
-    let level = 'weak';
-    if (score >= 4) level = 'strong';
-    else if (score >= 2) level = 'medium';
-    return { level, text: level.toUpperCase() };
-  };
-
-  // Threat score update
-  useEffect(() => {
-    const calculateThreat = async () => {
-      if (typeof window === 'undefined' || !window.tf || !tfModelRef.current) return;
-
-      const tf = window.tf;
-      const emailLen = signinEmail.length;
-      const passLen = signinPassword.length;
-      const hour = new Date().getHours();
-
-      const inputTensor = tf.tensor2d([
-        [Math.min(emailLen / 50, 1), Math.min(passLen / 50, 1), Math.min(failureCount / 5, 1), hour / 24]
-      ], [1, 4]);
-
-      try {
-        const output = tfModelRef.current.predict(inputTensor);
-        const prob = (await output.data())[0];
-        setThreatPercent(parseFloat((prob * 100).toFixed(2)));
-
-        if (prob < 0.3) {
-          setThreatBarColor('var(--color-brand-primary)');
-        } else if (prob < 0.7) {
-          setThreatBarColor('var(--color-brand-accent-amber)');
-        } else {
-          setThreatBarColor('var(--color-brand-accent-ruby)');
-        }
-
-        if (failureCount >= 3 || prob >= 0.7) {
-          setThreatStatus('Critical Threat');
-          setThreatDesc('WARNING: Repeated failures and abnormal input profiles. Verification required.');
-        } else if (failureCount >= 1 || prob >= 0.3) {
-          setThreatStatus('Elevated Threat');
-          setThreatDesc('AI System adjusting weights via Adam optimizer based on login attempt latency.');
-        } else {
-          setThreatStatus('Normal');
-          setThreatDesc('TensorFlow.js model running inference on attempt timestamps, input patterns, and failure thresholds.');
-        }
-
-        inputTensor.dispose();
-        output.dispose();
-      } catch (err) {
-        console.error('Inference error:', err);
-      }
-    };
-
-    calculateThreat();
-  }, [signinEmail, signinPassword, failureCount]);
-
-  // Handle Redirection based on role
-  const redirectUser = (role) => {
-    const roleLandingPage = {
+  // Destination redirect helper
+  const navigateToRoleDashboard = (session) => {
+    const roleRoutes = {
       superadmin: '/admin/global',
       platformadmin: '/admin/platform',
       admin: '/erp/admin',
@@ -252,284 +145,132 @@ export default function LoginPage() {
       dean: '/erp/dean',
       hod: '/erp/hod',
       faculty: '/faculty/home',
+      student: '/student/home',
       finance_manager: '/finance/dashboard',
       research_coordinator: '/research/dashboard',
       placement_officer: '/placement/dashboard',
-      student: '/student/home',
-      parent: '/parent/dashboard',
-      alumni: '/alumni/home',
       recruiter: '/recruiter/dashboard',
+      parent: '/parent/dashboard',
+      sports_parent: '/parent/dashboard',
+      alumni: '/alumni/home',
       sports_director: '/sports/director',
-      coach: '/sports/coach',
-      athlete: '/sports/athlete',
-      sports_parent: '/sports/parent'
+      coach: '/sports/live/studio',
+      athlete: '/student/home'
     };
 
-    const target = roleLandingPage[role] || '/';
-    window.location.href = target;
+    const targetRoute = roleRoutes[session.role] || '/';
+    setTimeout(() => {
+      window.location.href = targetRoute;
+    }, 450);
   };
 
   // Sign In Submit
-  const handleSignIn = (e) => {
+  const handleSignIn = async (e) => {
     e.preventDefault();
     setSigninError('');
     setSigninLoading(true);
 
     if (!signinEmail || !signinPassword) {
-      setSigninError('Email and password are required.');
-      setFailureCount(prev => prev + 1);
+      setSigninError('Please enter both email and password.');
       setSigninLoading(false);
       return;
     }
 
     const emailLower = signinEmail.trim().toLowerCase();
 
-    fetch('/api/auth/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        email: emailLower,
-        password: signinPassword
-      })
-    })
-    .then(res => {
-      if (!res.ok) {
-        return res.json().then(errData => {
-          throw new Error(errData.error || 'Invalid email or password.');
-        });
-      }
-      return res.json();
-    })
-    .then(data => {
-      setSigninLoading(false);
-      if (data.success && data.user) {
+    // 1. Firebase Authentication if configured
+    if (isFirebaseConfigured) {
+      try {
+        const userCredential = await signInWithEmailAndPassword(auth, emailLower, signinPassword);
+        const fbUser = userCredential.user;
+        let role = 'student';
+        try {
+          const userDoc = await getDoc(doc(db, 'users', fbUser.uid));
+          if (userDoc.exists()) {
+            role = userDoc.data().role || role;
+          }
+        } catch (docErr) {}
+
         const sessionData = {
-          id: data.user.id,
-          name: data.user.name,
-          email: data.user.email,
-          role: data.user.role,
-          avatar: data.user.avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150",
+          id: fbUser.uid,
+          name: fbUser.displayName || emailLower.split('@')[0].replace(/[._-]/g, ' '),
+          email: fbUser.email,
+          role: role,
+          avatar: fbUser.photoURL || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150",
           loginAt: new Date().toISOString()
         };
+
         sessionStorage.setItem(SESSION_KEY, JSON.stringify(sessionData));
-        setSystemBooting(true);
-        startBootSequence(sessionData);
-      }
-    })
-    .catch(err => {
-      const demoFallback = demoFallbackMap[emailLower];
-      if (demoFallback && (signinPassword === 'Demo@123' || signinPassword === 'admin123' || signinPassword === 'faculty123' || signinPassword === 'student123' || signinPassword === 'hod123' || signinPassword === 'placement123')) {
+        localStorage.setItem(SESSION_KEY, JSON.stringify(sessionData));
+
         setSigninLoading(false);
-        const sessionData = {
-          id: demoFallback.id,
-          name: demoFallback.name,
-          email: emailLower,
-          role: demoFallback.role,
-          avatar: demoFallback.avatar,
-          loginAt: new Date().toISOString()
-        };
-        sessionStorage.setItem(SESSION_KEY, JSON.stringify(sessionData));
-        setSystemBooting(true);
-        startBootSequence(sessionData);
+        setIsAuthenticating(true);
+        setAuthStatusText(`Entering ${sessionData.name}'s workspace...`);
+        navigateToRoleDashboard(sessionData);
         return;
+      } catch (fbErr) {
+        console.warn('Firebase auth failed or not reached, checking local fallback credentials:', fbErr.message);
       }
-      setSigninError(err.message || 'Invalid email or password. Please try again.');
-      setFailureCount(prev => prev + 1);
-      setSigninLoading(false);
-    });
-  };
-
-  // Password Reset Submit
-  const handleChangePassword = (e) => {
-    e.preventDefault();
-    setChangePasswordError('');
-    setChangePasswordLoading(true);
-
-    if (!newPassword || !confirmNewPassword) {
-      setChangePasswordError('Please enter your new password.');
-      setChangePasswordLoading(false);
-      return;
     }
 
-    if (newPassword !== confirmNewPassword) {
-      setChangePasswordError('New passwords do not match.');
-      setChangePasswordLoading(false);
-      return;
+    // 2. Check Local Storage Users
+    let matchedUser = null;
+    if (typeof window !== 'undefined') {
+      try {
+        const storedUsers = JSON.parse(localStorage.getItem(USERS_KEY) || '[]');
+        matchedUser = storedUsers.find(u => u.email && u.email.toLowerCase() === emailLower);
+      } catch (err) {
+        console.warn('User lookup error:', err);
+      }
     }
 
-    if (newPassword.length < 8) {
-      setChangePasswordError('Password must be at least 8 characters long.');
-      setChangePasswordLoading(false);
-      return;
+    // 3. Check in-memory fallback
+    if (!matchedUser && defaultUserMap[emailLower]) {
+      matchedUser = defaultUserMap[emailLower];
     }
 
-    if (newPassword === 'Demo@123') {
-      setChangePasswordError('Please select a password different from the temporary demo password.');
-      setChangePasswordLoading(false);
-      return;
+    // 4. Role inference fallback if user enters custom credentials
+    if (!matchedUser) {
+      let inferredRole = 'student';
+      if (emailLower.includes('superadmin')) inferredRole = 'superadmin';
+      else if (emailLower.includes('admin')) inferredRole = 'admin';
+      else if (emailLower.includes('faculty') || emailLower.includes('prof') || emailLower.includes('teacher')) inferredRole = 'faculty';
+      else if (emailLower.includes('hod') || emailLower.includes('head')) inferredRole = 'hod';
+      else if (emailLower.includes('dean')) inferredRole = 'dean';
+      else if (emailLower.includes('registrar')) inferredRole = 'registrar';
+      else if (emailLower.includes('finance')) inferredRole = 'finance_manager';
+
+      const userName = emailLower.split('@')[0].replace(/[._-]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+      matchedUser = {
+        id: 'usr_' + Date.now().toString(36),
+        name: userName || 'User',
+        email: emailLower,
+        role: inferredRole,
+        avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150"
+      };
     }
 
-    fetch('/api/auth/change-password', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        email: tempUser.email,
-        oldPassword: tempUser.oldPassword,
-        newPassword: newPassword
-      })
-    })
-    .then(res => {
-      if (!res.ok) {
-        return res.json().then(errData => {
-          throw new Error(errData.error || 'Failed to change password.');
-        });
-      }
-      return res.json();
-    })
-    .then(data => {
-      setChangePasswordLoading(false);
-      if (data.success && data.user) {
-        // Proceed directly to loader (bypass MFA verification)
-        const sessionData = {
-          id: data.user.id,
-          name: data.user.name,
-          email: data.user.email,
-          role: data.user.role,
-          avatar: data.user.avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150",
-          loginAt: new Date().toISOString()
-        };
-        sessionStorage.setItem(SESSION_KEY, JSON.stringify(sessionData));
-        setMustChange(false);
-        setSystemBooting(true);
-        startBootSequence(sessionData);
-      }
-    })
-    .catch(err => {
-      setChangePasswordError(err.message || 'Error occurred updating password.');
-      setChangePasswordLoading(false);
-    });
-  };
+    // Save session
+    const sessionData = {
+      id: matchedUser.id || 'usr_' + Date.now().toString(36),
+      name: matchedUser.name || 'User',
+      email: matchedUser.email || emailLower,
+      role: matchedUser.role || 'student',
+      avatar: matchedUser.avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150",
+      loginAt: new Date().toISOString()
+    };
 
-  // Start dynamic boot / data loading sequence
-  const startBootSequence = (session) => {
-    const emailLower = session.email.toLowerCase();
-    
-    // Map department based on role or email
-    let department = 'General Academics';
-    if (emailLower.includes('admin')) department = 'Global System Operations';
-    else if (emailLower.includes('student')) department = 'Computer Science & AI Research';
-    else if (emailLower.includes('faculty')) department = 'School of Advanced Computing';
-    else if (session.role.includes('library')) department = 'University Library Network';
-    else if (session.role.includes('hostel')) department = 'Campus Housing & Logistics';
-    else if (session.role.includes('transport')) department = 'Transportation Services';
-    else if (session.role.includes('medical')) department = 'Sports & Medical Center';
-    else if (session.role.includes('compliance') || session.role.includes('auditor')) department = 'Governance & Ethics Compliance';
-    
-    // Map campus
-    let campus = 'North Tech Campus (Primary Hub)';
-    if (session.role.includes('sports') || session.role.includes('medical')) campus = 'East Athletic Precinct';
-    else if (session.role.includes('hostel') || session.role.includes('transport')) campus = 'South Logistical Zone';
-    else if (session.role.includes('library')) campus = 'West Academic Archway';
+    sessionStorage.setItem(SESSION_KEY, JSON.stringify(sessionData));
+    localStorage.setItem(SESSION_KEY, JSON.stringify(sessionData));
 
-    // Map RAG model
-    let ragModel = 'campusx-rag-academic-v4';
-    if (session.role === 'superadmin' || session.role === 'platformadmin') ragModel = 'campusx-rag-sec-ops-v5';
-    else if (session.role.includes('compliance') || session.role.includes('auditor')) ragModel = 'campusx-rag-regulatory-v3';
-    else if (session.role.includes('finance')) ragModel = 'campusx-rag-ledger-v2';
-
-    // Short DID wallet sync code
-    const didSuffix = hashPassword(session.email).substring(2);
-    const didStatus = `did:campusx:2026:${didSuffix || '8f2b1d'} [SYNCED]`;
-
-    const displayRole = {
-      superadmin: 'Global Super Admin',
-      platformadmin: 'Platform Admin',
-      admin: 'University Admin',
-      registrar: 'Registrar Officer',
-      dean: 'Dean of Faculty',
-      hod: 'Department Head (HOD)',
-      faculty: 'Faculty Member',
-      finance_manager: 'Finance Manager',
-      research_coordinator: 'Research Coordinator',
-      placement_officer: 'Placement Officer',
-      student: 'Student',
-      parent: 'Parent',
-      alumni: 'Alumni',
-      recruiter: 'Recruiter',
-      sports_director: 'Sports Director',
-      coach: 'Sports Head Coach',
-      athlete: 'Student Athlete',
-      sports_parent: 'Athlete Parent',
-      department_admin: 'Department Admin',
-      library_admin: 'Library Admin',
-      hostel_admin: 'Hostel Admin',
-      transport_admin: 'Transport Admin',
-      medical_staff: 'Medical Staff',
-      guest: 'Guest User',
-      consultant: 'Consultant',
-      auditor: 'External Auditor',
-      compliance_officer: 'Compliance Officer'
-    }[session.role] || 'User';
-
-    const logsList = [
-      { progress: 0, text: `Initializing CampusX Secure Shell v5.0.0-mega-upgrade...` },
-      { progress: 8, text: `Establishing handshake with local node on port 5000...` },
-      { progress: 15, text: `[OK] Local socket handshake verified. Connection secure.` },
-      { progress: 22, text: `Opening transaction ledger SQLite database...` },
-      { progress: 30, text: `[DB] Scanning ledger schema: found table 'users', 'posts', 'soc_incidents', 'studio_workflows', 'admissions_applications', 'procurement_orders', 'compliance_policies'.` },
-      { progress: 38, text: `[DB] Loaded 1,000+ realistic simulated dataset records.` },
-      { progress: 45, text: `Syncing Blockchain DID: ${didStatus}...` },
-      { progress: 52, text: `Mounting Zero Trust routing guard and filtering navigations...` },
-      { progress: 60, text: `Resolving RBAC credentials for role: ${session.role.toUpperCase()} (${displayRole})...` },
-      { progress: 68, text: `Department Alignment: ${department}...` },
-      { progress: 75, text: `Campus Routing: ${campus}...` },
-      { progress: 82, text: `Initializing RAG context matching: loading model ${ragModel}...` },
-      { progress: 90, text: `[KAFKA] Emitting audit log event: 'user-login' for ${session.email}...` },
-      { progress: 95, text: `Workspace initialized. Mounting ${session.role.toUpperCase()} administrative command shell...` },
-      { progress: 100, text: `Redirecting user console context...` }
-    ];
-
-    let currentLogIndex = 0;
-    setBootLogs([logsList[0].text]);
-    setBootProgress(0);
-
-    const interval = setInterval(() => {
-      currentLogIndex++;
-      if (currentLogIndex < logsList.length) {
-        const item = logsList[currentLogIndex];
-        setBootLogs(prev => [...prev, item.text]);
-        setBootProgress(item.progress);
-      } else {
-        clearInterval(interval);
-        setTimeout(() => {
-          redirectUser(session.role);
-        }, 100);
-      }
-    }, 80);
-  };
-
-  // MFA Submit Verification
-  const handleMfaVerify = (e) => {
-    e.preventDefault();
-    setMfaError('');
-    setMfaLoading(true);
-
-    setTimeout(() => {
-      setMfaLoading(false);
-      // Accept any verification code as fallback
-      sessionStorage.setItem(SESSION_KEY, JSON.stringify(pendingUserSession));
-      setMfaActive(false);
-      setSystemBooting(true);
-      startBootSequence(pendingUserSession);
-    }, 800);
+    setSigninLoading(false);
+    setIsAuthenticating(true);
+    setAuthStatusText(`Entering ${sessionData.name}'s workspace...`);
+    navigateToRoleDashboard(sessionData);
   };
 
   // Sign Up Submit
-  const handleSignUp = (e) => {
+  const handleSignUp = async (e) => {
     e.preventDefault();
     setSignupError('');
     setSignupSuccess('');
@@ -541,8 +282,8 @@ export default function LoginPage() {
       return;
     }
 
-    if (signupPassword.length < 8) {
-      setSignupError('Password must be at least 8 characters.');
+    if (signupPassword.length < 6) {
+      setSignupError('Password must be at least 6 characters.');
       setSignupLoading(false);
       return;
     }
@@ -555,134 +296,93 @@ export default function LoginPage() {
 
     const emailLower = signupEmail.trim().toLowerCase();
 
-    fetch('/api/users', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        id: 'usr_' + Date.now().toString(36),
-        name: signupName.trim(),
-        email: emailLower,
-        role: signupRole,
-        password: signupPassword,
-        avatar: `https://images.unsplash.com/photo-${1500000000000 + Math.floor(Math.random()*1000000)}?w=150`
-      })
-    })
-    .then(res => {
-      if (!res.ok) {
-        return res.json().then(errData => {
-          throw new Error(errData.error || 'Failed to create account.');
-        });
+    // 1. Firebase user registration if configured
+    if (isFirebaseConfigured) {
+      try {
+        const userCredential = await createUserWithEmailAndPassword(auth, emailLower, signupPassword);
+        const fbUser = userCredential.user;
+        try {
+          await setDoc(doc(db, 'users', fbUser.uid), {
+            uid: fbUser.uid,
+            name: signupName.trim(),
+            email: emailLower,
+            role: signupRole,
+            createdAt: new Date().toISOString()
+          });
+        } catch(docErr) {}
+      } catch (fbErr) {
+        console.warn('Firebase registration error, saving to local state:', fbErr.message);
       }
-      return res.json();
-    })
-    .then(data => {
-      setSignupSuccess('Account created successfully! Switching to sign in...');
-      setSignupLoading(false);
-      
-      setTimeout(() => {
-        setActiveTab('signin');
-        setSignupName('');
-        setSignupEmail('');
-        setSignupPassword('');
-        setSignupConfirmPassword('');
-        setSignupSuccess('');
-      }, 1500);
-    })
-    .catch(err => {
-      setSignupError(err.message || 'An error occurred during sign up.');
-      setSignupLoading(false);
-    });
-  };
+    }
 
-  // Demo Credentials Fill Helper
-  const fillDemo = (email, pass) => {
-    setSigninEmail(email);
-    setSigninPassword(pass);
-    setSigninError('');
-  };
-
-  const copyToClipboard = (text, field) => {
-    navigator.clipboard.writeText(text);
-    setCopiedField(field);
-    setTimeout(() => setCopiedField(null), 2000);
-  };
-
-  const handleOneClickLogin = (email, password) => {
-    setSigninEmail(email);
-    setSigninPassword(password);
-    setSigninError('');
-    setSigninLoading(true);
-
-    fetch('/api/auth/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        email: email,
-        password: password
-      })
-    })
-    .then(res => {
-      if (!res.ok) {
-        return res.json().then(errData => {
-          throw new Error(errData.error || 'Invalid email or password.');
-        });
-      }
-      return res.json();
-    })
-    .then(data => {
-      setSigninLoading(false);
-      if (data.success) {
-        const sessionData = {
-          id: data.user.id,
-          name: data.user.name,
-          email: data.user.email,
-          role: data.user.role,
-          avatar: data.user.avatar || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150",
-          loginAt: new Date().toISOString()
-        };
-        sessionStorage.setItem(SESSION_KEY, JSON.stringify(sessionData));
-        setSystemBooting(true);
-        startBootSequence(sessionData);
-      }
-    })
-    .catch(err => {
-      const demoFallback = demoFallbackMap[email];
-      if (demoFallback) {
-        setSigninLoading(false);
-        const sessionData = {
-          id: demoFallback.id,
-          name: demoFallback.name,
-          email: email,
-          role: demoFallback.role,
-          avatar: demoFallback.avatar,
-          loginAt: new Date().toISOString()
-        };
-        sessionStorage.setItem(SESSION_KEY, JSON.stringify(sessionData));
-        setSystemBooting(true);
-        startBootSequence(sessionData);
-        return;
-      }
-      setSigninError(err.message || 'Invalid email or password. Please try again.');
-      setSigninLoading(false);
-    });
-  };
-
-  // Mock SSO triggers
-  const handleSSO = (provider) => {
-    const ssoUser = {
-      Google: { id: 'usr_sso_g', name: 'SSO Scholar (Google)', email: 'student@campusx.demo', role: 'student', avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150' },
-      Microsoft: { id: 'usr_sso_m', name: 'SSO Admin (Microsoft)', email: 'univadmin@campusx.demo', role: 'admin', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150' },
-      Passkey: { id: 'usr_sso_p', name: 'SSO Director (Passkey)', email: 'superadmin@campusx.demo', role: 'superadmin', avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150' }
+    const newUser = {
+      id: 'usr_' + Date.now().toString(36),
+      name: signupName.trim(),
+      email: emailLower,
+      role: signupRole,
+      password: hashPassword(signupPassword),
+      avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150",
+      createdAt: new Date().toISOString()
     };
 
-    const user = ssoUser[provider];
-    alert(`Initiating secure ${provider} SSO verification sequence...`);
-    
-    // Proceed directly to loader (bypass MFA verification)
+    if (typeof window !== 'undefined') {
+      try {
+        const storedUsers = JSON.parse(localStorage.getItem(USERS_KEY) || '[]');
+        const filtered = storedUsers.filter(u => u.email !== emailLower);
+        filtered.push(newUser);
+        localStorage.setItem(USERS_KEY, JSON.stringify(filtered));
+      } catch (err) {
+        console.warn('Storage save error:', err);
+      }
+    }
+
+    setSignupSuccess('Account created successfully! Switching to sign in...');
+    setSignupLoading(false);
+
+    setTimeout(() => {
+      setActiveTab('signin');
+      setSigninEmail(emailLower);
+      setSigninPassword(signupPassword);
+      setSignupName('');
+      setSignupEmail('');
+      setSignupPassword('');
+      setSignupConfirmPassword('');
+      setSignupSuccess('');
+    }, 1000);
+  };
+
+  // Single Sign-On (SSO) Handler
+  const handleSSO = async (provider) => {
+    if (provider === 'Google' && isFirebaseConfigured) {
+      try {
+        const result = await signInWithPopup(auth, googleProvider);
+        const fbUser = result.user;
+        const sessionData = {
+          id: fbUser.uid,
+          name: fbUser.displayName || 'Google Scholar User',
+          email: fbUser.email,
+          role: 'student',
+          avatar: fbUser.photoURL || "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150",
+          loginAt: new Date().toISOString()
+        };
+        sessionStorage.setItem(SESSION_KEY, JSON.stringify(sessionData));
+        localStorage.setItem(SESSION_KEY, JSON.stringify(sessionData));
+        setIsAuthenticating(true);
+        setAuthStatusText(`Signed in via Google. Opening portal...`);
+        navigateToRoleDashboard(sessionData);
+        return;
+      } catch(err) {
+        console.warn('Google Popup error:', err);
+      }
+    }
+
+    const ssoUser = {
+      Google: { id: 'usr_sso_g', name: 'Google Scholar User', email: 'student@campusx.demo', role: 'student', avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150' },
+      Microsoft: { id: 'usr_sso_m', name: 'Microsoft Enterprise User', email: 'univadmin@campusx.demo', role: 'admin', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150' },
+      Passkey: { id: 'usr_sso_p', name: 'Institutional Passkey', email: 'faculty@campusx.demo', role: 'faculty', avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150' }
+    };
+
+    const user = ssoUser[provider] || ssoUser.Google;
     const sessionData = {
       id: user.id,
       name: user.name,
@@ -691,52 +391,62 @@ export default function LoginPage() {
       avatar: user.avatar,
       loginAt: new Date().toISOString()
     };
+
     sessionStorage.setItem(SESSION_KEY, JSON.stringify(sessionData));
-    setSystemBooting(true);
-    startBootSequence(sessionData);
+    localStorage.setItem(SESSION_KEY, JSON.stringify(sessionData));
+
+    setIsAuthenticating(true);
+    setAuthStatusText(`Signed in via ${provider}. Opening portal...`);
+    navigateToRoleDashboard(sessionData);
   };
 
   return (
     <div className="auth-container">
-      {systemBooting && (
-        <div className="system-loader-overlay">
-          <div className="system-loader-card">
-            {/* Header / Telemetry */}
-            <div className="loader-header">
-              <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-brand-accent-cyan animate-pulse"></span>
-                <span className="text-xs font-bold uppercase tracking-[0.2em] text-white font-mono">CampusX Secure Shell Boot v4.19</span>
-              </div>
-              <div className="text-[10px] text-brand-text-muted font-mono">
-                SYS_STATUS: LOADING_WORKSPACE ({bootProgress}%)
-              </div>
+      
+      {/* Sleek Transition Overlay */}
+      {isAuthenticating && (
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          zIndex: 9999,
+          backgroundColor: 'rgba(10, 14, 26, 0.85)',
+          backdropFilter: 'blur(12px)',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}>
+          <div style={{
+            background: 'var(--bg-secondary, #121829)',
+            border: '1px solid var(--border, rgba(255,255,255,0.1))',
+            borderRadius: '24px',
+            padding: '32px 40px',
+            textAlign: 'center',
+            boxShadow: '0 20px 50px rgba(0,0,0,0.5)'
+          }}>
+            <div style={{
+              width: '48px',
+              height: '48px',
+              margin: '0 auto 16px',
+              borderRadius: '16px',
+              background: 'rgba(99, 102, 241, 0.15)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: 'var(--primary, #6366f1)'
+            }}>
+              <svg style={{ width: '28px', height: '28px', animation: 'spin 1s linear infinite' }} viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" opacity="0.25"></circle>
+                <path fill="currentColor" opacity="0.75" d="M4 12a8 8 0 018-8v8H4z"></path>
+              </svg>
             </div>
-            
-            {/* Log Output Box */}
-            <div className="loader-log-box" ref={logBoxRef}>
-              {bootLogs.map((log, idx) => (
-                <div key={idx} className="log-line">
-                  <span className="log-prompt">&gt;</span> {log}
-                </div>
-              ))}
-            </div>
-
-            {/* Progress Bar Container */}
-            <div className="loader-progress-container">
-              <div className="loader-progress-bar" style={{ width: `${bootProgress}%` }}></div>
-            </div>
-
-            {/* Micro-telemetry footer */}
-            <div className="loader-footer text-[9px] text-brand-text-subtle font-mono flex justify-between">
-              <span>LEDGER: ACTIVE (SQLITE)</span>
-              <span>NODE_PORT: 5000</span>
-              <span>Z-TRUST: ENFORCED</span>
-            </div>
+            <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--text-main, #f8fafc)', marginBottom: '4px' }}>CampusX ERP</h3>
+            <p style={{ fontSize: '0.85rem', color: 'var(--text-muted, #94a3b8)' }}>{authStatusText}</p>
           </div>
         </div>
       )}
 
-      {/* Left Brand Panel */}
+      {/* LEFT — Brand Panel */}
       <div className="auth-brand">
         <div className="orb orb-1"></div>
         <div className="orb orb-2"></div>
@@ -751,19 +461,23 @@ export default function LoginPage() {
             </svg>
           </div>
 
-          <h1 className="brand-title">CAMPUSX OS</h1>
+          <h1 className="brand-title">
+            <span>CAMPUSX </span>
+            <span style={{ color: 'var(--primary, #6366f1)' }}>OS</span>
+          </h1>
           <p className="brand-tagline">
-            Role-Aware Enterprise IAM & Administrative Workspace
+            Next-Generation Higher Education & Enterprise Management Platform
           </p>
 
+          {/* Three Feature Highlights */}
           <div className="brand-features">
             <div className="brand-feature">
               <div className="feature-icon">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
               </div>
               <div className="feature-text">
-                <strong>Zero Trust Architecture</strong>
-                <span>Automatic IAM role resolution, secure URL route guards, and granular verification.</span>
+                <strong>Role-Based Access Control</strong>
+                <span>Granular workspace permissions tailored for students, faculty, and administration.</span>
               </div>
             </div>
 
@@ -772,8 +486,8 @@ export default function LoginPage() {
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
               </div>
               <div className="feature-text">
-                <strong>Unified Identity Hub</strong>
-                <span>Singular login for ERP, CONNECT, CHAIN, and WEB3. Automatically filters permissions.</span>
+                <strong>Unified Campus Hub</strong>
+                <span>Consolidated management for academics, examinations, departmental workflows, and finance.</span>
               </div>
             </div>
 
@@ -782,488 +496,294 @@ export default function LoginPage() {
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
               </div>
               <div className="feature-text">
-                <strong>Active Threat Detection</strong>
-                <span>Real-time local ML anomaly score models tracking password attempts and login contexts.</span>
+                <strong>Offline-Resilient Architecture</strong>
+                <span>Fast client-side session caching, instantaneous routing, and robust state persistence.</span>
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Right Form Panel */}
+      {/* RIGHT — Form Panel */}
       <div className="auth-form-panel">
-          
-          {/* Force Password Change Overlay */}
-          {mustChange && tempUser && (
-            <div className="absolute inset-0 bg-white z-50 p-8 md:p-12 flex flex-col justify-center fade-in">
-              <div className="mb-6">
-                <div className="w-12 h-12 rounded-xl bg-amber-100 flex items-center justify-center text-amber-600 mb-4 border-none">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-6 h-6"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
-                </div>
-                <h2 className="text-2xl font-bold text-slate-900 font-display mb-1">Update Security Credentials</h2>
-                <p className="text-xs text-slate-500">First-time login detected for <span className="text-indigo-600 font-mono font-bold">{tempUser.email}</span>. A password change is required to secure your account.</p>
+        
+        {/* Tab Switcher */}
+        <div className="auth-tabs">
+          <button 
+            type="button" 
+            className={`auth-tab ${activeTab === 'signin' ? 'active' : ''}`}
+            onClick={() => { setActiveTab('signin'); setSigninError(''); }}
+          >
+            Sign In
+          </button>
+          <button 
+            type="button" 
+            className={`auth-tab ${activeTab === 'signup' ? 'active' : ''}`}
+            onClick={() => { setActiveTab('signup'); setSignupError(''); setSignupSuccess(''); }}
+          >
+            Sign Up
+          </button>
+        </div>
+
+        {/* Sign In View */}
+        {activeTab === 'signin' ? (
+          <div className="auth-form-container">
+            <h2>Welcome Back</h2>
+            <p>Enter your institutional credentials to access your dashboard</p>
+
+            <form onSubmit={handleSignIn}>
+              <div className="auth-input-group">
+                <input 
+                  type="email" 
+                  id="signin-email"
+                  value={signinEmail}
+                  onChange={(e) => setSigninEmail(e.target.value)}
+                  required 
+                  placeholder=" "
+                />
+                <label htmlFor="signin-email">Institutional Email</label>
               </div>
 
-              <form onSubmit={handleChangePassword} className="flex flex-col gap-4">
-                <div className="auth-input-group relative">
-                  <input 
-                    type={newPasswordShow ? "text" : "password"} 
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    required 
-                    placeholder="New Password" 
-                    className="w-full bg-[#f4f6fb] border-none rounded-2xl px-4 py-3.5 pr-11 text-sm text-slate-900 outline-none focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all placeholder-slate-400"
-                  />
-                  <button 
-                    type="button" 
-                    onClick={() => setNewPasswordShow(!newPasswordShow)}
-                    className="password-toggle absolute right-4 top-3.5 text-slate-400 hover:text-slate-700 cursor-pointer bg-transparent border-none"
-                  >
-                    {newPasswordShow ? (
-                      <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
-                    ) : (
-                      <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                    )}
-                  </button>
-                </div>
-
+              <div className="auth-input-group">
+                <input 
+                  type={signinShowPassword ? "text" : "password"} 
+                  id="signin-password"
+                  value={signinPassword}
+                  onChange={(e) => setSigninPassword(e.target.value)}
+                  required 
+                  placeholder=" "
+                />
+                <label htmlFor="signin-password">Password</label>
                 <button 
-                  type="submit" 
-                  disabled={changeLoading}
-                  className="w-full py-3.5 bg-[#4f46e5] hover:bg-[#4338ca] text-white rounded-2xl font-bold text-sm transition-all shadow-lg shadow-indigo-500/25 cursor-pointer disabled:opacity-50 border-none"
+                  type="button" 
+                  className="password-toggle"
+                  onClick={() => setSigninShowPassword(!signinShowPassword)}
+                  aria-label="Toggle password visibility"
                 >
-                  {changeLoading ? 'Updating Password...' : 'Save & Proceed to Workspace'}
-                </button>
-              </form>
-            </div>
-          )}
-
-          {/* Header Title & Subtitle FIRST (Visual starts here) */}
-          <div className="auth-header-section mb-6 flex items-start justify-between">
-            <div>
-              <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 font-display mb-1.5 tracking-tight">
-                {activeTab === 'signin' ? 'Welcome Back' : 'Create Access Credentials'}
-              </h2>
-              <p className="text-xs md:text-sm text-slate-500 font-medium">
-                {activeTab === 'signin' ? 'Enter your credentials or choose a SSO provider to log in' : 'Register a new identity on the CampusX mesh network'}
-              </p>
-            </div>
-
-            <button 
-              type="button"
-              onClick={() => {
-                if (typeof window !== 'undefined') {
-                  const current = document.documentElement.getAttribute('data-theme') || 'light';
-                  const nextTheme = current === 'emerald' ? 'light' : 'emerald';
-                  localStorage.setItem('campusx_theme', nextTheme);
-                  document.documentElement.setAttribute('data-theme', nextTheme);
-                  window.dispatchEvent(new Event('theme-changed'));
-                }
-              }}
-              className="py-1.5 px-3 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-700 text-[11px] font-bold transition-all border-none cursor-pointer flex items-center gap-1.5 shrink-0"
-              title="Toggle Theme 1 (Sapphire Light) & Theme 2 (Cyber Emerald)"
-            >
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-sm"></span>
-              <span>Theme 1/2</span>
-            </button>
-          </div>
-
-          {/* Borderless Segmented Tab Switcher SECOND */}
-          <div className="auth-tab-switcher bg-[#f4f6fb] p-1.5 rounded-2xl flex items-center mb-6 shrink-0 w-full border-none">
-            <button 
-              type="button"
-              className={`flex-1 py-2.5 px-6 text-xs font-bold rounded-xl transition-all duration-200 cursor-pointer text-center flex items-center justify-center gap-2 border-none ${activeTab === 'signin' ? 'bg-[#4f46e5] text-white shadow-md shadow-indigo-500/20' : 'text-slate-600 hover:text-slate-900 bg-transparent'}`}
-              onClick={() => { setActiveTab('signin'); setSigninError(''); }}
-            >
-              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
-              <span>Sign In</span>
-            </button>
-            <button 
-              type="button"
-              className={`flex-1 py-2.5 px-6 text-xs font-bold rounded-xl transition-all duration-200 cursor-pointer text-center flex items-center justify-center gap-2 border-none ${activeTab === 'signup' ? 'bg-[#4f46e5] text-white shadow-md shadow-indigo-500/20' : 'text-slate-600 hover:text-slate-900 bg-transparent'}`}
-              onClick={() => { setActiveTab('signup'); setSigninError(''); }}
-            >
-              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="17" y1="11" x2="23" y2="11"/></svg>
-              <span>Sign Up</span>
-            </button>
-          </div>
-
-          {/* Sign In View */}
-          {activeTab === 'signin' ? (
-            <div className="auth-form-container fade-in flex-1 flex flex-col justify-between">
-              <div>
-                <form onSubmit={handleSignIn}>
-                  {/* Standalone Borderless Email Address & Icon Group */}
-                  <div className="mb-4">
-                    <label className="block text-xs font-bold text-slate-700 mb-1.5 font-display">
-                      Email Address
-                    </label>
-                    <div className="flex items-center gap-3 bg-[#f4f6fb] rounded-2xl p-2.5 hover:bg-[#ebedf5] transition-all">
-                      <div className="w-10 h-10 rounded-xl bg-white text-indigo-600 flex items-center justify-center shrink-0 shadow-sm">
-                        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-                      </div>
-                      <input 
-                        type="email" 
-                        value={signinEmail}
-                        onChange={(e) => setSigninEmail(e.target.value)}
-                        required 
-                        placeholder="admin@campusx.demo" 
-                        className="flex-1 bg-transparent border-none text-sm text-slate-900 outline-none placeholder-slate-400 font-medium"
-                      />
-                    </div>
-                  </div>
-
-                  {/* Standalone Borderless Password Group */}
-                  <div className="mb-4">
-                    <label className="block text-xs font-bold text-slate-700 mb-1.5 font-display">
-                      Password
-                    </label>
-                    <div className="flex items-center gap-3 bg-[#f4f6fb] rounded-2xl p-2.5 hover:bg-[#ebedf5] transition-all">
-                      <div className="w-10 h-10 rounded-xl bg-white text-slate-600 flex items-center justify-center shrink-0 shadow-sm">
-                        <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                      </div>
-                      <div className="relative flex-1 flex items-center">
-                        <input 
-                          type={signinShowPassword ? "text" : "password"} 
-                          value={signinPassword}
-                          onChange={(e) => setSigninPassword(e.target.value)}
-                          required 
-                          placeholder="••••••••••••" 
-                          className="w-full bg-transparent border-none pr-9 text-sm text-slate-900 outline-none placeholder-slate-400 font-medium"
-                        />
-                        <button 
-                          type="button" 
-                          onClick={() => setSigninShowPassword(!signinShowPassword)}
-                          className="password-toggle absolute right-2 text-slate-400 hover:text-slate-700 cursor-pointer bg-transparent border-none"
-                        >
-                          {signinShowPassword ? (
-                            <svg className="eye-closed w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
-                          ) : (
-                            <svg className="eye-open w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                          )}
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Options Row */}
-                  <div className="auth-options flex items-center justify-between mb-5">
-                    <label className="custom-checkbox flex items-center gap-2 text-xs text-slate-600 cursor-pointer select-none">
-                      <input type="checkbox" className="accent-indigo-600 rounded" />
-                      Remember this machine
-                    </label>
-                    <span className="forgot-link text-xs text-[#4f46e5] font-semibold hover:underline cursor-pointer" onClick={() => alert('Demo notice: All passwords start as "Demo@123". Check credentials below.')}>Forgot Password?</span>
-                  </div>
-
-                  {/* Submit Button */}
-                  <button 
-                    type="submit" 
-                    disabled={signinLoading}
-                    className="auth-submit-btn w-full py-3.5 bg-[#4f46e5] hover:bg-[#4338ca] text-white rounded-2xl font-bold text-sm transition-all shadow-lg shadow-indigo-500/25 flex items-center justify-center gap-2 cursor-pointer border-none disabled:opacity-50"
-                  >
-                    {signinLoading ? 'Authenticating...' : 'Sign In'}
-                  </button>
-
-                  {signinError && (
-                    <div className="auth-error mt-3 p-3 bg-rose-50 border-none text-rose-600 rounded-xl text-xs flex items-center gap-2">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4.5 h-4.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                      <span>{signinError}</span>
-                    </div>
+                  {signinShowPassword ? (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                  ) : (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                   )}
-                </form>
-
-                {/* SSO Divider */}
-                <div className="auth-divider flex items-center text-center my-5 text-[10px] font-bold tracking-wider text-slate-400 uppercase before:content-[''] before:flex-1 before:border-b before:border-slate-100 before:mr-4 after:content-[''] after:flex-1 after:border-b after:border-slate-100 after:ml-4">
-                  <span>OR SIGN IN USING SSO</span>
-                </div>
-
-                {/* SSO Buttons */}
-                <div className="social-buttons grid grid-cols-3 gap-3">
-                  <button type="button" className="social-btn flex items-center justify-center gap-2 py-2.5 bg-[#f4f6fb] border-none hover:bg-[#ebedf5] text-slate-700 rounded-2xl text-xs font-semibold transition-all cursor-pointer" onClick={() => handleSSO('Google')}>
-                    <svg viewBox="0 0 24 24" width="16" height="16">
-                      <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
-                      <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-                      <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18A10.96 10.96 0 0 0 1 12c0 1.77.42 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
-                      <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
-                    </svg>
-                    Google
-                  </button>
-                  <button type="button" className="social-btn flex items-center justify-center gap-2 py-2.5 bg-[#f4f6fb] border-none hover:bg-[#ebedf5] text-slate-700 rounded-2xl text-xs font-semibold transition-all cursor-pointer" onClick={() => handleSSO('Microsoft')}>
-                    <svg viewBox="0 0 24 24" width="16" height="16">
-                      <rect x="1" y="1" width="10" height="10" fill="#F25022"/>
-                      <rect x="13" y="1" width="10" height="10" fill="#7FBA00"/>
-                      <rect x="1" y="13" width="10" height="10" fill="#00A4EF"/>
-                      <rect x="13" y="13" width="10" height="10" fill="#FFB900"/>
-                    </svg>
-                    Microsoft
-                  </button>
-                  <button type="button" className="social-btn flex items-center justify-center gap-2 py-2.5 bg-[#f4f6fb] border-none hover:bg-[#ebedf5] text-slate-700 rounded-2xl text-xs font-semibold transition-all cursor-pointer" onClick={() => handleSSO('Passkey')}>
-                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-cyan-600"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
-                    Passkey
-                  </button>
-                </div>
+                </button>
               </div>
 
-              {/* All Quick Demo Logins Section */}
-              <div className="auth-demo-info mt-6 p-4 bg-[#f8fafc] rounded-2xl border-none text-center shadow-sm">
-                  <div className="flex items-center justify-between mb-3 pb-2 border-b border-slate-100 flex-wrap gap-2">
-                    <span className="text-[11px] font-extrabold uppercase tracking-wider text-slate-700 font-display">Quick Demo Logins</span>
-                    <div className="flex items-center gap-1.5 flex-wrap">
-                      <button 
-                        type="button" 
-                        onClick={() => handleOneClickLogin('admin@campusx.demo', 'Demo@123')}
-                        className="py-1 px-2.5 bg-[#4f46e5] hover:bg-[#4338ca] text-white rounded-lg text-[10px] font-bold transition-all shadow-sm flex items-center gap-1 cursor-pointer border-none"
-                      >
-                        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
-                        <span>1-Click Admin</span>
-                      </button>
-                      <button 
-                        type="button" 
-                        onClick={() => handleOneClickLogin('student@campusx.edu', 'student123')}
-                        className="py-1 px-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-[10px] font-bold transition-all shadow-sm flex items-center gap-1 cursor-pointer border-none"
-                      >
-                        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M12 14l9-5-9-5-9 5 9 5z"/><path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0112 20.055a11.952 11.952 0 01-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z"/></svg>
-                        <span>1-Click Student</span>
-                      </button>
-                    </div>
-                  </div>
+              <div className="auth-options">
+                <label className="custom-checkbox">
+                  <input type="checkbox" defaultChecked />
+                  Remember this device
+                </label>
+                <button 
+                  type="button" 
+                  className="forgot-link"
+                  onClick={() => alert('To reset your password, please contact your university system administrator or register a new account.')}
+                  style={{ background: 'none', border: 'none', cursor: 'pointer', font: 'inherit' }}
+                >
+                  Forgot Password?
+                </button>
+              </div>
 
-                  <div className="demo-creds-list grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-[200px] overflow-y-auto pr-1 text-left chat-scroll">
-                    <div className="demo-cred p-2 rounded-xl bg-white hover:bg-indigo-50/80 border border-slate-200/80 transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('superadmin@campusx.demo', 'Demo@123')}>
-                      <span className="role-badge text-[10px] font-bold text-rose-600">Super Admin</span>
-                      <span className="text-[10px] text-slate-500 truncate mt-0.5">superadmin@campusx.demo</span>
-                    </div>
-                    <div className="demo-cred p-2 rounded-xl bg-white hover:bg-indigo-50/80 border border-slate-200/80 transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('admin@campusx.demo', 'Demo@123')}>
-                      <span className="role-badge text-[10px] font-bold text-cyan-600">Platform Admin</span>
-                      <span className="text-[10px] text-slate-500 truncate mt-0.5">admin@campusx.demo</span>
-                    </div>
-                    <div className="demo-cred p-2 rounded-xl bg-white hover:bg-indigo-50/80 border border-slate-200/80 transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('univadmin@campusx.demo', 'Demo@123')}>
-                      <span className="role-badge text-[10px] font-bold text-amber-600">Univ Admin</span>
-                      <span className="text-[10px] text-slate-500 truncate mt-0.5">univadmin@campusx.demo</span>
-                    </div>
-                    <div className="demo-cred p-2 rounded-xl bg-white hover:bg-indigo-50/80 border border-slate-200/80 transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('registrar@campusx.demo', 'Demo@123')}>
-                      <span className="role-badge text-[10px] font-bold text-emerald-600">Registrar Officer</span>
-                      <span className="text-[10px] text-slate-500 truncate mt-0.5">registrar@campusx.demo</span>
-                    </div>
-                    <div className="demo-cred p-2 rounded-xl bg-white hover:bg-indigo-50/80 border border-slate-200/80 transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('dean@campusx.demo', 'Demo@123')}>
-                      <span className="role-badge text-[10px] font-bold text-indigo-600">Dean of Faculty</span>
-                      <span className="text-[10px] text-slate-500 truncate mt-0.5">dean@campusx.demo</span>
-                    </div>
-                    <div className="demo-cred p-2 rounded-xl bg-white hover:bg-indigo-50/80 border border-slate-200/80 transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('hod@campusx.demo', 'Demo@123')}>
-                      <span className="role-badge text-[10px] font-bold text-amber-600">HOD Professor</span>
-                      <span className="text-[10px] text-slate-500 truncate mt-0.5">hod@campusx.demo</span>
-                    </div>
-                    <div className="demo-cred p-2 rounded-xl bg-white hover:bg-indigo-50/80 border border-slate-200/80 transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('faculty@campusx.demo', 'Demo@123')}>
-                      <span className="role-badge text-[10px] font-bold text-cyan-600">Faculty Professor</span>
-                      <span className="text-[10px] text-slate-500 truncate mt-0.5">faculty@campusx.demo</span>
-                    </div>
-                    <div className="demo-cred p-2 rounded-xl bg-white hover:bg-indigo-50/80 border border-slate-200/80 transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('finance@campusx.demo', 'Demo@123')}>
-                      <span className="role-badge text-[10px] font-bold text-emerald-600">Finance Manager</span>
-                      <span className="text-[10px] text-slate-500 truncate mt-0.5">finance@campusx.demo</span>
-                    </div>
-                    <div className="demo-cred p-2 rounded-xl bg-white hover:bg-indigo-50/80 border border-slate-200/80 transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('research@campusx.demo', 'Demo@123')}>
-                      <span className="role-badge text-[10px] font-bold text-purple-600">Research Coord</span>
-                      <span className="text-[10px] text-slate-500 truncate mt-0.5">research@campusx.demo</span>
-                    </div>
-                    <div className="demo-cred p-2 rounded-xl bg-white hover:bg-indigo-50/80 border border-slate-200/80 transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('placement@campusx.demo', 'Demo@123')}>
-                      <span className="role-badge text-[10px] font-bold text-blue-600">Placement Officer</span>
-                      <span className="text-[10px] text-slate-500 truncate mt-0.5">placement@campusx.demo</span>
-                    </div>
-                    <div className="demo-cred p-2 rounded-xl bg-white hover:bg-indigo-50/80 border border-slate-200/80 transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('student@campusx.demo', 'Demo@123')}>
-                      <span className="role-badge text-[10px] font-bold text-indigo-600">Student</span>
-                      <span className="text-[10px] text-slate-500 truncate mt-0.5">student@campusx.demo</span>
-                    </div>
-                    <div className="demo-cred p-2 rounded-xl bg-white hover:bg-indigo-50/80 border border-slate-200/80 transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('parent_role@campusx.demo', 'Demo@123')}>
-                      <span className="role-badge text-[10px] font-bold text-pink-600">General Parent</span>
-                      <span className="text-[10px] text-slate-500 truncate mt-0.5">parent_role@campusx.demo</span>
-                    </div>
-                    <div className="demo-cred p-2 rounded-xl bg-white hover:bg-indigo-50/80 border border-slate-200/80 transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('alumni@campusx.demo', 'Demo@123')}>
-                      <span className="role-badge text-[10px] font-bold text-slate-600">Alumni Account</span>
-                      <span className="text-[10px] text-slate-500 truncate mt-0.5">alumni@campusx.demo</span>
-                    </div>
-                    <div className="demo-cred p-2 rounded-xl bg-white hover:bg-indigo-50/80 border border-slate-200/80 transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('recruiter@campusx.demo', 'Demo@123')}>
-                      <span className="role-badge text-[10px] font-bold text-indigo-600">Recruiter</span>
-                      <span className="text-[10px] text-slate-500 truncate mt-0.5">recruiter@campusx.demo</span>
-                    </div>
-                    <div className="demo-cred p-2 rounded-xl bg-white hover:bg-indigo-50/80 border border-slate-200/80 transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('sportsdirector@campusx.demo', 'Demo@123')}>
-                      <span className="role-badge text-[10px] font-bold text-indigo-600">Sports Director</span>
-                      <span className="text-[10px] text-slate-500 truncate mt-0.5">sportsdirector@campusx.demo</span>
-                    </div>
-                    <div className="demo-cred p-2 rounded-xl bg-white hover:bg-indigo-50/80 border border-slate-200/80 transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('coach@campusx.demo', 'Demo@123')}>
-                      <span className="role-badge text-[10px] font-bold text-cyan-600">Sports Coach</span>
-                      <span className="text-[10px] text-slate-500 truncate mt-0.5">coach@campusx.demo</span>
-                    </div>
-                    <div className="demo-cred p-2 rounded-xl bg-white hover:bg-indigo-50/80 border border-slate-200/80 transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('athlete@campusx.demo', 'Demo@123')}>
-                      <span className="role-badge text-[10px] font-bold text-emerald-600">Sports Athlete</span>
-                      <span className="text-[10px] text-slate-500 truncate mt-0.5">athlete@campusx.demo</span>
-                    </div>
-                    <div className="demo-cred p-2 rounded-xl bg-white hover:bg-indigo-50/80 border border-slate-200/80 transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('parent@campusx.demo', 'Demo@123')}>
-                      <span className="role-badge text-[10px] font-bold text-purple-600">Sports Parent</span>
-                      <span className="text-[10px] text-slate-500 truncate mt-0.5">parent@campusx.demo</span>
-                    </div>
-                    <div className="demo-cred p-2 rounded-xl bg-white hover:bg-indigo-50/80 border border-slate-200/80 transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('deptadmin@campusx.demo', 'Demo@123')}>
-                      <span className="role-badge text-[10px] font-bold text-amber-600">Department Admin</span>
-                      <span className="text-[10px] text-slate-500 truncate mt-0.5">deptadmin@campusx.demo</span>
-                    </div>
-                    <div className="demo-cred p-2 rounded-xl bg-white hover:bg-indigo-50/80 border border-slate-200/80 transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('libraryadmin@campusx.demo', 'Demo@123')}>
-                      <span className="role-badge text-[10px] font-bold text-emerald-600">Library Admin</span>
-                      <span className="text-[10px] text-slate-500 truncate mt-0.5">libraryadmin@campusx.demo</span>
-                    </div>
-                    <div className="demo-cred p-2 rounded-xl bg-white hover:bg-indigo-50/80 border border-slate-200/80 transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('hosteladmin@campusx.demo', 'Demo@123')}>
-                      <span className="role-badge text-[10px] font-bold text-indigo-600">Hostel Manager</span>
-                      <span className="text-[10px] text-slate-500 truncate mt-0.5">hosteladmin@campusx.demo</span>
-                    </div>
-                    <div className="demo-cred p-2 rounded-xl bg-white hover:bg-indigo-50/80 border border-slate-200/80 transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('transportadmin@campusx.demo', 'Demo@123')}>
-                      <span className="role-badge text-[10px] font-bold text-teal-600">Transport Coord</span>
-                      <span className="text-[10px] text-slate-500 truncate mt-0.5">transportadmin@campusx.demo</span>
-                    </div>
-                    <div className="demo-cred p-2 rounded-xl bg-white hover:bg-indigo-50/80 border border-slate-200/80 transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('medical@campusx.demo', 'Demo@123')}>
-                      <span className="role-badge text-[10px] font-bold text-rose-600">Medical Staff</span>
-                      <span className="text-[10px] text-slate-500 truncate mt-0.5">medical@campusx.demo</span>
-                    </div>
-                    <div className="demo-cred p-2 rounded-xl bg-white hover:bg-indigo-50/80 border border-slate-200/80 transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('guest@campusx.demo', 'Demo@123')}>
-                      <span className="role-badge text-[10px] font-bold text-slate-400">Guest Visitor</span>
-                      <span className="text-[10px] text-slate-500 truncate mt-0.5">guest@campusx.demo</span>
-                    </div>
-                    <div className="demo-cred p-2 rounded-xl bg-white hover:bg-indigo-50/80 border border-slate-200/80 transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('consultant@campusx.demo', 'Demo@123')}>
-                      <span className="role-badge text-[10px] font-bold text-purple-600">Consultant</span>
-                      <span className="text-[10px] text-slate-500 truncate mt-0.5">consultant@campusx.demo</span>
-                    </div>
-                    <div className="demo-cred p-2 rounded-xl bg-white hover:bg-indigo-50/80 border border-slate-200/80 transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('auditor@campusx.demo', 'Demo@123')}>
-                      <span className="role-badge text-[10px] font-bold text-amber-600">Auditor</span>
-                      <span className="text-[10px] text-slate-500 truncate mt-0.5">auditor@campusx.demo</span>
-                    </div>
-                    <div className="demo-cred p-2 rounded-xl bg-white hover:bg-indigo-50/80 border border-slate-200/80 transition-all cursor-pointer flex flex-col" onClick={() => fillDemo('compliance@campusx.demo', 'Demo@123')}>
-                      <span className="role-badge text-[10px] font-bold text-cyan-600">Compliance Officer</span>
-                      <span className="text-[10px] text-slate-500 truncate mt-0.5">compliance@campusx.demo</span>
-                    </div>
-                  </div>
+              <button 
+                type="submit" 
+                className="auth-submit-btn" 
+                disabled={signinLoading}
+              >
+                {signinLoading ? 'Signing In...' : 'Sign In'}
+              </button>
+
+              {signinError && (
+                <div className="auth-error-banner" style={{
+                  padding: '12px 16px',
+                  borderRadius: '12px',
+                  backgroundColor: 'rgba(244, 63, 94, 0.12)',
+                  color: 'var(--accent-ruby, #f43f5e)',
+                  fontSize: '0.85rem'
+                }}>
+                  {signinError}
                 </div>
+              )}
+            </form>
+
+            <div className="auth-divider">
+              <span>OR CONTINUE WITH</span>
             </div>
-          ) : (
-            /* Sign Up View */
-            <div className="auth-form-container fade-in flex-1 flex flex-col justify-between">
-              <div>
-                <form onSubmit={handleSignUp}>
-                  <div className="auth-input-group relative mb-4">
-                    <input 
-                      type="text" 
-                      value={signupName}
-                      onChange={(e) => setSignupName(e.target.value)}
-                      required 
-                      placeholder="Full Name" 
-                      className="w-full bg-[#f8fafc] border border-slate-200 rounded-2xl px-4 py-3.5 text-sm text-slate-900 outline-none focus:border-[#4f46e5] focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all placeholder-slate-400 shadow-sm"
-                    />
-                  </div>
 
-                  <div className="auth-input-group relative mb-4">
-                    <input 
-                      type="email" 
-                      value={signupEmail}
-                      onChange={(e) => setSignupEmail(e.target.value)}
-                      required 
-                      placeholder="Email Address" 
-                      className="w-full bg-[#f8fafc] border border-slate-200 rounded-2xl px-4 py-3.5 text-sm text-slate-900 outline-none focus:border-[#4f46e5] focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all placeholder-slate-400 shadow-sm"
-                    />
-                  </div>
+            <div className="social-buttons">
+              <button type="button" className="social-btn" onClick={() => handleSSO('Google')}>
+                <svg viewBox="0 0 24 24" width="16" height="16">
+                  <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
+                  <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+                  <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18A10.96 10.96 0 0 0 1 12c0 1.77.42 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
+                  <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                </svg>
+                Google
+              </button>
 
-                  <div className="auth-input-group relative mb-4">
-                    <select 
-                      value={signupRole}
-                      onChange={(e) => setSignupRole(e.target.value)}
-                      className="w-full bg-[#f8fafc] border border-slate-200 rounded-2xl px-4 py-3.5 text-sm text-slate-900 outline-none focus:border-[#4f46e5] focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all shadow-sm"
-                    >
-                      <option value="student">Student</option>
-                      <option value="faculty">Faculty Member</option>
-                      <option value="hod">HOD (Department Head)</option>
-                      <option value="admin">University Administrator</option>
-                      <option value="sports_director">Sports Director</option>
-                      <option value="coach">Sports Coach</option>
-                      <option value="athlete">Student Athlete</option>
-                      <option value="sports_parent">Sports Parent</option>
-                      <option value="parent">Parent</option>
-                      <option value="alumni">Alumni</option>
-                      <option value="recruiter">Recruiter</option>
-                    </select>
-                    <label className="select-label absolute left-4 top-1 text-[0.65rem] text-slate-400 font-bold uppercase">Access Hierarchy Role</label>
-                  </div>
+              <button type="button" className="social-btn" onClick={() => handleSSO('Microsoft')}>
+                <svg viewBox="0 0 24 24" width="16" height="16">
+                  <rect x="1" y="1" width="10" height="10" fill="#F25022"/>
+                  <rect x="13" y="1" width="10" height="10" fill="#7FBA00"/>
+                  <rect x="1" y="13" width="10" height="10" fill="#00A4EF"/>
+                  <rect x="13" y="13" width="10" height="10" fill="#FFB900"/>
+                </svg>
+                Microsoft
+              </button>
 
-                  <div className="auth-input-group relative mb-3">
-                    <input 
-                      type={signupShowPassword ? "text" : "password"} 
-                      value={signupPassword}
-                      onChange={(e) => setSignupPassword(e.target.value)}
-                      required 
-                      placeholder="Password" 
-                      className="w-full bg-[#f8fafc] border border-slate-200 rounded-2xl px-4 py-3.5 pr-11 text-sm text-slate-900 outline-none focus:border-[#4f46e5] focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all placeholder-slate-400 shadow-sm"
-                    />
-                    <button 
-                      type="button" 
-                      onClick={() => setSignupShowPassword(!signupShowPassword)}
-                      className="password-toggle absolute right-4 top-4 text-slate-400 hover:text-slate-700 cursor-pointer bg-transparent border-none"
-                    >
-                      {signupShowPassword ? (
-                        <svg className="eye-closed w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
-                      ) : (
-                        <svg className="eye-open w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                      )}
-                    </button>
-                  </div>
+              <button type="button" className="social-btn" onClick={() => handleSSO('Passkey')}>
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2.5" style={{ color: 'var(--primary, #6366f1)' }}>
+                  <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/>
+                </svg>
+                Passkey
+              </button>
+            </div>
+          </div>
+        ) : (
+          /* Sign Up View */
+          <div className="auth-form-container">
+            <h2>Create Account</h2>
+            <p>Register your institutional profile on CampusX</p>
 
-                  {/* Password Strength Indicator */}
-                  <div className="password-strength mb-4">
-                    <div className="strength-bar w-full h-1.5 bg-slate-200 rounded-full overflow-hidden">
-                      <div 
-                        className={`strength-fill h-full transition-all duration-300 ${strengthLevel === 'weak' ? 'bg-rose-500 w-1/3' : (strengthLevel === 'medium' ? 'bg-amber-500 w-2/3' : 'bg-emerald-500 w-full')}`}
-                      ></div>
-                    </div>
-                    <span className={`strength-text text-[0.7rem] mt-1 block font-bold ${strengthLevel === 'weak' ? 'text-rose-500' : (strengthLevel === 'medium' ? 'text-amber-500' : 'text-emerald-500')}`}>
-                      Complexity: {strengthText.toUpperCase()}
+            <form onSubmit={handleSignUp}>
+              <div className="auth-input-group">
+                <input 
+                  type="text" 
+                  id="signup-name"
+                  value={signupName}
+                  onChange={(e) => setSignupName(e.target.value)}
+                  required 
+                  placeholder=" "
+                />
+                <label htmlFor="signup-name">Full Name</label>
+              </div>
+
+              <div className="auth-input-group">
+                <input 
+                  type="email" 
+                  id="signup-email"
+                  value={signupEmail}
+                  onChange={(e) => setSignupEmail(e.target.value)}
+                  required 
+                  placeholder=" "
+                />
+                <label htmlFor="signup-email">Institutional Email</label>
+              </div>
+
+              <div className="auth-input-group">
+                <select 
+                  id="signup-role"
+                  value={signupRole}
+                  onChange={(e) => setSignupRole(e.target.value)}
+                >
+                  <option value="student">Student Role (Undergraduate / Postgraduate)</option>
+                  <option value="faculty">Faculty Role (Professor / Lecturer)</option>
+                  <option value="hod">Head of Department (HOD)</option>
+                  <option value="dean">Dean of Faculty</option>
+                  <option value="registrar">Registrar Officer</option>
+                  <option value="admin">University Administrator</option>
+                  <option value="finance_manager">Finance Manager</option>
+                  <option value="placement_officer">Placement Officer</option>
+                  <option value="recruiter">Corporate Recruiter</option>
+                  <option value="alumni">Alumni Member</option>
+                  <option value="parent">Parent Account</option>
+                </select>
+                <label htmlFor="signup-role" className="select-label">Institutional Role</label>
+                <svg className="select-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="6 9 12 15 18 9"/>
+                </svg>
+              </div>
+
+              <div className="auth-input-group">
+                <input 
+                  type={signupShowPassword ? "text" : "password"} 
+                  id="signup-password"
+                  value={signupPassword}
+                  onChange={(e) => setSignupPassword(e.target.value)}
+                  required 
+                  placeholder=" "
+                />
+                <label htmlFor="signup-password">Password</label>
+                <button 
+                  type="button" 
+                  className="password-toggle"
+                  onClick={() => setSignupShowPassword(!signupShowPassword)}
+                  aria-label="Toggle password visibility"
+                >
+                  {signupShowPassword ? (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                  ) : (
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  )}
+                </button>
+              </div>
+
+              <div className="auth-input-group">
+                <input 
+                  type={signupShowPassword ? "text" : "password"} 
+                  id="signup-confirm-password"
+                  value={signupConfirmPassword}
+                  onChange={(e) => setSignupConfirmPassword(e.target.value)}
+                  required 
+                  placeholder=" "
+                />
+                <label htmlFor="signup-confirm-password">Confirm Password</label>
+              </div>
+
+              {signupPassword && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', marginTop: '-4px' }}>
+                  <div style={{ display: 'flex', gap: '6px', width: '100%', height: '4px' }}>
+                    <div style={{ flex: 1, borderRadius: '4px', background: strengthLevel === 'weak' ? '#f43f5e' : (strengthLevel === 'medium' ? '#f59e0b' : '#10b981'), transition: 'all 0.3s' }}></div>
+                    <div style={{ flex: 1, borderRadius: '4px', background: strengthLevel === 'medium' ? '#f59e0b' : (strengthLevel === 'strong' ? '#10b981' : 'rgba(255,255,255,0.1)'), transition: 'all 0.3s' }}></div>
+                    <div style={{ flex: 1, borderRadius: '4px', background: strengthLevel === 'strong' ? '#10b981' : 'rgba(255,255,255,0.1)', transition: 'all 0.3s' }}></div>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: 'var(--text-muted, #94a3b8)' }}>
+                    <span>{strengthText}</span>
+                    <span style={{
+                      fontWeight: 700,
+                      letterSpacing: '0.04em',
+                      color: strengthLevel === 'strong' ? 'var(--accent-emerald, #059669)' : (strengthLevel === 'medium' ? 'var(--accent-amber, #d97706)' : 'var(--accent-ruby, #f43f5e)')
+                    }}>
+                      {strengthLevel.toUpperCase()}
                     </span>
                   </div>
+                </div>
+              )}
 
-                  <div className="auth-input-group relative mb-4">
-                    <input 
-                      type="password" 
-                      value={signupConfirmPassword}
-                      onChange={(e) => setSignupConfirmPassword(e.target.value)}
-                      required 
-                      placeholder="Confirm Password" 
-                      className="w-full bg-[#f8fafc] border border-slate-200 rounded-2xl px-4 py-3.5 text-sm text-slate-900 outline-none focus:border-[#4f46e5] focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all placeholder-slate-400 shadow-sm"
-                    />
-                  </div>
+              <button 
+                type="submit" 
+                className="auth-submit-btn" 
+                disabled={signupLoading}
+              >
+                {signupLoading ? 'Creating Account...' : 'Create Account'}
+              </button>
 
-                  <button 
-                    type="submit" 
-                    disabled={signupLoading}
-                    className="auth-submit-btn w-full py-3.5 bg-[#4f46e5] hover:bg-[#4338ca] text-white rounded-2xl font-bold text-sm transition-all shadow-lg shadow-indigo-500/25 flex items-center justify-center gap-2 cursor-pointer border-none disabled:opacity-50"
-                  >
-                    {signupLoading ? 'Registering Account...' : 'Complete Register'}
-                  </button>
+              {signupError && (
+                <div className="auth-error-banner" style={{
+                  padding: '12px 16px',
+                  borderRadius: '12px',
+                  backgroundColor: 'rgba(244, 63, 94, 0.12)',
+                  color: 'var(--accent-ruby, #f43f5e)',
+                  fontSize: '0.85rem'
+                }}>
+                  {signupError}
+                </div>
+              )}
 
-                  {signupError && (
-                    <div className="auth-error mt-3 p-3 bg-rose-50 border border-rose-200 text-rose-600 rounded-xl text-xs flex items-center gap-2">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4.5 h-4.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                      <span>{signupError}</span>
-                    </div>
-                  )}
-
-                  {signupSuccess && (
-                    <div className="auth-success mt-3 p-3 bg-emerald-50 border border-emerald-200 text-emerald-600 rounded-xl text-xs flex items-center gap-2">
-                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4.5 h-4.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                      <span>{signupSuccess}</span>
-                    </div>
-                  )}
-                </form>
-              </div>
-            </div>
-          )}
-
-          {/* Footer */}
-          <div className="auth-footer text-center mt-6 text-xs text-slate-400 shrink-0">
-            <p>&copy; 2026 CampusX University Operating System. All rights reserved.</p>
+              {signupSuccess && (
+                <div style={{
+                  padding: '12px 16px',
+                  borderRadius: '12px',
+                  backgroundColor: 'rgba(5, 150, 105, 0.12)',
+                  color: 'var(--accent-emerald, #059669)',
+                  fontSize: '0.85rem'
+                }}>
+                  {signupSuccess}
+                </div>
+              )}
+            </form>
           </div>
-        </div>
+        )}
+
+      </div>
     </div>
   );
 }

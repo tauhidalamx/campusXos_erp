@@ -35,11 +35,22 @@ cache/
 
 # Database and Log files
 *.sqlite
+*.sqlite3
 *.db
 *.log
 
-# Large media & archives
+# Large media & doc files
 *.tar.gz
+*.zip
+*.doc
+*.docx
+*.mp4
+*.mov
+docs/videos/*.mp4
 uploads/
 artifacts/
+
+# Local Environment
+.env.local
+.env.*.local
 

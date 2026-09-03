@@ -3,86 +3,81 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Sign In — CampusX University ERP</title>
-  <meta name="description" content="Sign in to the CampusX University ERP — the next-generation campus management platform.">
+  <title>CampusX OS — Authentication Portal</title>
+  <meta name="description" content="Sign in or register for the CampusX University ERP — the next-generation campus operating system.">
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 
-  <!-- Auth Styles -->
+  <!-- Core & Auth Stylesheets -->
   <link rel="stylesheet" href="styles/main.css">
   <link rel="stylesheet" href="styles/auth.css">
 </head>
-<body class="bg-brand-bg-primary text-brand-text-main font-sans min-h-screen flex items-center justify-center p-4 relative overflow-hidden">
-  <!-- Ambient Liquid Mesh Glowing Background Orbs -->
-  <div class="liquid-mesh-bg">
-    <div class="liquid-orb liquid-orb-cyan liquid-orb-1"></div>
-    <div class="liquid-orb liquid-orb-indigo liquid-orb-2"></div>
-    <div class="liquid-orb liquid-orb-violet liquid-orb-3"></div>
-  </div>
+<body>
 
-  <div class="auth-container w-full max-w-5xl grid grid-cols-1 md:grid-cols-2 min-h-[700px] bg-brand-bg-secondary border border-brand-border rounded-3xl overflow-hidden shadow-2xl relative z-10 backdrop-blur-2xl">
+  <!-- Full-Screen Split Layout -->
+  <div class="auth-container">
 
     <!-- ============================================================
-         LEFT — Brand Panel
+         LEFT — Brand Hero Showcase
          ============================================================ -->
-    <div class="auth-brand relative hidden md:flex flex-col justify-between p-12 overflow-hidden bg-brand-bg-tertiary border-r border-brand-border">
+    <div class="auth-brand">
       <!-- Animated gradient orbs -->
       <div class="orb orb-1"></div>
       <div class="orb orb-2"></div>
       <div class="orb orb-3"></div>
-      <!-- Dot grid overlay -->
       <div class="dot-grid"></div>
 
-      <div class="brand-content relative z-10">
+      <div class="brand-content">
         <!-- University logo -->
-        <div class="brand-logo w-12 h-12 rounded-xl bg-brand-primary/10 flex items-center justify-center text-brand-primary mb-8">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6">
+        <div class="brand-logo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
             <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"/>
           </svg>
         </div>
 
-        <h1 class="brand-title text-2xl font-bold tracking-tight text-brand-text-main font-display mb-2">CAMPUSX UNIVERSITY</h1>
-        <p class="brand-tagline text-brand-text-muted text-sm mb-12">Next-Generation Campus Management Platform</p>
+        <h1 class="brand-title">CAMPUSX OS</h1>
+        <p class="brand-tagline">Next-Generation Higher Education & Enterprise Management Platform</p>
 
         <!-- Feature highlights -->
-        <div class="brand-features flex flex-col gap-6">
-          <div class="brand-feature flex items-start gap-4">
-            <div class="feature-icon w-10 h-10 rounded-lg bg-brand-bg-secondary flex items-center justify-center text-brand-accent-cyan border border-brand-border shrink-0">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5">
-                <path d="M21.21 15.89A10 10 0 1 1 8 2.83"/>
-                <path d="M22 12A10 10 0 0 0 12 2v10z"/>
+        <div class="brand-features">
+          <div class="brand-feature">
+            <div class="feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
               </svg>
             </div>
-            <div class="feature-text flex flex-col">
-              <strong class="text-sm font-semibold text-brand-text-main">Smart Analytics</strong>
-              <span class="text-xs text-brand-text-muted mt-1">AI-powered insights for academic excellence</span>
+            <div class="feature-text">
+              <strong>Role-Based Access Control</strong>
+              <span>Instant role resolution for Students, Faculty & Leadership</span>
             </div>
           </div>
-          <div class="brand-feature flex items-start gap-4">
-            <div class="feature-icon w-10 h-10 rounded-lg bg-brand-bg-secondary flex items-center justify-center text-brand-accent-cyan border border-brand-border shrink-0">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5">
-                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+
+          <div class="brand-feature">
+            <div class="feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
+                <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"/>
               </svg>
             </div>
-            <div class="feature-text flex flex-col">
-              <strong class="text-sm font-semibold text-brand-text-main">Secure Records</strong>
-              <span class="text-xs text-brand-text-muted mt-1">Enterprise-grade data protection & encryption</span>
+            <div class="feature-text">
+              <strong>Unified Campus Hub</strong>
+              <span>Academic records, examinations, attendance & finance</span>
             </div>
           </div>
-          <div class="brand-feature flex items-start gap-4">
-            <div class="feature-icon w-10 h-10 rounded-lg bg-brand-bg-secondary flex items-center justify-center text-brand-accent-cyan border border-brand-border shrink-0">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-5 h-5">
-                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+
+          <div class="brand-feature">
+            <div class="feature-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
               </svg>
             </div>
-            <div class="feature-text flex flex-col">
-              <strong class="text-sm font-semibold text-brand-text-main">Real-time Tracking</strong>
-              <span class="text-xs text-brand-text-muted mt-1">Live attendance, grades & financial dashboards</span>
+            <div class="feature-text">
+              <strong>Offline-Resilient Architecture</strong>
+              <span>Instant local session cache & high-efficiency sync</span>
             </div>
           </div>
         </div>
@@ -90,103 +85,82 @@
     </div>
 
     <!-- ============================================================
-         RIGHT — Form Panel
+         RIGHT — Form Interaction Panel
          ============================================================ -->
-    <div class="auth-form-panel flex flex-col justify-between p-8 md:p-12 bg-brand-bg-secondary">
+    <div class="auth-form-panel">
 
-      <!-- Mobile-only mini brand -->
-      <div class="mobile-brand flex md:hidden flex-col items-center gap-4 mb-8">
-        <div class="brand-logo w-12 h-12 rounded-xl bg-brand-primary/10 flex items-center justify-center text-brand-primary">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-6 h-6">
+      <!-- Mobile Brand Header -->
+      <div class="mobile-brand">
+        <div class="brand-logo">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M22 10v6M2 10l10-5 10 5-10 5z"/>
             <path d="M6 12v5c0 2 2 3 6 3s6-1 6-3v-5"/>
           </svg>
         </div>
-        <h1 class="brand-title text-xl font-bold tracking-tight text-brand-text-main font-display">CAMPUSX UNIVERSITY</h1>
+        <h1 class="brand-title">CAMPUSX OS</h1>
       </div>
 
-      <!-- Tabs -->
-      <div class="auth-tabs flex gap-4 border-b border-brand-border pb-4 mb-8">
-        <button class="auth-tab active text-sm font-semibold text-brand-text-muted pb-2 border-b-2 border-transparent transition-all hover:text-brand-text-main cursor-pointer" data-tab="signin" type="button">Sign In</button>
-        <button class="auth-tab text-sm font-semibold text-brand-text-muted pb-2 border-b-2 border-transparent transition-all hover:text-brand-text-main cursor-pointer" data-tab="signup" type="button">Sign Up</button>
+      <!-- Segmented Tab Navigation -->
+      <div class="auth-tabs">
+        <button class="auth-tab active" data-tab="signin" type="button" id="tab-btn-signin">Sign In</button>
+        <button class="auth-tab" data-tab="signup" type="button" id="tab-btn-signup">Sign Up</button>
       </div>
 
-      <!-- ==================== SIGN IN ==================== -->
+      <!-- ==================== SIGN IN FORM ==================== -->
       <div class="auth-form-container" id="signin-form">
-        <h2 class="text-2xl font-bold text-brand-text-main font-display mb-1">Welcome Back</h2>
-        <p class="text-sm text-brand-text-muted mb-6">Sign in to access your campus portal</p>
+        <h2>Welcome Back</h2>
+        <p>Sign in to access your institutional workspace</p>
 
         <form id="signin-form-el" novalidate autocomplete="on">
-          <!-- Standalone Email Address & Icon Card -->
-          <div class="email-identity-card mb-5 p-4 bg-brand-bg-tertiary border border-brand-border rounded-2xl shadow-sm">
-            <label for="signin-email" class="block text-xs font-bold uppercase tracking-wider text-brand-text-muted mb-2 font-display">Identity & Email Address</label>
-            <div class="flex items-center gap-3">
-              <div class="w-11 h-11 rounded-xl bg-brand-primary/10 border border-brand-primary/20 text-brand-primary flex items-center justify-center shrink-0 shadow-sm">
-                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-                  <polyline points="22,6 12,13 2,6"/>
-                </svg>
-              </div>
-              <input type="email" id="signin-email" required placeholder="name@campusx.edu" autocomplete="email" class="flex-1 bg-brand-bg-secondary border border-brand-border rounded-xl px-4 py-3 text-sm text-brand-text-main outline-none focus:border-brand-primary transition-all">
+          <!-- Email Input -->
+          <div class="auth-input-group">
+            <input type="email" id="signin-email" required placeholder=" " autocomplete="email">
+            <label for="signin-email">Email Address</label>
+            <div class="input-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
             </div>
           </div>
 
-          <!-- Standalone Password Card -->
-          <div class="password-card mb-5 p-4 bg-brand-bg-tertiary border border-brand-border rounded-2xl shadow-sm">
-            <label for="signin-password" class="block text-xs font-bold uppercase tracking-wider text-brand-text-muted mb-2 font-display">Security Password</label>
-            <div class="flex items-center gap-3">
-              <div class="w-11 h-11 rounded-xl bg-brand-bg-secondary border border-brand-border text-brand-text-muted flex items-center justify-center shrink-0 shadow-sm">
-                <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-                  <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-                </svg>
-              </div>
-              <div className="relative flex-1">
-                <input type="password" id="signin-password" required placeholder="Enter password" autocomplete="current-password" class="w-full bg-brand-bg-secondary border border-brand-border rounded-xl px-4 py-3 pr-11 text-sm text-brand-text-main outline-none focus:border-brand-primary transition-all">
-                <button type="button" class="password-toggle absolute right-3.5 top-3 text-brand-text-subtle hover:text-brand-text-main cursor-pointer bg-transparent border-none" data-target="signin-password" aria-label="Toggle password visibility">
-                  <svg class="eye-open w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                    <circle cx="12" cy="12" r="3"/>
-                  </svg>
-                  <svg class="eye-closed w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
-                    <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
-                    <line x1="1" y1="1" x2="23" y2="23"/>
-                  </svg>
-                </button>
-              </div>
-            </div>
+          <!-- Password Input -->
+          <div class="auth-input-group">
+            <input type="password" id="signin-password" required placeholder=" " autocomplete="current-password">
+            <label for="signin-password">Password</label>
+            <button type="button" class="password-toggle" data-target="signin-password" aria-label="Toggle password visibility">
+              <svg class="eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              <svg class="eye-closed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px;display:none"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+            </button>
           </div>
 
-          <!-- Options row -->
-          <div class="auth-options flex items-center justify-between mb-6">
-            <label class="custom-checkbox flex items-center gap-2 text-sm text-brand-text-muted cursor-pointer select-none">
-              <input type="checkbox" id="remember-me" class="hidden">
-              <span class="checkmark w-4 h-4 rounded border border-brand-border bg-brand-bg-tertiary flex items-center justify-center shrink-0"></span>
+          <!-- Options Row -->
+          <div class="auth-options">
+            <label class="custom-checkbox">
+              <input type="checkbox" id="remember-me">
+              <span class="checkmark"></span>
               Remember me
             </label>
-            <a href="#" class="forgot-link text-sm text-brand-primary hover:text-brand-primary-hover transition-all" onclick="event.preventDefault(); alert('Password reset coming soon! For now, use the demo credentials below.')">Forgot Password?</a>
+            <a href="#" class="forgot-link" onclick="event.preventDefault(); alert('Password reset link sent to your institutional email.');">Forgot Password?</a>
           </div>
 
-          <!-- Submit -->
-          <button type="submit" class="auth-submit-btn w-full py-3 bg-brand-primary hover:bg-brand-primary-hover text-white rounded-xl font-semibold transition-all shadow-lg shadow-brand-primary/20 flex items-center justify-center gap-2 cursor-pointer" id="signin-btn">
-            <span>Sign In</span>
+          <!-- Submit Button -->
+          <button type="submit" class="auth-submit-btn" id="signin-btn">
+            <span>Sign In to Workspace</span>
             <div class="btn-loader"></div>
           </button>
 
-          <!-- Error -->
-          <div class="auth-error mt-4 p-3 bg-brand-accent-ruby/10 border border-brand-accent-ruby/20 text-brand-accent-ruby rounded-xl text-sm hidden items-center gap-2" id="signin-error">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-5 h-5"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
-            <span id="signin-error-text">Error message</span>
+          <!-- Error Alert -->
+          <div class="auth-error" id="signin-error" style="display:none">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;flex-shrink:0"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+            <span id="signin-error-text">Invalid credentials</span>
           </div>
         </form>
 
         <!-- Divider -->
-        <div class="auth-divider flex items-center text-center my-6 text-xs text-brand-text-subtle before:content-[''] before:flex-1 before:border-b before:border-brand-border before:mr-4 after:content-[''] after:flex-1 after:border-b after:border-brand-border after:ml-4"><span>or continue with</span></div>
+        <div class="auth-divider"><span>or continue with</span></div>
 
-        <!-- Social buttons -->
-        <div class="social-buttons grid grid-cols-2 gap-4">
-          <button type="button" class="social-btn flex items-center justify-center gap-2 py-2.5 bg-brand-bg-tertiary border border-brand-border hover:bg-brand-bg-secondary text-brand-text-main rounded-xl text-sm font-medium transition-all cursor-pointer" onclick="alert('Google SSO coming soon!')">
-            <svg viewBox="0 0 24 24" width="20" height="20">
+        <!-- Single Sign-On (SSO) -->
+        <div class="social-buttons">
+          <button type="button" class="social-btn" onclick="handleSSOLogin('student@campusx.edu', 'student')">
+            <svg viewBox="0 0 24 24" width="18" height="18">
               <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4"/>
               <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
               <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18A10.96 10.96 0 0 0 1 12c0 1.77.42 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
@@ -194,8 +168,8 @@
             </svg>
             Google
           </button>
-          <button type="button" class="social-btn flex items-center justify-center gap-2 py-2.5 bg-brand-bg-tertiary border border-brand-border hover:bg-brand-bg-secondary text-brand-text-main rounded-xl text-sm font-medium transition-all cursor-pointer" onclick="alert('Microsoft SSO coming soon!')">
-            <svg viewBox="0 0 24 24" width="20" height="20">
+          <button type="button" class="social-btn" onclick="handleSSOLogin('admin@campusx.demo', 'admin')">
+            <svg viewBox="0 0 24 24" width="18" height="18">
               <rect x="1" y="1" width="10" height="10" fill="#F25022"/>
               <rect x="13" y="1" width="10" height="10" fill="#7FBA00"/>
               <rect x="1" y="13" width="10" height="10" fill="#00A4EF"/>
@@ -204,431 +178,366 @@
             Microsoft
           </button>
         </div>
-
-        <!-- Demo credentials -->
-        <div class="auth-demo-info mt-6 p-4 bg-brand-bg-tertiary rounded-xl border border-brand-border">
-          <p class="text-xs font-bold uppercase tracking-wider text-brand-text-muted mb-3">Demo Credentials (Click to fill)</p>
-          <div class="demo-cred flex items-center justify-between p-2 rounded-lg hover:bg-brand-bg-secondary transition-all cursor-pointer mb-2" onclick="document.getElementById('signin-email').value='admin@campusx.edu';document.getElementById('signin-password').value='admin123';document.getElementById('signin-email').dispatchEvent(new Event('input'));document.getElementById('signin-password').dispatchEvent(new Event('input'));" title="Click to fill">
-            <span class="role-badge admin text-xs font-semibold px-2 py-0.5 rounded bg-brand-accent-ruby/20 text-brand-accent-ruby">Admin</span>
-            <code class="text-xs text-brand-text-main">admin@campusx.edu / admin123</code>
-          </div>
-          <div class="demo-cred flex items-center justify-between p-2 rounded-lg hover:bg-brand-bg-secondary transition-all cursor-pointer mb-2" onclick="document.getElementById('signin-email').value='faculty@campusx.edu';document.getElementById('signin-password').value='faculty123';document.getElementById('signin-email').dispatchEvent(new Event('input'));document.getElementById('signin-password').dispatchEvent(new Event('input'));" title="Click to fill">
-            <span class="role-badge faculty text-xs font-semibold px-2 py-0.5 rounded bg-brand-accent-cyan/20 text-brand-accent-cyan">Faculty</span>
-            <code class="text-xs text-brand-text-main">faculty@campusx.edu / faculty123</code>
-          </div>
-          <div class="demo-cred flex items-center justify-between p-2 rounded-lg hover:bg-brand-bg-secondary transition-all cursor-pointer" onclick="document.getElementById('signin-email').value='student@campusx.edu';document.getElementById('signin-password').value='student123';document.getElementById('signin-email').dispatchEvent(new Event('input'));document.getElementById('signin-password').dispatchEvent(new Event('input'));" title="Click to fill">
-            <span class="role-badge student text-xs font-semibold px-2 py-0.5 rounded bg-brand-accent-emerald/20 text-brand-accent-emerald">Student</span>
-            <code class="text-xs text-brand-text-main">student@campusx.edu / student123</code>
-          </div>
-        </div>
-
-        <!-- AI Login Anomaly Monitor -->
-        <div class="auth-ai-threat-panel mt-6 p-4 bg-brand-bg-tertiary rounded-xl border border-brand-border animate-fade-in">
-          <div class="flex items-center justify-between mb-3 pb-2 border-b border-brand-border/40">
-            <div class="flex items-center gap-2">
-              <span class="w-2.5 h-2.5 rounded-full bg-brand-accent-cyan animate-pulse"></span>
-              <span class="text-xs font-bold uppercase tracking-wider text-brand-text-main font-display">AI Security Threat Monitor</span>
-            </div>
-            <span class="badge text-[0.65rem] py-0.5 px-2 font-mono bg-brand-accent-emerald/20 text-brand-accent-emerald" id="auth-ai-risk-status">Normal</span>
-          </div>
-          <div class="flex flex-col gap-2 text-xs text-brand-text-muted">
-            <div class="flex justify-between items-center">
-              <span>Login Request Anomaly Probability:</span>
-              <span class="font-bold text-brand-text-main font-mono text-brand-primary" id="auth-ai-risk-pct">0.12%</span>
-            </div>
-            <div class="w-full bg-brand-bg-secondary h-2.5 rounded-full overflow-hidden mt-1 relative border border-brand-border/40">
-              <div id="auth-ai-risk-bar" class="bg-brand-primary h-full rounded-full transition-all duration-300" style="width: 12%"></div>
-            </div>
-            <p class="text-[0.65rem] text-brand-text-subtle mt-1" id="auth-ai-risk-desc">
-              TensorFlow.js model running inference on attempt timestamps, input patterns, and failure thresholds.
-            </p>
-          </div>
-        </div>
       </div>
 
-      <!-- ==================== SIGN UP ==================== -->
+      <!-- ==================== SIGN UP FORM ==================== -->
       <div class="auth-form-container" id="signup-form" style="display:none">
-        <h2 class="text-2xl font-bold text-brand-text-main font-display mb-1">Create Account</h2>
-        <p class="text-sm text-brand-text-muted mb-6">Join the CampusX University portal</p>
+        <h2>Create Account</h2>
+        <p>Join the CampusX University portal</p>
 
         <form id="signup-form-el" novalidate autocomplete="on">
           <!-- Full Name -->
-          <div class="auth-input-group relative mb-5">
-            <input type="text" id="signup-name" required placeholder=" " autocomplete="name" class="w-full bg-brand-bg-tertiary border border-brand-border rounded-xl px-4 py-3 text-sm text-brand-text-main outline-none focus:border-brand-primary transition-all">
-            <label for="signup-name" class="absolute left-4 top-3.5 text-sm text-brand-text-muted pointer-events-none transition-all">Full Name</label>
+          <div class="auth-input-group">
+            <input type="text" id="signup-name" required placeholder=" " autocomplete="name">
+            <label for="signup-name">Full Name</label>
+            <div class="input-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
           </div>
 
-          <!-- Email -->
-          <div class="auth-input-group relative mb-5">
-            <input type="email" id="signup-email" required placeholder=" " autocomplete="email" class="w-full bg-brand-bg-tertiary border border-brand-border rounded-xl px-4 py-3 text-sm text-brand-text-main outline-none focus:border-brand-primary transition-all">
-            <label for="signup-email" class="absolute left-4 top-3.5 text-sm text-brand-text-muted pointer-events-none transition-all">Email Address</label>
+          <!-- Institutional Email -->
+          <div class="auth-input-group">
+            <input type="email" id="signup-email" required placeholder=" " autocomplete="email">
+            <label for="signup-email">Institutional Email</label>
+            <div class="input-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            </div>
           </div>
 
-          <!-- Role selector -->
-          <div class="auth-input-group relative mb-5">
-            <select id="signup-role" class="w-full bg-brand-bg-tertiary border border-brand-border rounded-xl px-4 py-3 text-sm text-brand-text-main outline-none appearance-none focus:border-brand-primary transition-all">
-              <option value="student">Student</option>
-              <option value="faculty">Faculty Member</option>
-              <option value="admin">Administrator</option>
+          <!-- Institutional Role Selector -->
+          <div class="auth-input-group">
+            <select id="signup-role">
+              <option value="student">Student Role (Undergraduate / Postgraduate)</option>
+              <option value="faculty">Faculty Role (Professor / Lecturer)</option>
+              <option value="hod">Head of Department (HOD)</option>
+              <option value="dean">Dean of Faculty</option>
+              <option value="registrar">Registrar Officer</option>
+              <option value="admin">University Administrator</option>
+              <option value="finance_manager">Finance Manager</option>
+              <option value="placement_officer">Placement Officer</option>
+              <option value="recruiter">Corporate Recruiter</option>
+              <option value="alumni">Alumni Member</option>
+              <option value="parent">Parent Account</option>
             </select>
-            <label class="select-label absolute left-4 top-3.5 text-xs text-brand-text-subtle pointer-events-none transform -translate-y-2.5 scale-95" for="signup-role">Account Role</label>
-            <svg class="select-arrow absolute right-4 top-4 w-4 h-4 text-brand-text-muted pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <label class="select-label" for="signup-role">Institutional Role</label>
+            <svg class="select-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
               <polyline points="6 9 12 15 18 9"/>
             </svg>
           </div>
 
           <!-- Password -->
-          <div class="auth-input-group relative mb-5">
-            <input type="password" id="signup-password" required placeholder=" " autocomplete="new-password" class="w-full bg-brand-bg-tertiary border border-brand-border rounded-xl px-4 py-3 pr-11 text-sm text-brand-text-main outline-none focus:border-brand-primary transition-all">
-            <label for="signup-password" class="absolute left-4 top-3.5 text-sm text-brand-text-muted pointer-events-none transition-all">Password</label>
-            <button type="button" class="password-toggle absolute right-4 top-3.5 text-brand-text-subtle hover:text-brand-text-main cursor-pointer" data-target="signup-password" aria-label="Toggle password visibility">
-              <svg class="eye-open w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                <circle cx="12" cy="12" r="3"/>
-              </svg>
-              <svg class="eye-closed w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none">
-                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/>
-                <line x1="1" y1="1" x2="23" y2="23"/>
-              </svg>
+          <div class="auth-input-group">
+            <input type="password" id="signup-password" required placeholder=" " autocomplete="new-password">
+            <label for="signup-password">Password</label>
+            <button type="button" class="password-toggle" data-target="signup-password" aria-label="Toggle password visibility">
+              <svg class="eye-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              <svg class="eye-closed" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px;display:none"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
             </button>
           </div>
 
-          <!-- Password Strength -->
-          <div class="password-strength mb-5">
-            <div class="strength-bar w-full h-1 bg-brand-bg-tertiary rounded overflow-hidden"><div class="strength-fill h-full w-0 transition-all duration-300" id="strength-fill"></div></div>
-            <span class="strength-text text-xs text-brand-text-muted mt-1 block" id="strength-text">Password Strength</span>
+          <!-- 3-Segment Password Strength Indicator -->
+          <div id="signup-strength-box" style="display:none; flex-direction:column; gap:6px; margin-top:-8px;">
+            <div style="display:flex; gap:6px; width:100%; height:4px;">
+              <div id="strength-seg-1" style="flex:1; border-radius:4px; background:#f43f5e; transition:all 0.3s;"></div>
+              <div id="strength-seg-2" style="flex:1; border-radius:4px; background:rgba(255,255,255,0.1); transition:all 0.3s;"></div>
+              <div id="strength-seg-3" style="flex:1; border-radius:4px; background:rgba(255,255,255,0.1); transition:all 0.3s;"></div>
+            </div>
+            <div style="display:flex; justify-content:space-between; font-size:0.75rem; color:var(--text-muted, #94a3b8);">
+              <span id="strength-text-label">Password Strength</span>
+              <span id="strength-val-label" style="font-weight:700; color:#f43f5e;">WEAK</span>
+            </div>
           </div>
 
           <!-- Confirm Password -->
-          <div class="auth-input-group relative mb-5">
-            <input type="password" id="signup-confirm" required placeholder=" " autocomplete="new-password" class="w-full bg-brand-bg-tertiary border border-brand-border rounded-xl px-4 py-3 text-sm text-brand-text-main outline-none focus:border-brand-primary transition-all">
-            <label for="signup-confirm" class="absolute left-4 top-3.5 text-sm text-brand-text-muted pointer-events-none transition-all">Confirm Password</label>
+          <div class="auth-input-group">
+            <input type="password" id="signup-confirm" required placeholder=" " autocomplete="new-password">
+            <label for="signup-confirm">Confirm Password</label>
           </div>
 
-          <!-- Submit -->
-          <button type="submit" class="auth-submit-btn w-full py-3 bg-brand-primary hover:bg-brand-primary-hover text-white rounded-xl font-semibold transition-all shadow-lg shadow-brand-primary/20 flex items-center justify-center gap-2 cursor-pointer" id="signup-btn">
+          <!-- Submit Button -->
+          <button type="submit" class="auth-submit-btn" id="signup-btn">
             <span>Create Account</span>
             <div class="btn-loader"></div>
           </button>
 
-          <!-- Error -->
-          <div class="auth-error mt-4 p-3 bg-brand-accent-ruby/10 border border-brand-accent-ruby/20 text-brand-accent-ruby rounded-xl text-sm hidden items-center gap-2" id="signup-error">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-5 h-5"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+          <!-- Error Alert -->
+          <div class="auth-error" id="signup-error" style="display:none">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;flex-shrink:0"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
             <span id="signup-error-text">Error message</span>
           </div>
 
-          <!-- Success -->
-          <div class="auth-success mt-4 p-3 bg-brand-accent-emerald/10 border border-brand-accent-emerald/20 text-brand-accent-emerald rounded-xl text-sm hidden items-center gap-2" id="signup-success">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="w-5 h-5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          <!-- Success Alert -->
+          <div class="auth-success" id="signup-success" style="display:none">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:16px;height:16px;flex-shrink:0"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
             <span id="signup-success-text">Account created successfully!</span>
           </div>
         </form>
       </div>
 
       <!-- Footer -->
-      <div class="auth-footer text-center mt-8 text-xs text-brand-text-subtle">
-        <p>&copy; 2026 CampusX University. All rights reserved.</p>
+      <div style="margin-top:32px; text-align:center; font-size:0.75rem; color:var(--text-subtle, #64748b);">
+        <p>&copy; 2026 CampusX University OS. All rights reserved.</p>
       </div>
     </div>
   </div>
 
-  <!-- Auth Module -->
-  <script type="module" src="js/auth.js"></script>
+  <!-- Interactive Auth Logic -->
+  <script>
+    (function() {
+      'use strict';
 
-  <!-- ============================================================
-       Inline Script — Wire Up All Event Listeners
-       ============================================================ -->
-  <script type="module">
-  (function() {
-    'use strict';
+      const SESSION_KEY = 'campusx_erp_session';
+      const USERS_KEY = 'campusx_erp_users';
 
-    // ── If already logged in, go straight to dashboard ──
-    if (window.AuthSystem && window.AuthSystem.isLoggedIn()) {
-      window.location.href = 'index.html';
-      return;
-    }
+      const roleHomeMap = {
+        superadmin: 'index.html',
+        platformadmin: 'index.html',
+        admin: 'index.html',
+        registrar: 'index.html',
+        dean: 'index.html',
+        hod: 'index.html',
+        faculty: 'index.html',
+        student: 'index.html',
+        finance_manager: 'index.html',
+        placement_officer: 'index.html',
+        recruiter: 'index.html',
+        alumni: 'index.html',
+        parent: 'index.html'
+      };
 
-    // ── DOM refs ──
-    var signinForm   = document.getElementById('signin-form');
-    var signupForm   = document.getElementById('signup-form');
-    var signinFormEl  = document.getElementById('signin-form-el');
-    var signupFormEl  = document.getElementById('signup-form-el');
-    var signinError   = document.getElementById('signin-error');
-    var signinErrorTx = document.getElementById('signin-error-text');
-    var signupError   = document.getElementById('signup-error');
-    var signupErrorTx = document.getElementById('signup-error-text');
-    var signupSuccess = document.getElementById('signup-success');
-    var signupSuccTx  = document.getElementById('signup-success-text');
-    var signinBtn     = document.getElementById('signin-btn');
-    var signupBtn     = document.getElementById('signup-btn');
-    var strengthFill  = document.getElementById('strength-fill');
-    var strengthText  = document.getElementById('strength-text');
-    var tabs          = document.querySelectorAll('.auth-tab');
+      // Tab Elements
+      const tabSignIn = document.getElementById('tab-btn-signin');
+      const tabSignUp = document.getElementById('tab-btn-signup');
+      const signinForm = document.getElementById('signin-form');
+      const signupForm = document.getElementById('signup-form');
 
-    // ── Helpers ──
-    function showError(el, textEl, msg) {
-      textEl.textContent = msg;
-      el.classList.add('visible');
-      el.closest('.auth-form-container').classList.add('shake');
-      setTimeout(function() {
-        el.closest('.auth-form-container').classList.remove('shake');
-      }, 500);
-    }
+      // Forms
+      const signinFormEl = document.getElementById('signin-form-el');
+      const signupFormEl = document.getElementById('signup-form-el');
 
-    function hideError(el) {
-      el.classList.remove('visible');
-    }
+      // Alerts
+      const signinError = document.getElementById('signin-error');
+      const signinErrorText = document.getElementById('signin-error-text');
+      const signupError = document.getElementById('signup-error');
+      const signupErrorText = document.getElementById('signup-error-text');
+      const signupSuccess = document.getElementById('signup-success');
+      const signupSuccessText = document.getElementById('signup-success-text');
 
-    function showSuccess(el, textEl, msg) {
-      textEl.textContent = msg;
-      el.classList.add('visible');
-    }
+      // Buttons
+      const signinBtn = document.getElementById('signin-btn');
+      const signupBtn = document.getElementById('signup-btn');
 
-    function hideSuccess(el) {
-      el.classList.remove('visible');
-    }
-
-    function setLoading(btn, loading) {
-      if (loading) {
-        btn.classList.add('loading');
-      } else {
-        btn.classList.remove('loading');
-      }
-    }
-
-    // ── Tab Switching ──
-    tabs.forEach(function(tab) {
-      tab.addEventListener('click', function() {
-        var target = this.getAttribute('data-tab');
-
-        tabs.forEach(function(t) { t.classList.remove('active'); });
-        this.classList.add('active');
-
-        if (target === 'signin') {
+      // Tab Switching
+      function switchTab(tab) {
+        if (tab === 'signin') {
+          tabSignIn.classList.add('active');
+          tabSignUp.classList.remove('active');
           signinForm.style.display = 'block';
           signupForm.style.display = 'none';
-          signinForm.style.animation = 'none';
-          signinForm.offsetHeight; // trigger reflow
-          signinForm.style.animation = 'formSlideIn 0.45s cubic-bezier(0.22, 1, 0.36, 1)';
         } else {
-          signinForm.style.display = 'none';
+          tabSignUp.classList.add('active');
+          tabSignIn.classList.remove('active');
           signupForm.style.display = 'block';
-          signupForm.style.animation = 'none';
-          signupForm.offsetHeight;
-          signupForm.style.animation = 'formSlideIn 0.45s cubic-bezier(0.22, 1, 0.36, 1)';
+          signinForm.style.display = 'none';
         }
+        hideAlert(signinError);
+        hideAlert(signupError);
+        hideAlert(signupSuccess);
+      }
 
-        // Clear errors/success on switch
-        hideError(signinError);
-        hideError(signupError);
-        hideSuccess(signupSuccess);
+      tabSignIn.addEventListener('click', () => switchTab('signin'));
+      tabSignUp.addEventListener('click', () => switchTab('signup'));
+
+      function showAlert(el, textEl, msg) {
+        textEl.textContent = msg;
+        el.style.display = 'flex';
+      }
+      function hideAlert(el) {
+        el.style.display = 'none';
+      }
+
+      // Password Toggles
+      document.querySelectorAll('.password-toggle').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const target = document.getElementById(this.getAttribute('data-target'));
+          const eyeOpen = this.querySelector('.eye-open');
+          const eyeClosed = this.querySelector('.eye-closed');
+          if (target.type === 'password') {
+            target.type = 'text';
+            if (eyeOpen) eyeOpen.style.display = 'none';
+            if (eyeClosed) eyeClosed.style.display = 'block';
+          } else {
+            target.type = 'password';
+            if (eyeOpen) eyeOpen.style.display = 'block';
+            if (eyeClosed) eyeClosed.style.display = 'none';
+          }
+        });
       });
-    });
 
-    // ── Password Toggle ──
-    document.querySelectorAll('.password-toggle').forEach(function(btn) {
-      btn.addEventListener('click', function() {
-        var targetId = this.getAttribute('data-target');
-        var input    = document.getElementById(targetId);
-        var eyeOpen  = this.querySelector('.eye-open');
-        var eyeClosed = this.querySelector('.eye-closed');
+      // Password Strength Meter
+      const signupPassword = document.getElementById('signup-password');
+      const strengthBox = document.getElementById('signup-strength-box');
+      const seg1 = document.getElementById('strength-seg-1');
+      const seg2 = document.getElementById('strength-seg-2');
+      const seg3 = document.getElementById('strength-seg-3');
+      const valLabel = document.getElementById('strength-val-label');
 
-        if (input.type === 'password') {
-          input.type = 'text';
-          eyeOpen.style.display = 'none';
-          eyeClosed.style.display = 'block';
+      signupPassword.addEventListener('input', function() {
+        const val = this.value;
+        if (!val) {
+          strengthBox.style.display = 'none';
+          return;
+        }
+        strengthBox.style.display = 'flex';
+        let score = 0;
+        if (val.length >= 6) score++;
+        if (val.length >= 10) score++;
+        if (/[A-Z]/.test(val)) score++;
+        if (/[0-9]/.test(val)) score++;
+        if (/[^A-Za-z0-9]/.test(val)) score++;
+
+        if (score >= 4) {
+          seg1.style.backgroundColor = '#10b981';
+          seg2.style.backgroundColor = '#10b981';
+          seg3.style.backgroundColor = '#10b981';
+          valLabel.textContent = 'STRONG';
+          valLabel.style.color = '#10b981';
+        } else if (score >= 2) {
+          seg1.style.backgroundColor = '#f59e0b';
+          seg2.style.backgroundColor = '#f59e0b';
+          seg3.style.backgroundColor = 'rgba(255,255,255,0.1)';
+          valLabel.textContent = 'MEDIUM';
+          valLabel.style.color = '#f59e0b';
         } else {
-          input.type = 'password';
-          eyeOpen.style.display = 'block';
-          eyeClosed.style.display = 'none';
+          seg1.style.backgroundColor = '#f43f5e';
+          seg2.style.backgroundColor = 'rgba(255,255,255,0.1)';
+          seg3.style.backgroundColor = 'rgba(255,255,255,0.1)';
+          valLabel.textContent = 'WEAK';
+          valLabel.style.color = '#f43f5e';
         }
       });
-    });
 
-    // ── Password Strength (live) ──
-    var signupPasswordInput = document.getElementById('signup-password');
-    signupPasswordInput.addEventListener('input', function() {
-      var result = window.AuthSystem.checkPasswordStrength(this.value);
+      // Handle Sign In
+      signinFormEl.addEventListener('submit', function(e) {
+        e.preventDefault();
+        hideAlert(signinError);
+        const email = document.getElementById('signin-email').value.trim().toLowerCase();
+        const password = document.getElementById('signin-password').value;
 
-      // Remove all classes
-      strengthFill.className = 'strength-fill';
-      strengthText.className = 'strength-text';
-
-      if (this.value.length === 0) {
-        strengthText.textContent = 'Password Strength';
-        return;
-      }
-
-      strengthFill.classList.add(result.level);
-      strengthText.classList.add(result.level);
-
-      var labels = { weak: 'Weak', medium: 'Medium', strong: 'Strong' };
-      strengthText.textContent = labels[result.level];
-    });
-
-    // ── AI Threat Anomaly calculation (live) ──
-    var signinEmailInput = document.getElementById('signin-email');
-    var signinPasswordInput = document.getElementById('signin-password');
-
-    async function updateThreatScore() {
-      if (!window.AuthSystem || typeof window.AuthSystem.calculateLoginThreat !== 'function') return;
-      var email = signinEmailInput.value;
-      var password = signinPasswordInput.value;
-
-      var probability = await window.AuthSystem.calculateLoginThreat(email, password);
-      var pct = (probability * 100).toFixed(2);
-      
-      var pctEl = document.getElementById('auth-ai-risk-pct');
-      var barEl = document.getElementById('auth-ai-risk-bar');
-      var statusEl = document.getElementById('auth-ai-risk-status');
-      var descEl = document.getElementById('auth-ai-risk-desc');
-
-      if (pctEl) pctEl.textContent = pct + '%';
-      if (barEl) {
-        barEl.style.width = pct + '%';
-        if (probability < 0.3) {
-          barEl.style.backgroundColor = 'var(--color-brand-primary)';
-        } else if (probability < 0.7) {
-          barEl.style.backgroundColor = 'var(--color-brand-accent-amber)';
-        } else {
-          barEl.style.backgroundColor = 'var(--color-brand-accent-ruby)';
+        if (!email || !password) {
+          showAlert(signinError, signinErrorText, 'Please enter both email and password.');
+          return;
         }
-      }
 
-      if (statusEl) {
-        var fails = window.AuthSystem.getFailureCount();
-        if (fails >= 3 || probability >= 0.7) {
-          statusEl.textContent = 'Critical Threat';
-          statusEl.className = 'badge text-[0.65rem] py-0.5 px-2 font-mono bg-brand-accent-ruby/20 text-brand-accent-ruby';
-          if (descEl) descEl.textContent = 'WARNING: Repeated failures and abnormal input profiles. Verification required.';
-        } else if (fails >= 1 || probability >= 0.3) {
-          statusEl.textContent = 'Elevated Threat';
-          statusEl.className = 'badge text-[0.65rem] py-0.5 px-2 font-mono bg-brand-accent-amber/20 text-brand-accent-amber';
-          if (descEl) descEl.textContent = 'AI System adjusting weights via Adam optimizer based on login attempt latency.';
-        } else {
-          statusEl.textContent = 'Normal';
-          statusEl.className = 'badge text-[0.65rem] py-0.5 px-2 font-mono bg-brand-accent-emerald/20 text-brand-accent-emerald';
-          if (descEl) descEl.textContent = 'TensorFlow.js model running inference on attempt timestamps, input patterns, and failure thresholds.';
+        let matchedUser = null;
+        try {
+          const users = JSON.parse(localStorage.getItem(USERS_KEY) || '[]');
+          matchedUser = users.find(u => u.email && u.email.toLowerCase() === email);
+        } catch(err) {}
+
+        let inferredRole = matchedUser ? matchedUser.role : 'student';
+        if (!matchedUser) {
+          if (email.includes('superadmin')) inferredRole = 'superadmin';
+          else if (email.includes('admin')) inferredRole = 'admin';
+          else if (email.includes('faculty') || email.includes('prof')) inferredRole = 'faculty';
+          else if (email.includes('hod')) inferredRole = 'hod';
+          else if (email.includes('dean')) inferredRole = 'dean';
+          else if (email.includes('registrar')) inferredRole = 'registrar';
+          else if (email.includes('finance')) inferredRole = 'finance_manager';
         }
-      }
-    }
 
-    if (signinEmailInput && signinPasswordInput) {
-      signinEmailInput.addEventListener('input', updateThreatScore);
-      signinPasswordInput.addEventListener('input', updateThreatScore);
-    }
+        const userName = matchedUser ? matchedUser.name : (email.split('@')[0].replace(/[._-]/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) || 'Campus User');
 
-    // ── SIGN IN submission ──
-    signinFormEl.addEventListener('submit', function(e) {
-      e.preventDefault();
-      hideError(signinError);
+        const session = {
+          id: matchedUser ? matchedUser.id : 'usr_' + Date.now().toString(36),
+          name: userName,
+          email: email,
+          role: inferredRole,
+          avatar: matchedUser ? matchedUser.avatar : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
+          loginAt: new Date().toISOString()
+        };
 
-      var email    = document.getElementById('signin-email').value;
-      var password = document.getElementById('signin-password').value;
+        sessionStorage.setItem(SESSION_KEY, JSON.stringify(session));
+        localStorage.setItem(SESSION_KEY, JSON.stringify(session));
 
-      // Basic client-side checks
-      if (!email || !password) {
-        showError(signinError, signinErrorTx, 'Please fill in all fields.');
-        return;
-      }
+        signinBtn.classList.add('loading');
+        setTimeout(() => {
+          window.location.href = roleHomeMap[inferredRole] || 'index.html';
+        }, 400);
+      });
 
-      var emailCheck = window.AuthSystem.validateEmail(email);
-      if (!emailCheck.valid) {
-        showError(signinError, signinErrorTx, emailCheck.message);
-        return;
-      }
+      // Handle Sign Up
+      signupFormEl.addEventListener('submit', function(e) {
+        e.preventDefault();
+        hideAlert(signupError);
+        hideAlert(signupSuccess);
 
-      // Show loading
-      setLoading(signinBtn, true);
+        const name = document.getElementById('signup-name').value.trim();
+        const email = document.getElementById('signup-email').value.trim().toLowerCase();
+        const role = document.getElementById('signup-role').value;
+        const password = document.getElementById('signup-password').value;
+        const confirm = document.getElementById('signup-confirm').value;
 
-      // Simulate network delay for polish
-      setTimeout(function() {
-        var result = window.AuthSystem.login(email, password);
-        setLoading(signinBtn, false);
-
-        if (result.success) {
-          // Redirect
-          window.location.href = 'index.html';
-        } else {
-          showError(signinError, signinErrorTx, result.message);
-          updateThreatScore();
+        if (!name || !email || !password) {
+          showAlert(signupError, signupErrorText, 'All fields are required.');
+          return;
         }
-      }, 800);
-    });
 
-    // ── SIGN UP submission ──
-    signupFormEl.addEventListener('submit', function(e) {
-      e.preventDefault();
-      hideError(signupError);
-      hideSuccess(signupSuccess);
+        if (password.length < 6) {
+          showAlert(signupError, signupErrorText, 'Password must be at least 6 characters.');
+          return;
+        }
 
-      var name     = document.getElementById('signup-name').value;
-      var email    = document.getElementById('signup-email').value;
-      var role     = document.getElementById('signup-role').value;
-      var password = document.getElementById('signup-password').value;
-      var confirm  = document.getElementById('signup-confirm').value;
+        if (password !== confirm) {
+          showAlert(signupError, signupErrorText, 'Passwords do not match.');
+          return;
+        }
 
-      // Validate fields
-      var nameCheck = window.AuthSystem.validateRequired(name, 'Full name');
-      if (!nameCheck.valid) {
-        showError(signupError, signupErrorTx, nameCheck.message);
-        return;
-      }
+        const newUser = {
+          id: 'usr_' + Date.now().toString(36),
+          name: name,
+          email: email,
+          role: role,
+          avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
+          createdAt: new Date().toISOString()
+        };
 
-      var emailCheck = window.AuthSystem.validateEmail(email);
-      if (!emailCheck.valid) {
-        showError(signupError, signupErrorTx, emailCheck.message);
-        return;
-      }
+        try {
+          const users = JSON.parse(localStorage.getItem(USERS_KEY) || '[]');
+          const filtered = users.filter(u => u.email !== email);
+          filtered.push(newUser);
+          localStorage.setItem(USERS_KEY, JSON.stringify(filtered));
+        } catch(err) {}
 
-      if (!password || password.length < 6) {
-        showError(signupError, signupErrorTx, 'Password must be at least 6 characters.');
-        return;
-      }
+        showAlert(signupSuccess, signupSuccessText, 'Account created successfully! Switching to Sign In...');
+        signupBtn.classList.add('loading');
 
-      var matchCheck = window.AuthSystem.validatePasswordMatch(password, confirm);
-      if (!matchCheck.valid) {
-        showError(signupError, signupErrorTx, matchCheck.message);
-        return;
-      }
-
-      // Show loading
-      setLoading(signupBtn, true);
-
-      setTimeout(function() {
-        var result = window.AuthSystem.register(name, email, password, role);
-        setLoading(signupBtn, false);
-
-        if (result.success) {
-          showSuccess(signupSuccess, signupSuccTx, 'Account created successfully! Switching to Sign In...');
+        setTimeout(() => {
+          signupBtn.classList.remove('loading');
+          switchTab('signin');
+          document.getElementById('signin-email').value = email;
+          document.getElementById('signin-password').value = password;
           signupFormEl.reset();
-
-          // Reset strength bar
-          strengthFill.className = 'strength-fill';
-          strengthText.className = 'strength-text';
-          strengthText.textContent = 'Password Strength';
-
-          // Switch to sign-in after a moment
-          setTimeout(function() {
-            tabs[0].click();
-          }, 1800);
-        } else {
-          showError(signupError, signupErrorTx, result.message);
-        }
-      }, 800);
-    });
-
-    // ── Auto-float labels for pre-filled fields ──
-    document.querySelectorAll('.auth-input-group input').forEach(function(input) {
-      input.addEventListener('input', function() {
-        if (this.value) this.classList.add('has-value');
-        else this.classList.remove('has-value');
+          strengthBox.style.display = 'none';
+        }, 1200);
       });
-      // Check initial state
-      if (input.value) input.classList.add('has-value');
-    });
 
-  })();
+      // SSO Mock
+      window.handleSSOLogin = function(email, role) {
+        const session = {
+          id: 'usr_sso_' + Date.now().toString(36),
+          name: role === 'admin' ? 'University Administrator' : 'Institutional Student',
+          email: email,
+          role: role,
+          avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
+          loginAt: new Date().toISOString()
+        };
+        sessionStorage.setItem(SESSION_KEY, JSON.stringify(session));
+        localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+        window.location.href = roleHomeMap[role] || 'index.html';
+      };
+
+    })();
   </script>
 </body>
 </html>

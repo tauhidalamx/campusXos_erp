@@ -1683,6 +1683,10 @@ export default function LayoutShell({ children }) {
     setShowLogoutModal(true);
   };
 
+  if (pathname === '/login' || pathname === '/auth') {
+    return <>{children}</>;
+  }
+
   if (loading) {
     return (
       <div className="bg-brand-bg-primary text-brand-text-main font-sans min-h-screen flex items-center justify-center">
@@ -1692,10 +1696,6 @@ export default function LayoutShell({ children }) {
         </div>
       </div>
     );
-  }
-
-  if (pathname === '/login' || pathname === '/auth') {
-    return <>{children}</>;
   }
 
   // Zero-Trust Route Guard: verify if role has clearance for this path

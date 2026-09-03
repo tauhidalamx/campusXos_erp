@@ -51,6 +51,9 @@ Full 4-minute 20-second HD live screen recording demonstrating multi-tenant role
 
 ## 🖼 Visual Showcase & Screenshots
 
+### 1. Unified Auth & Security Login Gateway
+Features clean Figma-grade Sign In and Sign Up tabs, Institutional Role classification, Single Sign-On (SSO), and live Firebase / Cloud Database auto-synchronization.
+![Unified Auth & Security Gateway](docs/screenshots/login_page.png)
 
 ---
 
@@ -324,26 +327,38 @@ To compile the web frontend, backend bundles, C++ desktop engine, and verify ful
 
 ---
 
-## 🔑 Demo Credentials
+## 🔑 Demo Credentials & Authentication
 
-To explore all user roles, navigate to [`http://localhost:3000/login`](http://localhost:3000/login) and use any of the 1-Click quick-login demo accounts below:
+CampusX OS provides static and Firebase-integrated client authentication with seamless role inference. Navigate to [`http://localhost:3000/login`](http://localhost:3000/login) to sign in or register a new account.
 
-| Role Persona | Email Address | Password | Target Dashboard | Quick Demo Button |
-| :--- | :--- | :--- | :--- | :--- |
-| **1-Click Student** | `student@campusx.edu` | `student123` | `/student/home` | ⚡ `1-Click Student` |
-| **1-Click Admin** | `admin@campusx.demo` | `Demo@123` | `/erp/admin` | ⚡ `1-Click Admin` |
-| **Global Super Admin** | `superadmin@campusx.demo` | `Demo@123` | `/admin/global` | Prefill |
-| **University Admin** | `univadmin@campusx.demo` | `Demo@123` | `/erp/admin` | Prefill |
-| **Registrar Officer** | `registrar@campusx.demo` | `Demo@123` | `/erp/registrar` | Prefill |
-| **Dean of Faculty** | `dean@campusx.demo` | `Demo@123` | `/erp/dean` | Prefill |
-| **HOD (Computer Science)** | `hod@campusx.demo` | `Demo@123` | `/erp/hod` | Prefill |
-| **Faculty Member** | `faculty@campusx.demo` | `Demo@123` | `/faculty/home` | Prefill |
-| **Student (Ananya Patel)** | `student@campusx.edu` | `student123` | `/student/home` | Prefill |
-| **Parent Account** | `parent@campusx.demo` | `Demo@123` | `/parent/dashboard` | Prefill |
-| **Lead Recruiter** | `recruiter@campusx.demo` | `Demo@123` | `/recruiter/dashboard` | Prefill |
-| **Sports Director** | `sportsdirector@campusx.demo` | `Demo@123` | `/sports/director` | Prefill |
-| **Athletic Coach** | `coach@campusx.demo` | `Demo@123` | `/sports/coach` | Prefill |
-| **Student Athlete** | `athlete@campusx.demo` | `Demo@123` | `/sports/athlete` | Prefill |
+### Standard Demo Accounts
+
+Use any of the institutional persona accounts below:
+
+| Institutional Role | Email Address | Password | Landing Dashboard |
+| :--- | :--- | :--- | :--- |
+| 🎓 **Student Role** | `student@campusx.edu` | `student123` | `/student/home` |
+| 👨‍🏫 **Faculty Member** | `faculty@campusx.demo` | `Demo@123` | `/faculty/home` |
+| 🏢 **Head of Department (HOD)** | `hod@campusx.demo` | `Demo@123` | `/erp/hod` |
+| 📜 **Dean of Faculty** | `dean@campusx.demo` | `Demo@123` | `/erp/dean` |
+| 📑 **Registrar Officer** | `registrar@campusx.demo` | `Demo@123` | `/erp/registrar` |
+| 🛡 **University Administrator** | `univadmin@campusx.demo` | `Demo@123` | `/erp/admin` |
+| 🌐 **Global Super Admin** | `superadmin@campusx.demo` | `Demo@123` | `/admin/global` |
+| 💻 **Platform Admin** | `admin@campusx.demo` | `Demo@123` | `/admin/platform` |
+| 💰 **Finance Manager** | `finance@campusx.demo` | `Demo@123` | `/finance/dashboard` |
+| 💼 **Placement Officer** | `placement@campusx.demo` | `Demo@123` | `/placement/dashboard` |
+| 🏢 **Corporate Recruiter** | `recruiter@campusx.demo` | `Demo@123` | `/recruiter/dashboard` |
+| 🏅 **Sports Director** | `sportsdirector@campusx.demo` | `Demo@123` | `/sports/director` |
+| 🏃 **Athletic Coach** | `coach@campusx.demo` | `Demo@123` | `/sports/coach` |
+| 🥇 **Student Athlete** | `athlete@campusx.demo` | `Demo@123` | `/sports/athlete` |
+| 👨‍👩‍👦 **Parent Account** | `parent@campusx.demo` | `Demo@123` | `/parent/dashboard` |
+
+---
+
+### Custom Sign Up & Single Sign-On (SSO)
+
+- **Create Account (Sign Up)**: Switch to the **Sign Up** tab, fill in your name, email, and choose your **Institutional Role** (defaults to `Student Role`). Your account is instantly registered and saved locally in `localStorage` and synchronized with Firebase Cloud Firestore if configured.
+- **Single Sign-On**: One-click sign-in via **Google** or **Microsoft** SSO.
 
 ---
 

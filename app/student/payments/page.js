@@ -90,37 +90,52 @@ export default function StudentPaymentsPortal() {
     try {
       // 1. Fetch past payments
       const payRes = await fetch(`/api/payments?student_id=${studentId}`);
-      const payData = await payRes.json();
-      setPayments(payData);
+      const payData = await payRes.json().catch(() => []);
+      const safePayments = Array.isArray(payData) ? payData : (payData?.payments || []);
+      setPayments(safePayments);
 
       // 2. Fetch active bank accounts
       const bankRes = await fetch('/api/bank-accounts');
-      const bankData = await bankRes.json();
-      setBankAccounts(bankData);
-      const primaryBank = bankData.find(b => b.is_primary === 1) || bankData[0];
+      const bankData = await bankRes.json().catch(() => []);
+      const safeBank = Array.isArray(bankData) ? bankData : (bankData?.bank_accounts || []);
+      setBankAccounts(safeBank);
+      const primaryBank = safeBank.find(b => b && b.is_primary === 1) || safeBank[0] || {
+        account_holder: 'CampusX University Central Treasury',
+        account_number: '112233445566',
+        ifsc: 'CAMPUSX000123',
+        branch: 'Main Academic Campus',
+        swift: 'CAMPUSXUS33'
+      };
       setSelectedBank(primaryBank);
 
       // 3. Fetch QR codes
       const qrRes = await fetch('/api/qr-codes');
-      const qrData = await qrRes.json();
-      setQrCodes(qrData);
-      const primaryQr = qrData.find(q => q.type === 'UPI_QR') || qrData[0];
+      const qrData = await qrRes.json().catch(() => []);
+      const safeQr = Array.isArray(qrData) ? qrData : (qrData?.qr_codes || []);
+      setQrCodes(safeQr);
+      const primaryQr = safeQr.find(q => q && q.type === 'UPI_QR') || safeQr[0] || {
+        upi_id: 'campusxbank@upi',
+        type: 'UPI_QR'
+      };
       setSelectedQr(primaryQr);
 
       // 4. Fetch scholarships
       const scholRes = await fetch(`/api/scholarships?student_id=${studentId}`);
-      const scholData = await scholRes.json();
-      setScholarships(scholData);
+      const scholData = await scholRes.json().catch(() => []);
+      const safeSchol = Array.isArray(scholData) ? scholData : (scholData?.scholarships || []);
+      setScholarships(safeSchol);
 
       // 5. Fetch installments
       const instRes = await fetch(`/api/installments?student_id=${studentId}`);
-      const instData = await instRes.json();
-      setInstallments(instData);
+      const instData = await instRes.json().catch(() => []);
+      const safeInst = Array.isArray(instData) ? instData : (instData?.installments || []);
+      setInstallments(safeInst);
 
       // 6. Fetch recent payment notifications
       const notifRes = await fetch(`/api/payments/notifications?user_id=${studentId}`);
-      const notifData = await notifRes.json();
-      setNotifications(notifData);
+      const notifData = await notifRes.json().catch(() => []);
+      const safeNotif = Array.isArray(notifData) ? notifData : (notifData?.notifications || []);
+      setNotifications(safeNotif);
 
       // Preset current date
       setPaymentDate(new Date().toISOString().substring(0, 10));
@@ -132,13 +147,15 @@ export default function StudentPaymentsPortal() {
   };
 
   // Calculations
-  const activeScholarship = scholarships.find(s => s.status === 'ACTIVE');
+  const activeScholarship = Array.isArray(scholarships) 
+    ? scholarships.find(s => s && s.status === 'ACTIVE') 
+    : null;
   const scholarshipDiscount = activeScholarship 
-    ? (activeScholarship.discount_percentage > 0 
-        ? selectedFee.amount * (activeScholarship.discount_percentage / 100) 
-        : activeScholarship.amount)
+    ? (Number(activeScholarship.discount_percentage) > 0 
+        ? (selectedFee?.amount || 4500) * (Number(activeScholarship.discount_percentage) / 100) 
+        : Number(activeScholarship.amount || 0))
     : 0;
-  const netPayable = Math.max(selectedFee.amount - scholarshipDiscount, 0);
+  const netPayable = Math.max((selectedFee?.amount || 4500) - scholarshipDiscount, 0);
 
   // Auto-fill fee amount when selection changes
   useEffect(() => {
@@ -317,8 +334,8 @@ export default function StudentPaymentsPortal() {
         <div className="card p-5 bg-brand-bg-secondary border border-brand-border rounded-2xl">
           <span className="text-brand-text-muted text-xs font-semibold">Outstanding Fees</span>
           <span className="block text-2xl font-bold font-display text-white mt-1">
-            ${payments.length > 0
-              ? Math.max(4500 - payments.filter(p => p.status === 'APPROVED' || p.status === 'VERIFIED').reduce((sum, p) => sum + p.amount, 0), 0).toLocaleString()
+            ${Array.isArray(payments) && payments.length > 0
+              ? Math.max(4500 - payments.filter(p => p && (p.status === 'APPROVED' || p.status === 'VERIFIED')).reduce((sum, p) => sum + (Number(p.amount) || 0), 0), 0).toLocaleString()
               : '4,500'}
           </span>
           <span className="text-[10px] text-brand-accent-cyan mt-1 block">Spring 2026 Academic Term</span>
@@ -331,9 +348,9 @@ export default function StudentPaymentsPortal() {
           </span>
           <span className="text-[10px] text-brand-text-muted mt-1 block">
             {activeScholarship 
-              ? (activeScholarship.discount_percentage > 0 
+              ? (Number(activeScholarship.discount_percentage) > 0 
                   ? `${activeScholarship.discount_percentage}% Concession` 
-                  : `$${activeScholarship.amount.toLocaleString()} Deduction`)
+                  : `$${Number(activeScholarship.amount || 0).toLocaleString()} Deduction`)
               : 'Apply at Registrar desk'}
           </span>
         </div>
@@ -345,13 +362,13 @@ export default function StudentPaymentsPortal() {
             Fin-Ops Notification Channel
           </span>
           <div className="overflow-y-auto max-h-[60px] flex flex-col gap-1.5 pr-2">
-            {notifications.length === 0 ? (
+            {!Array.isArray(notifications) || notifications.length === 0 ? (
               <span className="text-[10px] text-brand-text-muted">Awaiting transaction notifications...</span>
             ) : (
               notifications.map((notif, idx) => (
                 <div key={idx} className="text-[10px] bg-brand-bg-tertiary/60 p-1.5 rounded border border-brand-border/40 flex justify-between">
-                  <span className="font-semibold text-white">{notif.message}</span>
-                  <span className="text-[9px] text-brand-text-muted font-mono">{notif.created_at.substring(5, 10)}</span>
+                  <span className="font-semibold text-white">{notif.message || 'Payment update'}</span>
+                  <span className="text-[9px] text-brand-text-muted font-mono">{notif.created_at ? String(notif.created_at).substring(5, 10) : 'N/A'}</span>
                 </div>
               ))
             )}
@@ -610,7 +627,7 @@ export default function StudentPaymentsPortal() {
             </h3>
 
             <div className="flex flex-col gap-3 max-h-[500px] overflow-y-auto pr-1">
-              {payments.length === 0 ? (
+              {!Array.isArray(payments) || payments.length === 0 ? (
                 <div className="p-6 text-center text-brand-text-muted font-mono">
                   No payment records found.
                 </div>
@@ -623,18 +640,18 @@ export default function StudentPaymentsPortal() {
                   else if (pay.status === 'REFUND_REQUESTED') statusColor = 'text-brand-accent-amber bg-brand-accent-amber/10 border-brand-accent-amber/30';
 
                   return (
-                    <div key={pay.id} className="p-3 bg-brand-bg-tertiary/60 border border-brand-border/40 rounded-xl flex flex-col gap-2">
+                    <div key={pay.id || Math.random()} className="p-3 bg-brand-bg-tertiary/60 border border-brand-border/40 rounded-xl flex flex-col gap-2">
                       <div className="flex justify-between items-center">
-                        <span className="font-bold text-white uppercase text-[10px]">{pay.fee_type}</span>
-                        <span className={`px-2 py-0.5 rounded text-[8px] border font-bold ${statusColor}`}>{pay.status}</span>
+                        <span className="font-bold text-white uppercase text-[10px]">{pay.fee_type || 'TUITION'}</span>
+                        <span className={`px-2 py-0.5 rounded text-[8px] border font-bold ${statusColor}`}>{pay.status || 'PENDING'}</span>
                       </div>
                       <div className="flex justify-between text-[11px] font-mono text-brand-text-subtle">
                         <span>Amount:</span>
-                        <span className="text-white font-bold">${pay.amount.toLocaleString()}</span>
+                        <span className="text-white font-bold">${(Number(pay.amount) || 0).toLocaleString()}</span>
                       </div>
                       <div className="text-[9px] text-brand-text-muted font-mono leading-tight">
                         <div>UTR: {pay.utr_number || 'N/A'}</div>
-                        <div>Date: {pay.payment_date ? pay.payment_date.substring(0, 10) : 'N/A'}</div>
+                        <div>Date: {pay.payment_date ? String(pay.payment_date).substring(0, 10) : 'N/A'}</div>
                         {pay.rejection_reason && (
                           <div className="text-brand-accent-orange font-sans mt-1 bg-brand-accent-orange/5 p-1 rounded border border-brand-accent-orange/20">
                             Rejection Note: {pay.rejection_reason}
@@ -811,7 +828,7 @@ export default function StudentPaymentsPortal() {
                 {/* Barcode & Signature */}
                 <div className="flex flex-col gap-2">
                   <div className="h-6 w-32 bg-white flex items-center justify-center text-black font-mono font-bold tracking-widest text-[9px] border border-brand-border">
-                    |||||||| {activeReceipt.id.substring(3, 9).toUpperCase()} ||||||||
+                    |||||||| {String(activeReceipt.id || '000000').slice(0, 6).toUpperCase()} ||||||||
                   </div>
                   <span className="text-[8px] text-brand-text-muted font-mono">Ledger Block Anchor: {activeReceipt.transaction_id || '0xchain_hash'}</span>
                 </div>
