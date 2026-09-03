@@ -1657,23 +1657,32 @@ export default function LayoutShell({ children }) {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      let session = sessionStorage.getItem('campusx_erp_session');
-      if (!session && pathname !== '/login' && pathname !== '/auth') {
+      // 1. Check both sessionStorage and localStorage
+      const sessionStr = sessionStorage.getItem('campusx_erp_session') || localStorage.getItem('campusx_erp_session');
+      
+      if (!sessionStr) {
         setUser(null);
         setLoading(false);
-        router.push('/login');
+        if (pathname !== '/login' && pathname !== '/auth') {
+          router.replace('/login');
+        }
         return;
       }
 
-      if (session) {
-        try {
-          const parsedUser = JSON.parse(session);
-          setUser(parsedUser);
-        } catch (err) {
-          console.error('Failed to parse session:', err);
-        }
-      } else {
+      try {
+        const parsedUser = JSON.parse(sessionStr);
+        // Sync both stores to prevent multi-tab and reload mismatches
+        sessionStorage.setItem('campusx_erp_session', JSON.stringify(parsedUser));
+        localStorage.setItem('campusx_erp_session', JSON.stringify(parsedUser));
+        setUser(parsedUser);
+      } catch (err) {
+        console.error('Failed to parse session:', err);
+        sessionStorage.removeItem('campusx_erp_session');
+        localStorage.removeItem('campusx_erp_session');
         setUser(null);
+        if (pathname !== '/login' && pathname !== '/auth') {
+          router.replace('/login');
+        }
       }
       setLoading(false);
     }
@@ -1681,6 +1690,16 @@ export default function LayoutShell({ children }) {
 
   const handleLogout = () => {
     setShowLogoutModal(true);
+  };
+
+  const handleConfirmLogout = () => {
+    if (typeof window !== 'undefined') {
+      sessionStorage.removeItem('campusx_erp_session');
+      localStorage.removeItem('campusx_erp_session');
+    }
+    setUser(null);
+    setShowLogoutModal(false);
+    window.location.href = '/login';
   };
 
   if (pathname === '/login' || pathname === '/auth') {
@@ -1714,10 +1733,7 @@ export default function LayoutShell({ children }) {
           <button className="px-4 py-2.5 rounded-xl border border-white/10 text-white hover:bg-white/5 flex-1 transition-all cursor-pointer font-medium text-sm" onClick={() => setShowLogoutModal(false)}>
             Cancel
           </button>
-          <button className="px-4 py-2.5 rounded-xl bg-rose-500 hover:bg-rose-600 text-white flex-1 transition-all cursor-pointer font-medium text-sm" onClick={() => {
-            sessionStorage.removeItem('campusx_erp_session');
-            window.location.href = '/login';
-          }}>
+          <button className="px-4 py-2.5 rounded-xl bg-rose-500 hover:bg-rose-600 text-white flex-1 transition-all cursor-pointer font-medium text-sm" onClick={handleConfirmLogout}>
             Sign Out
           </button>
         </div>

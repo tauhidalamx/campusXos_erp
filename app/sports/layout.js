@@ -100,6 +100,7 @@ export default function SportsLayout({ children }) {
     } else {
       if (confirm('Are you sure you want to sign out from CampusX Sports?')) {
         sessionStorage.removeItem('campusx_erp_session');
+        localStorage.removeItem('campusx_erp_session');
         window.location.href = '/login';
       }
     }

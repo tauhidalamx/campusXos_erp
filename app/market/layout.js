@@ -112,6 +112,7 @@ export default function MarketLayout({ children }) {
 
   const handleLogout = () => {
     sessionStorage.removeItem('campusx_erp_session');
+    localStorage.removeItem('campusx_erp_session');
     window.location.href = '/login';
   };
 
