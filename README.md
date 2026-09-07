@@ -317,8 +317,7 @@ Launch the full Next.js ERP web application along with dev environment APIs usin
 # Or using standard npm scripts
 npm run dev
 ```
-Open your browser at `http://localhost:3000`.
-
+Open your browser at `[http://localhost:3000]
 ### 3. Build Production Ecosystem
 To compile the web frontend, backend bundles, C++ desktop engine, and verify full build integrity:
 ```bash
@@ -329,7 +328,7 @@ To compile the web frontend, backend bundles, C++ desktop engine, and verify ful
 
 ## 🔑 Demo Credentials & Authentication
 
-CampusX OS provides static and Firebase-integrated client authentication with seamless role inference. Navigate to [`http://localhost:3000/login`](http://localhost:3000/login) to sign in or register a new account.
+CampusX OS provides static and Firebase-integrated client authentication with seamless role inference. Navigate to [https://campus-xos-erp.vercel.app/](https://campus-xos-erp.vercel.app/) to sign in or register a new account.
 
 ### Standard Demo Accounts
 
