@@ -35,9 +35,18 @@ cache/
 
 # Database and Log files
 *.sqlite
+*.sqlite*
 *.sqlite3
 *.db
 *.log
+database.sqlite*
+backups/
+
+# Firebase & Secret Keys
+*-firebase-adminsdk-*.json
+firebase-adminsdk*.json
+serviceAccountKey.json
+service-account*.json
 
 # Large media & doc files
 *.tar.gz
@@ -53,4 +62,5 @@ artifacts/
 # Local Environment
 .env.local
 .env.*.local
+
 

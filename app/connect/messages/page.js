@@ -302,11 +302,11 @@ function DirectMessengerContent() {
     const file = e.target.files[0];
     if (!file) return;
     setAttachedFile(file);
-    if (file.type.startsWith('image/')) {
-      setAttachedPreview(URL.createObjectURL(file));
-    } else {
-      setAttachedPreview(null);
-    }
+    const reader = new FileReader();
+    reader.onload = (uploadEvent) => {
+      setAttachedPreview(uploadEvent.target.result);
+    };
+    reader.readAsDataURL(file);
   };
 
   const onSendMessage = (e) => {
@@ -315,14 +315,20 @@ function DirectMessengerContent() {
 
     let mediaType = null;
     let mediaUrl = attachedPreview;
+    let fileName = attachedFile ? attachedFile.name : null;
 
     if (attachedFile) {
       if (attachedFile.type.startsWith('image/')) mediaType = 'image';
+      else if (attachedFile.type.includes('pdf')) mediaType = 'pdf';
       else if (attachedFile.type.startsWith('video/')) mediaType = 'video';
+      else mediaType = 'file';
+    } else if (attachedPreview) {
+      if (typeof attachedPreview === 'string' && attachedPreview.startsWith('data:image/')) mediaType = 'image';
+      else if (typeof attachedPreview === 'string' && attachedPreview.startsWith('data:application/pdf')) mediaType = 'pdf';
       else mediaType = 'file';
     }
 
-    handleChatSend(inputText.trim(), mediaUrl, mediaType);
+    handleChatSend(inputText.trim(), mediaUrl, mediaType, fileName);
     setInputText('');
     setAttachedFile(null);
     setAttachedPreview(null);
@@ -435,8 +441,8 @@ function DirectMessengerContent() {
             ))}
           </div>
 
-          {/* Section-Wise Accordion List */}
-          <div className="flex-1 overflow-y-auto p-2.5 space-y-4">
+          {/* Section-Wise Accordion List - Smooth Visible Scrolling */}
+          <div className="flex-1 min-h-0 overflow-y-auto p-2.5 space-y-4 custom-chat-scrollbar overscroll-contain">
             {sectionsList.map(sec => {
               const secThreads = filteredThreads.filter(t => t.sectionId === sec.id);
               if (secThreads.length === 0) return null;
@@ -559,7 +565,7 @@ function DirectMessengerContent() {
           </div>
 
           {/* Messages Stream Body */}
-          <div className="flex-1 overflow-y-auto p-6 space-y-4">
+          <div className="flex-1 min-h-0 overflow-y-auto p-6 space-y-4 custom-chat-scrollbar overscroll-contain">
             <div className="flex justify-center my-2">
               <span className="px-3 py-1 bg-brand-bg-secondary/70 border border-brand-border/40 rounded-full text-[10px] font-bold text-brand-text-muted uppercase tracking-wider shadow-sm">
                 Today • Encrypted Channel
@@ -601,11 +607,31 @@ function DirectMessengerContent() {
                           : 'bg-brand-bg-secondary/80 backdrop-blur-2xl border border-brand-border/60 text-brand-text-main rounded-bl-xs shadow-sm'
                       }`}
                     >
-                      {/* Media Image Attachment */}
+                      {/* Media & Document Attachments */}
                       {msg.mediaUrl && (
-                        <div className="mb-2 rounded-xl overflow-hidden border border-white/20 shadow-sm">
-                          <img src={msg.mediaUrl} alt="Attachment" className="max-h-60 w-full object-cover" />
-                        </div>
+                        (msg.mediaType === 'image' || (!msg.mediaType && (typeof msg.mediaUrl === 'string' && (msg.mediaUrl.match(/\.(jpeg|jpg|gif|png|webp)/i) || msg.mediaUrl.startsWith('data:image/'))))) ? (
+                          <div className="mb-2 rounded-xl overflow-hidden border border-white/20 shadow-sm">
+                            <img src={msg.mediaUrl} alt={msg.fileName || "Attachment"} className="max-h-60 w-full object-cover" />
+                          </div>
+                        ) : msg.mediaType === 'video' ? (
+                          <div className="mb-2 rounded-xl overflow-hidden border border-white/20 shadow-sm">
+                            <video src={msg.mediaUrl} controls className="max-h-60 w-full" />
+                          </div>
+                        ) : (
+                          <a 
+                            href={msg.mediaUrl} 
+                            download={msg.fileName || "document"} 
+                            target="_blank" 
+                            rel="noreferrer"
+                            className={`flex items-center gap-2 p-2.5 rounded-xl mb-2 transition-all cursor-pointer ${
+                              isSelf ? 'bg-white/20 hover:bg-white/30 text-white' : 'bg-slate-100 hover:bg-slate-200 text-slate-800'
+                            }`}
+                          >
+                            <Paperclip className="w-4 h-4 shrink-0" />
+                            <span className="text-xs font-semibold truncate flex-1">{msg.fileName || 'Attached Document'}</span>
+                            <span className="text-[10px] uppercase font-bold opacity-80 shrink-0">Download</span>
+                          </a>
+                        )
                       )}
 
                       {/* Text content */}
@@ -698,7 +724,7 @@ function DirectMessengerContent() {
           )}
 
           {/* Message Input Composer */}
-          <form onSubmit={onSendMessage} className="p-4 border-t border-brand-border/40 bg-brand-bg-secondary/50 backdrop-blur-3xl flex items-center gap-3">
+          <form onSubmit={onSendMessage} className="shrink-0 sticky bottom-0 z-20 p-4 border-t border-brand-border/40 bg-brand-bg-secondary/50 backdrop-blur-3xl flex items-center gap-3">
             <input 
               type="file" 
               ref={fileInputRef} 

@@ -4,11 +4,11 @@
    ======================================================================== */
 
 /* Liquid Glass Cards with Specular Highlights & Fluid Glow */
-@utility card {
-  @apply bg-brand-bg-secondary/70 border border-brand-border/60 rounded-[20px] p-5 shadow-2xl transition-all duration-300 backdrop-blur-xl;
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--glass-shadow), inset 0 1px 1px 0 var(--glass-specular);
+.card {
+  @apply bg-brand-bg-secondary border border-brand-border rounded-2xl p-5 transition-all duration-300 backdrop-blur-xl;
+  background: var(--glass-bg, rgba(255, 255, 255, 0.75));
+  border: 1px solid var(--glass-border, rgba(255, 255, 255, 0.45));
+  box-shadow: var(--glass-shadow, 0 12px 40px 0 rgba(31, 38, 135, 0.08));
   position: relative;
   overflow: hidden;
 }
@@ -18,43 +18,29 @@
   position: absolute;
   top: 0; left: 0; right: 0;
   height: 2px;
-  background: linear-gradient(90deg, transparent 10%, var(--primary) 40%, var(--accent-cyan) 60%, transparent 90%);
+  background: linear-gradient(90deg, transparent 10%, var(--primary, #4F46E5) 40%, var(--accent-cyan, #0891B2) 60%, transparent 90%);
   opacity: 0.35;
   transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1);
   pointer-events: none;
 }
 
-.card::after {
-  content: '';
-  position: absolute;
-  top: -50%; left: -50%; width: 200%; height: 200%;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, transparent 60%);
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
 .card:hover {
-  @apply border-brand-primary/40 -translate-y-[3px];
-  box-shadow: 0 16px 40px -10px var(--primary-glow), inset 0 1px 1.5px 0 var(--glass-specular);
+  border-color: rgba(79, 70, 229, 0.4);
+  transform: translateY(-2px);
+  box-shadow: 0 16px 40px -10px var(--primary-glow, rgba(79, 70, 229, 0.2));
 }
 
 .card:hover::before {
   opacity: 0.85;
 }
 
-.card:hover::after {
-  opacity: 1;
-}
-
 /* Page Header Typography with Dynamic Refraction Gradient */
-@utility page-header {
+.page-header {
   @apply flex justify-between items-center gap-3.5 flex-wrap pb-3.5 border-b border-brand-border/40;
 }
 
 .page-header h1 {
-  @apply font-display text-2xl font-bold tracking-tight bg-gradient-to-r from-brand-text-main via-brand-primary to-brand-accent-cyan bg-clip-text text-transparent;
-  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.05));
+  @apply font-display text-2xl font-bold tracking-tight text-brand-text-main;
 }
 
 .page-header p {
@@ -62,108 +48,72 @@
 }
 
 /* KPI Cards Layout */
-@utility kpi-grid {
-  @apply grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-5;
+.kpi-grid {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5;
 }
 
-@utility kpi-card {
-  @apply flex justify-between items-start relative overflow-hidden backdrop-blur-xl rounded-[20px] p-5;
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--glass-shadow), inset 0 1px 1px 0 var(--glass-specular);
-  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.kpi-card::after {
-  content: '';
-  position: absolute;
-  top: -20px; right: -20px;
-  width: 100px; height: 100px;
-  border-radius: 50%;
-  background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%);
-  pointer-events: none;
-  transition: transform 0.5s ease;
+.kpi-card {
+  @apply flex justify-between items-center relative overflow-hidden backdrop-blur-xl rounded-2xl p-5 border border-brand-border;
+  background: var(--glass-bg, rgba(255, 255, 255, 0.75));
+  transition: all 0.3s ease;
 }
 
 .kpi-card:hover {
-  @apply border-brand-primary/40 -translate-y-[3px];
-  box-shadow: 0 16px 40px -10px var(--primary-glow), inset 0 1px 1.5px 0 var(--glass-specular);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px -8px var(--primary-glow, rgba(79, 70, 229, 0.2));
 }
 
-.kpi-card:hover::after {
-  transform: scale(1.3);
-}
-
-@utility kpi-details {
+.kpi-details {
   @apply flex flex-col gap-1 py-1;
 }
 
-@utility kpi-label {
-  @apply text-brand-text-muted text-[10px] font-bold uppercase tracking-wider py-1 px-1.5 block;
+.kpi-label {
+  @apply text-brand-text-muted text-[11px] font-bold uppercase tracking-wider block;
 }
 
-@utility kpi-value {
-  @apply font-display text-[1.75rem] font-extrabold my-1 py-1 px-1.5 tracking-tight text-brand-text-main leading-tight block;
+.kpi-value {
+  @apply font-display text-2xl font-extrabold tracking-tight text-brand-text-main leading-tight block;
 }
 
-@utility kpi-growth {
-  @apply flex items-center gap-1.5 text-[11px] py-1 px-1.5 font-semibold text-brand-text-subtle;
+.kpi-growth {
+  @apply flex items-center gap-1.5 text-xs font-semibold text-brand-text-subtle;
 }
 
-@utility kpi-icon {
-  @apply w-11 h-11 rounded-xl flex items-center justify-center bg-brand-bg-tertiary text-brand-primary border border-brand-border/60 transition-all duration-300;
-  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.4);
-}
-
-.kpi-card:hover .kpi-icon {
-  @apply scale-105 text-white bg-brand-primary;
-  box-shadow: 0 0 20px var(--primary-glow);
+.kpi-icon {
+  @apply w-12 h-12 rounded-xl flex items-center justify-center shrink-0 transition-all duration-300;
 }
 
 /* Premium Liquid Sheen Buttons */
-@utility btn {
-  @apply inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl font-semibold text-xs cursor-pointer transition-all duration-300 border-none font-sans active:scale-95 relative overflow-hidden;
+.btn {
+  @apply inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl font-semibold text-xs cursor-pointer transition-all duration-200 border-none font-sans active:scale-95 relative overflow-hidden;
 }
 
-@utility btn-primary {
-  @apply bg-brand-primary text-white hover:bg-brand-primary-hover;
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
-  box-shadow: 0 6px 20px -4px var(--primary-glow), inset 0 1px 1px 0 rgba(255, 255, 255, 0.4);
-}
-
-.btn-primary::before {
-  content: '';
-  position: absolute;
-  top: 0; left: -100%; width: 100%; height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
-  transition: left 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.btn-primary:hover::before {
-  left: 100%;
+.btn-primary {
+  @apply bg-brand-primary text-white;
+  background: linear-gradient(135deg, var(--primary, #4F46E5) 0%, var(--primary-hover, #4338CA) 100%);
+  box-shadow: 0 4px 14px -2px var(--primary-glow, rgba(79, 70, 229, 0.3));
 }
 
 .btn-primary:hover {
-  box-shadow: 0 10px 25px -4px var(--primary-glow), inset 0 1px 1px 0 rgba(255, 255, 255, 0.6);
+  filter: brightness(1.08);
   transform: translateY(-1px);
 }
 
-@utility btn-secondary {
-  @apply bg-brand-bg-tertiary text-brand-text-main border border-brand-border/80 hover:bg-brand-bg-tertiary/90 hover:border-brand-primary/40;
-  backdrop-filter: blur(12px);
-  box-shadow: inset 0 1px 1px 0 var(--glass-specular);
+.btn-secondary {
+  @apply bg-brand-bg-tertiary text-brand-text-main border border-brand-border hover:bg-brand-bg-secondary;
 }
 
-@utility btn-sm {
+.btn-sm {
   @apply px-3 py-1.5 text-[11px] rounded-lg;
 }
 
+.btn-group {
+  @apply flex items-center gap-2;
+}
+
 /* Redesigned Liquid Glass Tables */
-@utility table-container {
-  @apply overflow-x-auto rounded-[20px] border border-brand-border/60 bg-brand-bg-secondary/40 backdrop-blur-xl shadow-xl;
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--glass-shadow), inset 0 1px 1px 0 var(--glass-specular);
+.table-container {
+  @apply overflow-x-auto rounded-2xl border border-brand-border bg-brand-bg-secondary backdrop-blur-xl shadow-md;
 }
 
 table {
@@ -171,166 +121,94 @@ table {
 }
 
 th {
-  @apply bg-brand-bg-tertiary/60 border-b border-brand-border/60 text-brand-text-muted font-bold px-3.5 py-2.5 text-[11px] tracking-wider uppercase backdrop-blur-md;
+  @apply bg-brand-bg-tertiary border-b border-brand-border text-brand-text-muted font-bold px-4 py-3 text-[11px] tracking-wider uppercase;
 }
 
 td {
-  @apply px-3.5 py-3 border-b border-brand-border/40 text-brand-text-main text-xs transition-colors duration-200;
+  @apply px-4 py-3 border-b border-brand-border/40 text-brand-text-main text-xs transition-colors duration-150;
 }
 
 tr:last-child td {
-  @apply border-b-0;
+  border-bottom: 0;
 }
 
 tr:hover td {
-  @apply bg-brand-primary/10 text-brand-primary;
-  box-shadow: inset 3px 0 0 var(--primary);
+  @apply bg-brand-primary/5;
 }
 
 /* Glass Pill Badges */
-@utility badge {
-  @apply inline-flex items-center px-3.5 py-1 rounded-full text-xs font-bold tracking-wide border backdrop-blur-md;
-  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.3);
+.badge {
+  @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold tracking-wide border;
 }
 
-@utility badge-success {
+.badge-success {
   @apply bg-brand-accent-emerald/15 text-brand-accent-emerald border-brand-accent-emerald/30;
 }
 
-@utility badge-warning {
+.badge-warning {
   @apply bg-brand-accent-amber/15 text-brand-accent-amber border-brand-accent-amber/30;
 }
 
-@utility badge-danger {
+.badge-danger {
   @apply bg-brand-accent-ruby/15 text-brand-accent-ruby border-brand-accent-ruby/30;
 }
 
-@utility badge-info {
+.badge-info {
   @apply bg-brand-accent-cyan/15 text-brand-accent-cyan border-brand-accent-cyan/30;
 }
 
 /* Sleek Liquid Glass Forms & Input Elements */
-@utility form-group {
-  @apply flex flex-col gap-2 mb-4;
+.form-group {
+  @apply flex flex-col gap-1.5 mb-4;
 }
 
-@utility form-label {
-  @apply text-xs font-bold text-brand-text-muted uppercase tracking-wider pl-1;
+.form-label {
+  @apply text-xs font-bold text-brand-text-muted uppercase tracking-wider pl-0.5;
 }
 
 .form-control, select, textarea {
-  @apply bg-brand-bg-tertiary/75 border border-brand-border/80 text-brand-text-main px-4 py-3 rounded-xl text-sm outline-none transition-all duration-300 focus:border-brand-primary/60 focus:bg-brand-bg-tertiary/90 focus:ring-2 focus:ring-brand-primary/20 backdrop-blur-md;
-  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05), inset 0 1px 1px 0 var(--glass-specular);
-}
-
-.form-control:focus, select:focus, textarea:focus {
-  @apply border-brand-primary/80;
-  box-shadow: 0 0 18px var(--primary-glow), inset 0 1px 1px 0 var(--glass-specular);
+  @apply bg-brand-bg-tertiary border border-brand-border text-brand-text-main px-3.5 py-2.5 rounded-xl text-sm outline-none transition-all duration-200 focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/20 backdrop-blur-md;
 }
 
 select {
-  @apply cursor-pointer pr-8;
+  @apply cursor-pointer;
 }
 
 /* Chart Canvas Container */
-@utility chart-wrapper {
+.chart-wrapper {
   @apply relative h-[280px] w-full mt-2;
 }
 
 /* Grid Layout Systems */
-@utility grid-2 {
-  @apply grid grid-cols-[repeat(auto-fit,minmax(350px,1fr))] gap-6;
+.grid-2 {
+  @apply grid grid-cols-1 md:grid-cols-2 gap-6;
 }
 
-@utility grid-3 {
-  @apply grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-6;
+.grid-3 {
+  @apply grid grid-cols-1 md:grid-cols-3 gap-6;
 }
 
-@media (max-width: 640px) {
-  .grid-2, .grid-3 {
-    @apply grid-cols-1;
-  }
-}
-
-/* Verification details and alerts */
-.loading-spinner {
-  @apply flex items-center justify-center p-12 text-brand-primary font-semibold text-sm;
-}
-.loading-spinner::before {
-  content: '';
-  @apply w-5 h-5 border-2 border-brand-primary/25 border-t-brand-primary rounded-full animate-spin mr-3;
-}
-
-/* Modal Dialog System with Liquid Glass Blur */
-@utility modal-overlay {
-  @apply fixed inset-0 bg-black/60 backdrop-blur-xl flex items-center justify-center z-[1000] opacity-0 pointer-events-none transition-opacity duration-300;
-}
-.modal-overlay.active {
-  @apply opacity-100 pointer-events-auto;
-}
-@utility modal-container {
-  @apply bg-brand-bg-secondary/90 border border-brand-border/60 rounded-[28px] w-[90%] max-w-[600px] max-h-[85vh] flex flex-col scale-95 transition-transform duration-300 backdrop-blur-2xl shadow-2xl;
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  box-shadow: var(--glass-shadow), inset 0 1px 1px 0 var(--glass-specular);
-}
-.modal-overlay.active .modal-container {
-  @apply scale-100;
-}
-@utility modal-header {
-  @apply p-5 px-6 border-b border-brand-border flex items-center justify-between;
-}
-@utility modal-title {
-  @apply font-display text-xl font-semibold text-brand-text-main;
-}
-@utility modal-close {
-  @apply bg-transparent border-none text-brand-text-muted cursor-pointer text-2xl flex items-center justify-center hover:text-brand-text-main transition-colors;
-}
-@utility modal-body {
-  @apply p-6 overflow-y-auto flex-1;
-}
-@utility modal-footer {
-  @apply p-4 px-6 border-t border-brand-border flex justify-end gap-3;
-}
-
-/* CAMPUSX OS Standardized Global Spacing & Layout Utilities */
-@utility page-shell {
+/* Global Container & Layout Helpers */
+.page-shell {
   @apply max-w-[1720px] mx-auto w-full px-4 md:px-6 lg:px-8 py-6 flex flex-col gap-6;
 }
 
-@utility page-header-bar {
+.page-header-bar {
   @apply flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-brand-border/40;
 }
 
-@utility card-equal-grid {
-  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 auto-rows-fr;
+.card-equal-grid {
+  @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5;
 }
 
-@utility card-header-row {
-  @apply flex items-center justify-between gap-3 pb-3 mb-3 border-b border-brand-border/40;
-}
-
-@utility card-footer-row {
-  @apply pt-3 mt-auto border-t border-brand-border/40 flex items-center justify-between gap-3 text-xs text-brand-text-muted;
-}
-
-@utility table-wrapper {
+.table-wrapper {
   @apply w-full overflow-x-auto rounded-2xl border border-brand-border bg-brand-bg-secondary/60 backdrop-blur-md shadow-sm;
 }
 
-@utility chart-card-box {
-  @apply relative w-full h-[290px] p-3 flex flex-col justify-center items-center overflow-hidden;
+.sidebar-link-item {
+  @apply flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-xs text-brand-text-muted hover:text-brand-text-main hover:bg-brand-primary/10 transition-all duration-200 cursor-pointer min-h-[44px];
 }
 
-@utility form-grid-layout {
-  @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5;
-}
-
-/* Sidebar Master Enterprise Upgrades */
-@utility sidebar-link-item {
-  @apply flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-semibold text-xs text-brand-text-muted hover:text-brand-text-main hover:bg-brand-primary/10 transition-all duration-200 cursor-pointer min-h-[44px] relative overflow-hidden border border-transparent hover:border-brand-primary/20;
-}
-
-@utility sidebar-link-active {
+.sidebar-link-active {
   @apply bg-brand-primary/15 text-brand-primary font-bold border-brand-primary/30 shadow-sm;
 }

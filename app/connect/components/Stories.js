@@ -106,65 +106,71 @@ export default function Stories() {
   return (
     <div className="w-full">
       {/* Stories list slider */}
-      <div className="flex gap-4 overflow-x-auto py-2 px-1 story-tray-scrollbar">
+      <div className="flex gap-6 overflow-x-auto py-2 px-1 story-tray-scrollbar overflow-y-visible items-start">
         
         {/* Your Story button */}
-        <div className="flex flex-col items-center gap-1 shrink-0">
-          <label className="relative cursor-pointer">
+        <div className="flex flex-col items-center shrink-0 w-[74px] cursor-pointer group">
+          <label className="relative cursor-pointer group overflow-visible flex flex-col items-center">
             <input 
               type="file" 
               accept="image/*" 
               className="hidden" 
               onChange={handleStoryUpload} 
             />
-            <div className={`w-16 h-16 rounded-full flex items-center justify-center p-[2.5px] transition-transform duration-200 hover:scale-105 ${
-              userStory ? 'gradient-story-ring-active' : 'border border-dashed border-white/20'
+            <div className={`story-avatar-circle transition-transform duration-200 group-hover:scale-105 overflow-visible ${
+              userStory ? 'gradient-story-ring-active' : 'bg-slate-100'
             }`}>
-              <div className="w-full h-full bg-[#071126] rounded-full p-[2px] relative">
+              <div className="w-full h-full bg-white rounded-full p-[2px] relative overflow-hidden flex items-center justify-center shrink-0">
                 <img 
                   src={currentUser?.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150'} 
                   alt="You" 
-                  className="w-full h-full rounded-full object-cover" 
+                  className="w-full h-full rounded-full object-cover shrink-0" 
                 />
-                {!userStory && (
-                  <span className="absolute bottom-0 right-0 w-5 h-5 bg-brand-primary text-white text-xs font-bold rounded-full flex items-center justify-center border-2 border-[#071126] hover:bg-brand-primary-hover">
-                    +
-                  </span>
-                )}
               </div>
+              {!userStory && (
+                <span className="absolute bottom-0 right-0 w-5 h-5 bg-indigo-600 text-white text-xs font-black rounded-full flex items-center justify-center border-2 border-white shadow-xs z-10 shrink-0">
+                  +
+                </span>
+              )}
+            </div>
+            <div className="w-full mt-2 text-center">
+              <span className="text-[11px] font-bold text-slate-700 block text-center line-clamp-2 break-words leading-tight">
+                Your Story
+              </span>
             </div>
           </label>
-          <span className="text-[11px] font-semibold text-slate-400">Your Story</span>
         </div>
 
         {/* Other users' stories */}
         {allStories.map((story, idx) => {
-          // Adjust display index offset if user has uploaded a story
           const indexToSet = userStory ? idx + 1 : idx;
+          const authorName = story.userName || story.user_name || 'Member';
           
           return (
             <button
-              key={story.userId}
+              key={story.userId || idx}
               onClick={() => {
                 setActiveStoryIndex(indexToSet);
                 setStoryProgress(0);
               }}
-              className="flex flex-col items-center gap-1 shrink-0 bg-transparent border-none outline-none cursor-pointer group"
+              className="flex flex-col items-center shrink-0 w-[74px] bg-transparent border-none outline-none cursor-pointer group"
             >
-              <div className={`w-16 h-16 rounded-full flex items-center justify-center transition-transform duration-200 group-hover:scale-105 ${
+              <div className={`story-avatar-circle transition-transform duration-200 group-hover:scale-105 shadow-2xs ${
                 getGradientClass(story.type)
               }`}>
-                <div className="w-full h-full bg-[#071126] rounded-full p-[2px]">
+                <div className="w-full h-full bg-white rounded-full p-[2px] overflow-hidden flex items-center justify-center shrink-0">
                   <img 
-                    src={story.userAvatar} 
-                    alt={story.userName} 
-                    className="w-full h-full rounded-full object-cover" 
+                    src={story.userAvatar || story.user_avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150'} 
+                    alt={authorName} 
+                    className="w-full h-full rounded-full object-cover shrink-0" 
                   />
                 </div>
               </div>
-              <span className="text-[11px] font-semibold text-slate-400 truncate max-w-[64px]">
-                {story.userName.split(' ')[0]}
-              </span>
+              <div className="w-full mt-2 text-center">
+                <span className="text-[11px] font-bold text-slate-600 group-hover:text-indigo-600 transition-colors block text-center line-clamp-2 break-words leading-tight">
+                  {authorName}
+                </span>
+              </div>
             </button>
           );
         })}
@@ -305,11 +311,11 @@ export default function Stories() {
                     onChange={(e) => setReplyText(e.target.value)}
                     onFocus={() => setIsPaused(true)}
                     onBlur={() => setIsPaused(false)}
-                    className="bg-transparent border-none text-white outline-none w-full text-xs placeholder-white/50 px-2 py-1"
+                    className="flex-1 min-w-0 bg-transparent border-none text-white outline-none text-xs placeholder-white/50 px-2 py-1 font-sans"
                   />
                   <button 
                     type="submit" 
-                    className="text-brand-primary hover:text-white font-bold text-xs px-2.5 py-1 transition-all"
+                    className="text-brand-primary hover:text-white font-bold text-xs px-2.5 py-1 transition-all shrink-0 cursor-pointer"
                   >
                     Send
                   </button>

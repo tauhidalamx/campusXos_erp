@@ -38,46 +38,46 @@ export default function EventsView() {
   ];
 
   return (
-    <div className="w-full max-w-[700px] flex flex-col gap-6 text-left">
-      <div className="flex justify-between items-center px-1 border-b border-white/5 pb-3">
-        <h2 className="text-base font-bold text-white flex items-center gap-2">
+    <div className="w-full min-w-0 flex flex-col gap-6 text-left">
+      <div className="flex justify-between items-center px-1 border-b border-slate-200 pb-3">
+        <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
           <Calendar className="w-5 h-5 text-brand-primary" />
           Upcoming Campus Events
         </h2>
-        <button className="flex items-center gap-1.5 px-3 py-1.5 bg-brand-primary/10 border border-brand-primary/20 text-brand-primary rounded-xl text-xs font-bold hover:bg-brand-primary hover:text-white transition-all">
+        <button className="flex items-center gap-1.5 px-3 py-1.5 bg-indigo-50 border border-indigo-200 text-indigo-700 rounded-xl text-xs font-bold hover:bg-brand-primary hover:text-white transition-all cursor-pointer">
           <Plus className="w-3.5 h-3.5" />
           Propose Event
         </button>
       </div>
 
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 min-w-0">
         {events.map((event) => (
           <div 
             key={event.id}
-            className="p-5 bg-[#102043]/20 border border-white/5 rounded-[20px] flex flex-col gap-3.5 hover:border-white/10 transition-all duration-150"
+            className="p-5 sm:p-6 bg-white border border-slate-200/90 rounded-3xl flex flex-col gap-4 hover:border-indigo-300 shadow-2xs transition-all duration-150 min-w-0"
           >
-            <div className="flex justify-between items-start gap-3">
-              <div className="flex flex-col text-left">
-                <span className="text-[10px] font-bold text-indigo-400 uppercase tracking-widest">{event.category}</span>
-                <h3 className="text-sm font-bold text-white mt-1 leading-snug hover:text-brand-primary cursor-pointer">{event.title}</h3>
-                <span className="text-xs text-slate-400 mt-1 font-semibold">Hosted by: <span className="text-slate-300">{event.speaker}</span></span>
+            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3.5 min-w-0">
+              <div className="flex flex-col text-left min-w-0 flex-1">
+                <span className="text-[10px] font-extrabold text-indigo-600 uppercase tracking-widest">{event.category}</span>
+                <h3 className="text-sm sm:text-base font-bold text-slate-900 mt-1 leading-snug hover:text-indigo-600 cursor-pointer break-words">{event.title}</h3>
+                <span className="text-xs text-slate-500 mt-1 font-semibold break-words">Hosted by: <span className="text-slate-800 font-bold">{event.speaker}</span></span>
               </div>
-              <span className="text-[10px] font-bold px-2 py-0.5 bg-brand-primary/10 text-brand-primary rounded-md uppercase shrink-0 mt-1">
+              <span className="text-[10px] font-extrabold px-3 py-1 bg-indigo-50 text-indigo-700 border border-indigo-200 rounded-xl uppercase shrink-0 self-start whitespace-nowrap shadow-2xs">
                 {event.interested}
               </span>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 border-t border-white/5 pt-3.5 text-xs text-slate-400 font-semibold">
-              <div className="flex items-center gap-2">
-                <Calendar className="w-4 h-4 text-slate-500" />
-                <span>{event.date}</span>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 border-t border-slate-100 pt-4 text-xs text-slate-600 font-semibold min-w-0">
+              <div className="flex items-center gap-2 min-w-0">
+                <Calendar className="w-4 h-4 text-indigo-500 shrink-0" />
+                <span className="truncate">{event.date}</span>
               </div>
-              <div className="flex items-center gap-2">
-                <Clock className="w-4 h-4 text-slate-500" />
-                <span>{event.time}</span>
+              <div className="flex items-center gap-2 min-w-0">
+                <Clock className="w-4 h-4 text-indigo-500 shrink-0" />
+                <span className="truncate">{event.time}</span>
               </div>
-              <div className="flex items-center gap-2">
-                <MapPin className="w-4 h-4 text-slate-500" />
+              <div className="flex items-center gap-2 min-w-0">
+                <MapPin className="w-4 h-4 text-indigo-500 shrink-0" />
                 <span className="truncate">{event.location}</span>
               </div>
             </div>

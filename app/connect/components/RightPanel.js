@@ -5,20 +5,32 @@ import { useConnect } from '../ConnectContext';
 import { 
   Users, 
   TrendingUp, 
-  Calendar, 
-  Briefcase, 
-  FlaskConical, 
-  Plus,
-  Sparkles,
-  ChevronRight
+  Plus
 } from 'lucide-react';
 
 export default function RightPanel() {
-  const { currentUser, users, setActiveView, setActiveCommunityId } = useConnect();
+  const { currentUser, users, setActiveView, setActiveCommunityId, setActiveChatChannel, setMessengerOpen } = useConnect();
 
-  // Pick suggestions from loaded users
-  const suggestedFaculty = users.filter(u => u.role === 'faculty').slice(0, 3);
-  const suggestedStudents = users.filter(u => u.role === 'student' && u.id !== currentUser?.id).slice(0, 3);
+  const fallbackFaculty = [
+    { id: 'usr_001', name: 'Dr. Raymond Park', role: 'Faculty HOD', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150' },
+    { id: 'usr_002', name: 'Dr. Evelyn Sterling', role: 'Professor', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150' }
+  ];
+
+  const fallbackStudents = [
+    { id: 'usr_005', name: 'Carlos Mendez', role: 'Student Rep', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150' },
+    { id: 'usr_006', name: 'Aria Nakamura', role: 'CS Cohort', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150' }
+  ];
+
+  const loadedFaculty = (users || []).filter(u => u.role === 'faculty');
+  const loadedStudents = (users || []).filter(u => u.role === 'student' && u.id !== currentUser?.id);
+
+  const suggestedFaculty = (loadedFaculty.length > 0 ? loadedFaculty : fallbackFaculty).slice(0, 2);
+  const suggestedStudents = (loadedStudents.length > 0 ? loadedStudents : fallbackStudents).slice(0, 2);
+
+  const handleOpenDirectChat = (userId) => {
+    setActiveChatChannel(userId);
+    setMessengerOpen(true);
+  };
 
   const suggestedCommunities = [
     { id: 'dept_cs', name: 'Computer Science', members: '142 members', type: 'Academic' },
@@ -34,64 +46,59 @@ export default function RightPanel() {
     { tag: '#ThesisPresentation', posts: '540 posts' }
   ];
 
-  const careerOpportunities = [
-    { title: 'Research Intern - Deep Learning', company: 'CampusX AI Lab', type: 'Paid' },
-    { title: 'Associate Software Engineer', company: 'Stripe API Group', type: 'Full-time' }
-  ];
-
   const handleCommunityClick = (commId) => {
     setActiveCommunityId(commId);
     setActiveView('communities');
   };
 
   return (
-    <div className="w-[350px] shrink-0 hidden lg:flex flex-col gap-6 select-none text-left">
+    <div className="connect-right-panel flex flex-col gap-5 select-none text-left min-w-0">
       
       {/* Current User profile card */}
       {currentUser && (
-        <div className="flex items-center gap-3.5 p-4 bg-[#102043]/30 border border-white/5 rounded-2xl">
+        <div className="flex items-center gap-3.5 p-4.5 px-5 bg-white border border-slate-200/90 rounded-2xl shadow-xs min-w-0">
           <img 
             src={currentUser.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150'} 
             alt={currentUser.name} 
-            className="w-12 h-12 rounded-full object-cover border-2 border-brand-primary" 
+            className="w-11 h-11 rounded-full object-cover border border-slate-200 shrink-0" 
           />
-          <div className="flex flex-col min-w-0">
-            <span className="text-sm font-bold text-white truncate">{currentUser.name}</span>
-            <span className="text-[11px] font-bold text-slate-500 uppercase tracking-widest mt-0.5">{currentUser.role}</span>
-            <span className="text-[10px] font-medium text-slate-400 truncate mt-0.5">{currentUser.dept || 'CampusX University'}</span>
+          <div className="flex flex-col min-w-0 flex-1 text-left">
+            <span className="text-sm font-bold text-slate-900 truncate">{currentUser.name}</span>
+            <span className="text-[10px] font-bold text-indigo-600 uppercase tracking-widest mt-0.5 truncate">{currentUser.role}</span>
+            <span className="text-[11px] font-medium text-slate-400 truncate mt-0.5">{currentUser.dept || 'CampusX Operating Layer'}</span>
           </div>
         </div>
       )}
 
       {/* Suggested Communities list */}
-      <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-3.5 p-5 bg-white border border-slate-200/90 rounded-2xl shadow-xs min-w-0">
         <div className="flex justify-between items-center px-1">
-          <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Suggested Communities</span>
+          <span className="text-[11px] font-black text-slate-400 uppercase tracking-wider">Suggested Communities</span>
           <button 
             onClick={() => setActiveView('communities')}
-            className="text-[10px] font-bold text-brand-primary hover:underline"
+            className="text-xs font-bold text-indigo-600 hover:text-indigo-800 hover:underline cursor-pointer"
           >
             See All
           </button>
         </div>
         
-        <div className="flex flex-col gap-2.5">
+        <div className="flex flex-col gap-1 min-w-0">
           {suggestedCommunities.map((comm) => (
             <div 
               key={comm.id} 
-              className="flex justify-between items-center p-2.5 bg-[#102043]/20 border border-white/5 rounded-xl hover:border-white/10 transition-all duration-150 cursor-pointer"
+              className="flex justify-between items-center p-2 px-2.5 rounded-xl hover:bg-slate-50 transition-all duration-150 cursor-pointer group gap-3 min-w-0"
               onClick={() => handleCommunityClick(comm.id)}
             >
-              <div className="flex items-center gap-3 min-w-0">
-                <div className="p-2 bg-indigo-500/10 text-indigo-400 rounded-lg">
-                  <Users className="w-4 h-4" />
+              <div className="flex items-center gap-3 min-w-0 flex-1">
+                <div className="p-2 bg-indigo-50 text-indigo-700 rounded-xl shrink-0">
+                  <Users className="w-3.5 h-3.5" />
                 </div>
-                <div className="flex flex-col min-w-0 text-left">
-                  <span className="text-xs font-bold text-white truncate">{comm.name}</span>
-                  <span className="text-[9px] font-medium text-slate-400 mt-0.5">{comm.members} • {comm.type}</span>
+                <div className="flex flex-col min-w-0 flex-1 text-left">
+                  <span className="text-xs font-bold text-slate-800 group-hover:text-indigo-600 transition-colors truncate">{comm.name}</span>
+                  <span className="text-[10.5px] font-medium text-slate-400 mt-0.5 truncate">{comm.members}</span>
                 </div>
               </div>
-              <button className="p-1 hover:bg-white/[0.04] rounded-lg text-slate-400 hover:text-white transition-all">
+              <button className="p-1.5 hover:bg-indigo-50 rounded-lg text-slate-400 hover:text-indigo-600 transition-all shrink-0">
                 <Plus className="w-3.5 h-3.5" />
               </button>
             </div>
@@ -99,45 +106,43 @@ export default function RightPanel() {
         </div>
       </div>
 
-      {/* Suggested Faculty & Students */}
-      <div className="flex flex-col gap-3">
+      {/* Suggested Contacts */}
+      <div className="flex flex-col gap-3.5 p-5 bg-white border border-slate-200/90 rounded-2xl shadow-xs min-w-0">
         <div className="flex justify-between items-center px-1">
-          <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Suggested Contacts</span>
+          <span className="text-[11px] font-black text-slate-400 uppercase tracking-wider">Suggested Contacts</span>
         </div>
 
-        <div className="flex flex-col gap-2.5">
-          {/* Faculty recommendations */}
+        <div className="flex flex-col gap-1 min-w-0">
           {suggestedFaculty.map((fac) => (
-            <div key={fac.id} className="flex justify-between items-center p-2 bg-[#102043]/10 border border-transparent hover:border-white/5 hover:bg-[#102043]/20 rounded-xl transition-all">
-              <div className="flex items-center gap-3">
-                <img src={fac.avatar} alt="" className="w-8 h-8 rounded-full object-cover border border-white/10" />
-                <div className="flex flex-col text-left">
-                  <span className="text-xs font-bold text-white">{fac.name}</span>
-                  <span className="text-[9px] font-medium text-emerald-400 uppercase tracking-wider mt-0.5">Faculty • {fac.id}</span>
+            <div key={fac.id} className="flex justify-between items-center p-2 px-2.5 hover:bg-slate-50 rounded-xl transition-all gap-2.5 min-w-0">
+              <div className="flex items-center gap-3 min-w-0 flex-1">
+                <img src={fac.avatar} alt="" className="w-8 h-8 rounded-full object-cover shrink-0" />
+                <div className="flex flex-col text-left min-w-0 flex-1">
+                  <span className="text-xs font-bold text-slate-800 truncate">{fac.name}</span>
+                  <span className="text-[10px] font-bold text-emerald-700 uppercase tracking-wider truncate">{fac.role}</span>
                 </div>
               </div>
               <button 
-                onClick={() => setActiveView('messages')}
-                className="text-[10px] font-bold text-brand-primary hover:underline px-2.5 py-1 hover:bg-brand-primary/10 rounded-lg transition-all"
+                onClick={() => handleOpenDirectChat(fac.id)}
+                className="text-xs font-bold text-indigo-600 hover:text-indigo-800 px-2.5 py-1 hover:bg-indigo-50 rounded-lg transition-all cursor-pointer shrink-0"
               >
                 Chat
               </button>
             </div>
           ))}
 
-          {/* Student recommendations */}
           {suggestedStudents.map((stud) => (
-            <div key={stud.id} className="flex justify-between items-center p-2 bg-[#102043]/10 border border-transparent hover:border-white/5 hover:bg-[#102043]/20 rounded-xl transition-all">
-              <div className="flex items-center gap-3">
-                <img src={stud.avatar} alt="" className="w-8 h-8 rounded-full object-cover border border-white/10" />
-                <div className="flex flex-col text-left">
-                  <span className="text-xs font-bold text-white">{stud.name}</span>
-                  <span className="text-[9px] font-medium text-slate-400 uppercase tracking-wider mt-0.5">Student • {stud.id}</span>
+            <div key={stud.id} className="flex justify-between items-center p-2 px-2.5 hover:bg-slate-50 rounded-xl transition-all gap-2.5 min-w-0">
+              <div className="flex items-center gap-3 min-w-0 flex-1">
+                <img src={stud.avatar} alt="" className="w-8 h-8 rounded-full object-cover shrink-0" />
+                <div className="flex flex-col text-left min-w-0 flex-1">
+                  <span className="text-xs font-bold text-slate-800 truncate">{stud.name}</span>
+                  <span className="text-[10px] font-bold text-cyan-700 uppercase tracking-wider truncate">{stud.role}</span>
                 </div>
               </div>
               <button 
-                onClick={() => setActiveView('messages')}
-                className="text-[10px] font-bold text-brand-primary hover:underline px-2.5 py-1 hover:bg-brand-primary/10 rounded-lg transition-all"
+                onClick={() => handleOpenDirectChat(stud.id)}
+                className="text-xs font-bold text-indigo-600 hover:text-indigo-800 px-2.5 py-1 hover:bg-indigo-50 rounded-lg transition-all cursor-pointer shrink-0"
               >
                 Chat
               </button>
@@ -146,56 +151,20 @@ export default function RightPanel() {
         </div>
       </div>
 
-      {/* Trending Topics & Career Links */}
-      <div className="flex flex-col gap-4 p-4 bg-[#102043]/20 border border-white/5 rounded-2xl">
-        
-        {/* Trending research / tags */}
-        <div className="flex flex-col gap-3">
-          <div className="flex items-center gap-2 text-slate-400 border-b border-white/5 pb-2">
-            <TrendingUp className="w-4 h-4 text-slate-400" />
-            <span className="text-[11px] font-bold uppercase tracking-wider">Trending Research Topics</span>
-          </div>
-          <div className="flex flex-col gap-2">
-            {trendingTopics.map((topic, i) => (
-              <div key={i} className="flex justify-between items-center text-xs">
-                <span className="font-bold text-white hover:underline cursor-pointer">{topic.tag}</span>
-                <span className="text-[10px] text-slate-400 font-semibold">{topic.posts}</span>
-              </div>
-            ))}
-          </div>
+      {/* Trending Topics */}
+      <div className="flex flex-col gap-3.5 p-5 bg-white border border-slate-200/90 rounded-2xl shadow-xs min-w-0">
+        <div className="flex items-center gap-2 text-slate-400 px-1 border-b border-slate-100 pb-2.5">
+          <TrendingUp className="w-3.5 h-3.5 text-indigo-600 shrink-0" />
+          <span className="text-[11px] font-black uppercase tracking-wider text-slate-900">Trending Topics</span>
         </div>
-
-        {/* Placement Opportunities */}
-        <div className="flex flex-col gap-3 border-t border-white/5 pt-3">
-          <div className="flex items-center gap-2 text-slate-400 pb-1">
-            <Briefcase className="w-4 h-4 text-slate-400" />
-            <span className="text-[11px] font-bold uppercase tracking-wider">Placement Offers</span>
-          </div>
-          <div className="flex flex-col gap-2.5">
-            {careerOpportunities.map((op, i) => (
-              <div key={i} className="flex flex-col text-left bg-[#102043]/30 p-2 border border-white/5 rounded-xl">
-                <span className="text-xs font-bold text-white truncate">{op.title}</span>
-                <div className="flex justify-between items-center mt-1">
-                  <span className="text-[9px] font-semibold text-slate-400">{op.company}</span>
-                  <span className="text-[9px] font-bold px-1.5 py-0.5 bg-brand-primary/10 text-brand-primary rounded">{op.type}</span>
-                </div>
-              </div>
-            ))}
-          </div>
+        <div className="flex flex-col gap-1 min-w-0">
+          {trendingTopics.map((topic, i) => (
+            <div key={i} className="flex justify-between items-center text-xs group cursor-pointer p-2 px-2.5 rounded-lg hover:bg-slate-50 gap-2 min-w-0">
+              <span className="font-bold text-slate-800 group-hover:text-indigo-600 transition-colors truncate min-w-0 flex-1">{topic.tag}</span>
+              <span className="text-[10.5px] text-slate-400 font-semibold shrink-0 pl-1.5 whitespace-nowrap">{topic.posts}</span>
+            </div>
+          ))}
         </div>
-
-      </div>
-
-      {/* Mini footer credits */}
-      <div className="px-1 text-[10px] text-slate-500 font-semibold flex flex-wrap gap-x-2 gap-y-1">
-        <span>About</span>
-        <span>Help</span>
-        <span>Press</span>
-        <span>API</span>
-        <span>Jobs</span>
-        <span>Privacy</span>
-        <span>Terms</span>
-        <span className="block w-full mt-1.5 font-bold">© 2026 CAMPUSX CONNECT OPERATING LAYER</span>
       </div>
 
     </div>

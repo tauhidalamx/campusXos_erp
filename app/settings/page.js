@@ -16,7 +16,7 @@ export default function SettingsPage() {
         setCurrentUser(JSON.parse(session));
       }
       
-      const savedTheme = localStorage.getItem('campusx_theme') || 'light';
+      const savedTheme = localStorage.getItem('campusx_theme') || 'emerald';
       setActiveTheme(savedTheme);
       document.documentElement.setAttribute('data-theme', savedTheme);
       
@@ -39,8 +39,8 @@ export default function SettingsPage() {
   const [auditResults, setAuditResults] = useState(null);
 
   const themePresets = [
-    { id: 'light', name: 'Default Theme 1 (Sapphire Glass)', bg: '#F8FAFC', primary: '#4F46E5', text: '#0F172A', border: 'border-indigo-400' },
-    { id: 'emerald', name: 'Default Theme 2 (Cyber Emerald Obsidian)', bg: '#051311', primary: '#10B981', text: '#F0FDF4', border: 'border-emerald-500' },
+    { id: 'light', name: 'Sapphire Aurora (Liquid Slate Glass)', bg: '#F8FAFC', primary: '#4F46E5', text: '#0F172A', border: 'border-indigo-400' },
+    { id: 'emerald', name: 'Obsidian Emerald (Cyber Dark Glass)', bg: '#070B14', primary: '#10B981', text: '#F8FAFC', border: 'border-emerald-500' },
     { id: 'dark', name: 'Slate Night', bg: '#0B0F19', primary: '#6366F1', text: '#F9FAFB', border: 'border-slate-800' },
     { id: 'amoled', name: 'AMOLED Black', bg: '#000000', primary: '#4F46E5', text: '#FFFFFF', border: 'border-neutral-900' },
     { id: 'corporate', name: 'Corporate Blue', bg: '#F3F4F6', primary: '#2563EB', text: '#1F2937', border: 'border-gray-200' },

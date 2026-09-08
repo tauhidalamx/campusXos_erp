@@ -13,13 +13,13 @@ export default function BookmarksView() {
   const bookmarkedPosts = posts.filter(post => savedPostIds.has(post.id));
 
   return (
-    <div className="w-full max-w-[700px] flex flex-col gap-6 text-left">
-      <div className="flex justify-between items-center px-1 border-b border-white/5 pb-3 mb-2">
-        <h2 className="text-base font-bold text-white flex items-center gap-2">
+    <div className="w-full min-w-0 flex flex-col gap-6 text-left">
+      <div className="flex justify-between items-center px-1 border-b border-slate-200 pb-3 mb-2">
+        <h2 className="text-base font-bold text-slate-900 flex items-center gap-2">
           <Bookmark className="w-5 h-5 text-amber-500 fill-current" />
           Saved Social Nodes & Research
         </h2>
-        <span className="text-[10px] font-bold px-2 py-0.5 bg-amber-500/10 text-amber-500 rounded-md font-mono">
+        <span className="text-[10px] font-bold px-2 py-0.5 bg-amber-50 text-amber-700 border border-amber-200 rounded-md font-mono">
           {bookmarkedPosts.length} saved
         </span>
       </div>
@@ -35,10 +35,10 @@ export default function BookmarksView() {
           })
         ) : (
           <div className="text-center py-16 text-slate-500 flex flex-col items-center gap-3">
-            <Bookmark className="w-12 h-12 text-slate-600" />
+            <Bookmark className="w-12 h-12 text-slate-300" />
             <div>
-              <span className="text-xs font-semibold block text-slate-400">Your Bookmarks folder is empty.</span>
-              <span className="text-[10px] text-slate-500 font-medium mt-1.5 block">Pin postings, notes, or peer research articles to access them quickly here.</span>
+              <span className="text-xs font-semibold block text-slate-700">Your Bookmarks folder is empty.</span>
+              <span className="text-[10px] text-slate-400 font-medium mt-1.5 block">Pin postings, notes, or peer research articles to access them quickly here.</span>
             </div>
           </div>
         )}

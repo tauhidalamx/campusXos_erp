@@ -28,10 +28,10 @@ export default function Feed() {
   });
 
   return (
-    <div className="flex-1 max-w-[700px] flex flex-col gap-6 text-left">
+    <div className="w-full min-w-0 flex flex-col gap-6 text-left">
       
       {/* Horizontal Stories bar */}
-      <div className="w-full bg-[#102043]/20 border border-white/5 rounded-[20px] p-4">
+      <div className="w-full min-w-0 bg-white border border-slate-200/90 rounded-3xl p-4 shadow-xs">
         <Stories />
       </div>
 
@@ -41,10 +41,10 @@ export default function Feed() {
           <button
             key={sub.id}
             onClick={() => setActiveSubFeed(sub.id)}
-            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap border ${
+            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap border cursor-pointer shrink-0 ${
               activeSubFeed === sub.id
-                ? 'bg-brand-primary/10 border-brand-primary/20 text-brand-primary font-extrabold'
-                : 'bg-[#102043]/20 border-white/5 text-slate-400 hover:text-white hover:border-white/10'
+                ? 'bg-indigo-600 border-indigo-600 text-white font-extrabold shadow-sm'
+                : 'bg-white border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50'
             }`}
           >
             {sub.label}
@@ -53,7 +53,7 @@ export default function Feed() {
       </div>
 
       {/* Posts streams */}
-      <div className="flex flex-col gap-6 items-center w-full">
+      <div className="flex flex-col gap-6 items-center w-full min-w-0">
         {filteredPosts.length > 0 ? (
           filteredPosts.map((post) => {
             // Render specific peer-reviewed ResearchCard or normal PostCard
@@ -63,7 +63,7 @@ export default function Feed() {
             return <PostCard key={post.id} post={post} />;
           })
         ) : (
-          <div className="w-full max-w-[650px] p-16 text-center bg-[#102043]/20 border border-white/5 rounded-[20px] text-slate-500 text-xs font-semibold">
+          <div className="w-full max-w-[650px] p-16 text-center bg-white border border-slate-200/90 rounded-3xl text-slate-400 text-xs font-semibold shadow-xs">
             No updates or posts found under this feed category.
           </div>
         )}

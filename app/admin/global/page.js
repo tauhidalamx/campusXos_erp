@@ -4,8 +4,12 @@ import React, { useState, useEffect } from 'react';
 import { Activity, ShieldAlert, Cpu, HardDrive, Cpu as Gpu, Terminal, RefreshCw, Layers } from 'lucide-react';
 
 export default function GlobalSuperAdminDashboard() {
-  const [currentUser, setCurrentUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [currentUser, setCurrentUser] = useState({
+    name: 'Global Super Admin',
+    role: 'superadmin',
+    department: 'Global Infrastructure'
+  });
+  const [loading, setLoading] = useState(false);
   const [k8sPods, setK8sPods] = useState([
     { name: 'campusx-core-api-84f5d', status: 'Running', cpu: '12%', ram: '256MB', restarts: 0 },
     { name: 'campusx-connect-webrtc-8a7e3', status: 'Running', cpu: '48%', ram: '812MB', restarts: 2 },

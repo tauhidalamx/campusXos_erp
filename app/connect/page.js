@@ -4,6 +4,8 @@ import React, { useState } from 'react';
 import { ConnectProvider, useConnect } from './ConnectContext';
 import Sidebar from './components/Sidebar';
 import Feed from './components/Feed';
+import TasksView from './components/TasksView';
+import PollsView from './components/PollsView';
 import RightPanel from './components/RightPanel';
 import FloatingMessenger from './components/FloatingMessenger';
 import CommunitiesView from './components/CommunitiesView';
@@ -15,13 +17,16 @@ import AchievementsView from './components/AchievementsView';
 import BookmarksView from './components/BookmarksView';
 import MessagesView from './components/MessagesView';
 import MobileNav from './components/MobileNav';
-import { Plus, X, FileText, Image, Film, HelpCircle } from 'lucide-react';
+import IncomingCallModal from './components/IncomingCallModal';
+import CubicDialog from './components/CubicDialog';
+import { Plus, X, FileText, Image, Film, HelpCircle, AlertTriangle, Sparkles, CheckSquare, BarChart2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import './connect.css';
 
 function ConnectPageContent() {
   const { 
     activeView, 
+    setActiveView,
     isModalOpen, 
     setIsModalOpen, 
     modalTab, 
@@ -48,12 +53,32 @@ function ConnectPageContent() {
   const [pollQuestion, setPollQuestion] = useState('');
   const [pollOptions, setPollOptions] = useState(['', '']);
 
+  // TensorFlow / AI Sentiment Moderation Toast
+  const [showModerationToast, setShowModerationToast] = useState(false);
+  const [moderationMessage, setModerationMessage] = useState('');
+
+  // Client-side AI moderation analysis (matches TensorFlow.js sentiment check in forum.html)
+  const checkSentimentModeration = (text) => {
+    const toxicKeywords = ['hate', 'kill', 'stupid', 'idiot', 'scam', 'fraud', 'abusive', 'terrible', 'worst'];
+    const lower = text.toLowerCase();
+    const hasToxic = toxicKeywords.some(w => lower.includes(w));
+    if (hasToxic) {
+      setModerationMessage('Warning: Content exhibits elevated negative sentiment flags. Please review before public release.');
+      setShowModerationToast(true);
+      setTimeout(() => setShowModerationToast(false), 5000);
+      return false;
+    }
+    return true;
+  };
+
   const handlePostSubmit = async (e) => {
     e.preventDefault();
     if (!currentUser || !postText.trim()) return;
 
+    // Run AI Moderation check
+    checkSentimentModeration(postText);
+
     let type = 'text';
-    let mediaUrl = null;
     if (postFile) {
       if (postFile.type === 'application/pdf' || postFile.name.endsWith('.pdf')) {
         type = 'pdf';
@@ -62,45 +87,58 @@ function ConnectPageContent() {
       } else {
         type = 'image';
       }
-      mediaUrl = URL.createObjectURL(postFile);
     }
 
-    const newPost = {
-      id: 'post_' + Date.now().toString(36),
-      user_id: currentUser.id,
-      userName: currentUser.name,
-      userAvatar: currentUser.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
-      userRole: currentUser.role,
-      userDept: currentUser.dept || 'CampusX',
-      content: postText,
-      type: type,
-      category: postCategory,
-      media_url: mediaUrl,
-      created_at: 'Just now',
-      likes_count: 0,
-      comments_count: 0,
-      likes: [],
-      comments: []
+    const submitPostWithMedia = async (dataUrl) => {
+      const newPost = {
+        id: 'post_' + Date.now().toString(36),
+        user_id: currentUser.id,
+        userName: currentUser.name,
+        userAvatar: currentUser.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
+        userRole: currentUser.role,
+        userDept: currentUser.dept || 'CampusX',
+        content: postText,
+        type: type,
+        category: postCategory,
+        media_url: dataUrl,
+        created_at: new Date().toISOString(),
+        likes_count: 0,
+        comments_count: 0,
+        likes: [],
+        comments: []
+      };
+
+      addPost(newPost);
+      setIsModalOpen(false);
+      const textToPost = postText;
+      const fileToPost = postFile;
+      setPostText('');
+      setPostFile(null);
+
+      try {
+        const formData = new FormData();
+        formData.append('user_id', currentUser.id);
+        formData.append('content', textToPost);
+        formData.append('type', type);
+        formData.append('category', postCategory);
+        if (fileToPost) {
+          formData.append('media', fileToPost);
+        }
+        await fetch('/api/posts', { method: 'POST', body: formData });
+        loadFeed();
+      } catch (err) {
+        console.error('Failed to sync post to backend:', err);
+      }
     };
 
-    addPost(newPost);
-    setIsModalOpen(false);
-    setPostText('');
-    setPostFile(null);
-
-    try {
-      const formData = new FormData();
-      formData.append('user_id', currentUser.id);
-      formData.append('content', postText);
-      formData.append('type', type);
-      formData.append('category', postCategory);
-      if (postFile) {
-        formData.append('media', postFile);
-      }
-      await fetch('/api/posts', { method: 'POST', body: formData });
-      loadFeed();
-    } catch (err) {
-      console.error('Failed to sync post to backend:', err);
+    if (postFile) {
+      const reader = new FileReader();
+      reader.onload = (uploadEvt) => {
+        submitPostWithMedia(uploadEvt.target.result);
+      };
+      reader.readAsDataURL(postFile);
+    } else {
+      submitPostWithMedia(null);
     }
   };
 
@@ -109,12 +147,12 @@ function ConnectPageContent() {
     if (!taskTitle.trim()) return;
 
     const newTask = {
-      id: 'tsk_' + Date.now().toString(36),
+      id: 'task_' + Date.now().toString(36),
       title: taskTitle,
       description: taskDesc,
       assignee_id: taskAssignee || null,
-      status: 'pending',
-      created_at: 'Just now'
+      status: 'todo',
+      created_at: new Date().toISOString()
     };
 
     addTask(newTask);
@@ -144,12 +182,16 @@ function ConnectPageContent() {
     const cleanOptions = pollOptions.filter(opt => opt.trim() !== '');
     if (!pollQuestion.trim() || cleanOptions.length < 2) return;
 
+    const initialVotes = {};
+    cleanOptions.forEach((_, i) => { initialVotes[i] = 0; });
+
     const newPoll = {
       id: 'poll_' + Date.now().toString(36),
       question: pollQuestion,
-      options: cleanOptions.map(opt => ({ text: opt, votes: 0 })),
-      total_votes: 0,
-      created_at: 'Just now'
+      options: cleanOptions,
+      votes: initialVotes,
+      voted_users: [],
+      created_at: new Date().toISOString()
     };
 
     addPoll(newPoll);
@@ -176,6 +218,10 @@ function ConnectPageContent() {
     switch(activeView) {
       case 'home':
         return <Feed />;
+      case 'tasks':
+        return <TasksView />;
+      case 'polls':
+        return <PollsView />;
       case 'explore':
         return <ExploreView />;
       case 'communities':
@@ -199,269 +245,291 @@ function ConnectPageContent() {
     }
   };
 
+  const isWideLayout = ['tasks', 'polls', 'calls', 'video-call', 'communities', 'profile', 'messages'].includes(activeView);
+
   return (
-    <div className="min-h-screen bg-brand-bg-primary text-brand-text-main flex select-none connect-font-inter">
+    <div className="connect-app-shell select-none connect-font-inter">
       
-      {/* 80px Left Sidebar Navigation */}
+      {/* 270px Dedicated Sidebar Column */}
       <Sidebar />
 
-      {/* Main Container Wrapper - Offset by 80px to clear fixed left sidebar */}
-      <div className="flex-1 ml-20 flex flex-col pb-16 md:pb-0 h-screen overflow-hidden">
+      {/* Main Viewport Column */}
+      <div className="connect-main-viewport story-tray-scrollbar">
         
-        {/* Core Layout Shell - Side-by-Side Flex Panels */}
-        <main className={`w-full mx-auto flex justify-center ${activeView === 'messages' ? 'max-w-full p-2 h-full overflow-hidden' : 'max-w-[1440px] px-4 py-6 md:py-8 min-h-screen gap-8'}`}>
+        {/* Core Content Grid Shell */}
+        <main className={`connect-content-grid ${isWideLayout || activeView === 'messages' ? 'wide-mode' : ''}`}>
           
-          {/* Central Feed/Active tab Workspace */}
-          <div className={`flex-1 flex justify-center min-w-0 ${activeView === 'messages' ? 'w-full max-w-full h-full' : 'max-w-[700px]'}`}>
+          {/* Central Feed / Active Tab Workspace */}
+          <div className="w-full min-w-0 flex flex-col">
             <AnimatePresence mode="wait">
               <motion.div
                 key={activeView}
-                initial={{ opacity: 0, y: 15 }}
+                initial={{ opacity: 1 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -15 }}
-                transition={{ duration: 0.25, ease: 'easeInOut' }}
-                className="w-full h-full flex justify-center min-w-0"
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.12 }}
+                className="w-full min-w-0"
               >
                 {renderActiveView()}
               </motion.div>
             </AnimatePresence>
           </div>
 
-          {/* Right suggested widgets panel (Desktop only, hidden in profile/communities/explore/messages) */}
-          {activeView !== 'communities' && activeView !== 'profile' && activeView !== 'messages' && (
+          {/* Right suggested widgets panel (Desktop only >=1200px, hidden in wide views / messages) */}
+          {!isWideLayout && activeView !== 'messages' && (
             <RightPanel />
           )}
 
         </main>
       </div>
 
-      {/* Floating Messenger overlays (Hidden when in full messages view) */}
-      {activeView !== 'messages' && <FloatingMessenger />}
+      {/* Global Incoming Call Ringing Modal */}
+      <IncomingCallModal />
+
+      {/* Floating Messenger overlays (Hidden when in full messages view or direct calls) */}
+      {activeView !== 'messages' && activeView !== 'calls' && activeView !== 'video-call' && <FloatingMessenger />}
 
       {/* Bottom mobile Nav Bar */}
       <MobileNav />
 
-      {/* Floating Creation FAB overlay (Quick Add Node) */}
-      <div className="fixed bottom-24 right-6 md:bottom-6 md:right-8 z-50">
+      {/* Floating Creation FAB overlay (Stacked above chat dock to avoid overlap) */}
+      <div className="fixed bottom-16 right-6 z-50">
         <button
           onClick={() => {
             setModalTab('post');
             setIsModalOpen(true);
           }}
-          className="w-14 h-14 bg-gradient-to-tr from-brand-primary to-indigo-500 text-white rounded-full flex items-center justify-center shadow-2xl hover:scale-105 active:scale-95 transition-all glow-accent"
+          className="w-12 h-12 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white shadow-xl shadow-blue-500/20 flex items-center justify-center hover:scale-105 active:scale-95 transition-all cursor-pointer"
+          title="Create New Post, Task, or Poll"
         >
           <Plus className="w-6 h-6 text-white" />
         </button>
       </div>
 
-      {/* Universal Node Creation Modal */}
+      {/* TensorFlow AI Content Moderation Toast */}
       <AnimatePresence>
-        {isModalOpen && (
-          <>
-            {/* Backdrop */}
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[100]"
-              onClick={() => setIsModalOpen(false)}
-            />
-
-            {/* Modal Box */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[500px] bg-[#0B1736] border border-white/10 rounded-[28px] shadow-2xl p-6 z-[101] overflow-hidden text-left"
+        {showModerationToast && (
+          <motion.div
+            initial={{ opacity: 0, y: -20, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.95 }}
+            className="fixed top-6 right-6 z-[600] max-w-sm p-4 bg-white border-2 border-slate-900 shadow-[4px_4px_0px_0px_#0f172a] rounded-none flex items-start gap-3 text-left font-mono select-none"
+          >
+            <div className="p-1.5 bg-amber-100 text-amber-900 border border-slate-900 rounded-none shrink-0">
+              <AlertTriangle className="w-4 h-4 stroke-[2.5]" />
+            </div>
+            <div className="flex flex-col gap-1 min-w-0">
+              <span className="text-xs font-black uppercase text-slate-900 flex items-center gap-1.5 tracking-wider">
+                <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
+                AI Moderation Notice
+              </span>
+              <p className="text-[11px] text-slate-700 font-sans font-medium leading-relaxed">
+                {moderationMessage}
+              </p>
+            </div>
+            <button
+              onClick={() => setShowModerationToast(false)}
+              className="text-slate-500 hover:text-slate-900 p-1 cursor-pointer shrink-0"
             >
-              <div className="flex justify-between items-center border-b border-white/5 pb-4 mb-4">
-                <div className="flex gap-2 font-bold text-sm bg-[#102043]/40 p-1 rounded-xl">
-                  {['post', 'task', 'poll'].map((tab) => (
-                    <button
-                      key={tab}
-                      onClick={() => setModalTab(tab)}
-                      className={`px-3 py-1.5 rounded-lg capitalize text-xs transition-all ${
-                        modalTab === tab 
-                          ? 'bg-brand-primary text-white font-extrabold shadow' 
-                          : 'text-slate-400 hover:text-white'
-                      }`}
-                    >
-                      {tab}
-                    </button>
-                  ))}
-                </div>
-                <button 
-                  onClick={() => setIsModalOpen(false)}
-                  className="p-1.5 hover:bg-white/10 rounded-full transition-all text-slate-400 hover:text-white"
+              <X className="w-4 h-4" />
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Universal Node Creation Modal - Cubic Specification */}
+      <CubicDialog
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        title="Create Node"
+        subtitle="Post • Task • Poll Matrix"
+        maxWidth="max-w-xl"
+      >
+        {/* Modal Tabs */}
+        <div className="grid grid-cols-3 gap-2 p-1 bg-slate-100 border-2 border-slate-900 mb-5">
+          {[
+            { id: 'post', label: 'New Post', icon: FileText },
+            { id: 'task', label: 'New Task', icon: CheckSquare },
+            { id: 'poll', label: 'New Poll', icon: BarChart2 }
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setModalTab(tab.id)}
+              className={`py-2 px-2 text-xs font-mono uppercase font-black tracking-wider transition-all flex items-center justify-center gap-1.5 cursor-pointer truncate ${
+                modalTab === tab.id 
+                  ? 'bg-indigo-600 text-white border border-slate-900 shadow-[2px_2px_0px_0px_#0f172a]' 
+                  : 'text-slate-700 hover:text-slate-900 hover:bg-white/80'
+              }`}
+            >
+              <tab.icon className="w-3.5 h-3.5 shrink-0 stroke-[2.5]" />
+              <span className="truncate">{tab.label}</span>
+            </button>
+          ))}
+        </div>
+
+        {/* Form Views */}
+        <div className="mt-1 font-sans">
+          
+          {/* 1. Post creation form */}
+          {modalTab === 'post' && (
+            <form onSubmit={handlePostSubmit} className="flex flex-col gap-4">
+              <div className="flex flex-col gap-1.5">
+                <span className="text-[11px] font-mono font-black text-slate-700 uppercase tracking-wider pl-0.5">Category</span>
+                <select
+                  value={postCategory}
+                  onChange={(e) => setPostCategory(e.target.value)}
+                  className="w-full bg-slate-50 border-2 border-slate-900 text-xs sm:text-sm text-slate-900 p-2.5 px-3 rounded-none outline-none cursor-pointer focus:bg-white font-medium"
                 >
-                  <X className="w-4 h-4" />
+                  <option value="campus">Campus Updates & Announcements</option>
+                  <option value="student">Student Feed</option>
+                  <option value="faculty">Faculty Feed</option>
+                  <option value="research">Peer-Reviewed Research Feed</option>
+                  <option value="placement">Placement Cell & Job Board</option>
+                  <option value="club">Student Club Boards</option>
+                  <option value="achievement">Achievement & Trophy Board</option>
+                </select>
+              </div>
+
+              <div className="flex flex-col gap-1.5">
+                <span className="text-[11px] font-mono font-black text-slate-700 uppercase tracking-wider pl-0.5">Content</span>
+                <textarea
+                  required
+                  placeholder="Share university updates, thesis findings, syllabus details, or event announcements..."
+                  value={postText}
+                  onChange={(e) => setPostText(e.target.value)}
+                  className="w-full bg-slate-50 border-2 border-slate-900 text-xs sm:text-sm text-slate-900 p-3 rounded-none min-h-[110px] outline-none focus:bg-white resize-none font-sans leading-relaxed"
+                />
+              </div>
+
+              {/* Drag and Drop area */}
+              <div className="flex flex-col gap-1.5">
+                <span className="text-[11px] font-mono font-black text-slate-700 uppercase tracking-wider pl-0.5">Media Attachment</span>
+                <label className="w-full border-2 border-dashed border-slate-900 hover:bg-slate-100/70 rounded-none p-5 text-center flex flex-col items-center justify-center gap-2 cursor-pointer bg-slate-50 transition-all">
+                  <input 
+                    type="file" 
+                    accept="image/*,video/*,application/pdf"
+                    className="hidden"
+                    onChange={(e) => setPostFile(e.target.files[0])}
+                  />
+                  <Image className="w-6 h-6 text-indigo-600 shrink-0" />
+                  <span className="text-xs sm:text-sm text-slate-900 font-bold truncate max-w-full px-2">
+                    {postFile ? `Selected: ${postFile.name}` : 'Attach Image, Video, or PDF'}
+                  </span>
+                  <span className="text-[10.5px] text-slate-500 font-mono">
+                    {postFile ? 'Click to change attachment' : 'Drag & drop or click to browse (up to 10MB)'}
+                  </span>
+                </label>
+              </div>
+
+              <button 
+                type="submit" 
+                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 px-4 rounded-none font-mono uppercase tracking-wider font-black text-xs sm:text-sm border-2 border-slate-900 shadow-[3px_3px_0px_0px_#0f172a] hover:translate-x-[-1px] hover:translate-y-[-1px] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-transform mt-2 cursor-pointer"
+              >
+                Publish Post to Network
+              </button>
+            </form>
+          )}
+
+          {/* 2. Task creation form */}
+          {modalTab === 'task' && (
+            <form onSubmit={handleTaskSubmit} className="flex flex-col gap-4">
+              <div className="flex flex-col gap-1.5">
+                <span className="text-[11px] font-mono font-black text-slate-700 uppercase tracking-wider pl-0.5">Task Name</span>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. CS202 Midterm Exam Question Consensus"
+                  value={taskTitle}
+                  onChange={(e) => setTaskTitle(e.target.value)}
+                  className="w-full bg-slate-50 border-2 border-slate-900 text-xs sm:text-sm text-slate-900 p-2.5 px-3 rounded-none outline-none focus:bg-white font-sans"
+                />
+              </div>
+
+              <div className="flex flex-col gap-1.5">
+                <span className="text-[11px] font-mono font-black text-slate-700 uppercase tracking-wider pl-0.5">Description</span>
+                <textarea
+                  placeholder="Task details, milestones, or deliverables..."
+                  value={taskDesc}
+                  onChange={(e) => setTaskDesc(e.target.value)}
+                  className="w-full bg-slate-50 border-2 border-slate-900 text-xs sm:text-sm text-slate-900 p-3 rounded-none min-h-[90px] outline-none focus:bg-white resize-none font-sans leading-relaxed"
+                />
+              </div>
+
+              <div className="flex flex-col gap-1.5">
+                <span className="text-[11px] font-mono font-black text-slate-700 uppercase tracking-wider pl-0.5">Assignee</span>
+                <select
+                  value={taskAssignee}
+                  onChange={(e) => setTaskAssignee(e.target.value)}
+                  className="w-full bg-slate-50 border-2 border-slate-900 text-xs sm:text-sm text-slate-900 p-2.5 px-3 rounded-none outline-none cursor-pointer focus:bg-white font-sans"
+                >
+                  <option value="">Select Assignee (Optional)</option>
+                  {users.map(u => (
+                    <option key={u.id} value={u.id}>{u.name} ({u.role.toUpperCase()})</option>
+                  ))}
+                </select>
+              </div>
+
+              <button 
+                type="submit" 
+                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 px-4 rounded-none font-mono uppercase tracking-wider font-black text-xs sm:text-sm border-2 border-slate-900 shadow-[3px_3px_0px_0px_#0f172a] hover:translate-x-[-1px] hover:translate-y-[-1px] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-transform mt-2 cursor-pointer"
+              >
+                Create Task in Matrix
+              </button>
+            </form>
+          )}
+
+          {/* 3. Poll creation form */}
+          {modalTab === 'poll' && (
+            <form onSubmit={handlePollSubmit} className="flex flex-col gap-4">
+              <div className="flex flex-col gap-1.5">
+                <span className="text-[11px] font-mono font-black text-slate-700 uppercase tracking-wider pl-0.5">Poll Question</span>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Should the semester cultural fest date be moved to October?"
+                  value={pollQuestion}
+                  onChange={(e) => setPollQuestion(e.target.value)}
+                  className="w-full bg-slate-50 border-2 border-slate-900 text-xs sm:text-sm text-slate-900 p-2.5 px-3 rounded-none outline-none focus:bg-white font-sans"
+                />
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <span className="text-[11px] font-mono font-black text-slate-700 uppercase tracking-wider pl-0.5">Options</span>
+                {pollOptions.map((opt, i) => (
+                  <input 
+                    key={i}
+                    type="text"
+                    required={i < 2}
+                    placeholder={`Option ${i + 1}`}
+                    value={opt}
+                    onChange={(e) => {
+                      const newOpts = [...pollOptions];
+                      newOpts[i] = e.target.value;
+                      setPollOptions(newOpts);
+                    }}
+                    className="w-full bg-slate-50 border-2 border-slate-900 text-xs sm:text-sm text-slate-900 p-2.5 px-3 rounded-none outline-none focus:bg-white font-sans"
+                  />
+                ))}
+                <button
+                  type="button"
+                  onClick={() => setPollOptions([...pollOptions, ''])}
+                  className="text-xs font-mono font-black uppercase text-indigo-600 hover:underline text-left self-start mt-1 cursor-pointer"
+                >
+                  + Add Option
                 </button>
               </div>
 
-              {/* Form Views */}
-              <div className="mt-2">
-                
-                {/* 1. Post creation form */}
-                {modalTab === 'post' && (
-                  <form onSubmit={handlePostSubmit} className="flex flex-col gap-4">
-                    <div className="flex flex-col gap-1">
-                      <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1">Category</span>
-                      <select
-                        value={postCategory}
-                        onChange={(e) => setPostCategory(e.target.value)}
-                        className="bg-[#102043] border border-white/5 text-xs text-white p-3 rounded-xl outline-none"
-                      >
-                        <option value="student">Student Feed</option>
-                        <option value="faculty">Faculty Feed</option>
-                        <option value="research">Research Feed</option>
-                        <option value="campus">Campus Updates</option>
-                        <option value="placement">Placement Cell</option>
-                        <option value="club">Club Boards</option>
-                        <option value="achievement">Achievement Trophy</option>
-                      </select>
-                    </div>
+              <button 
+                type="submit" 
+                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-3 px-4 rounded-none font-mono uppercase tracking-wider font-black text-xs sm:text-sm border-2 border-slate-900 shadow-[3px_3px_0px_0px_#0f172a] hover:translate-x-[-1px] hover:translate-y-[-1px] active:translate-x-[1px] active:translate-y-[1px] active:shadow-none transition-transform mt-2 cursor-pointer"
+              >
+                Launch Consensus Poll
+              </button>
+            </form>
+          )}
 
-                    <div className="flex flex-col gap-1">
-                      <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1">Content</span>
-                      <textarea
-                        required
-                        placeholder="Share updates, research attachments, or syllabus details..."
-                        value={postText}
-                        onChange={(e) => setPostText(e.target.value)}
-                        className="bg-[#102043] border border-white/5 text-xs text-white p-3.5 rounded-xl h-28 outline-none focus:border-brand-primary/30"
-                      />
-                    </div>
-
-                    {/* Drag and Drop area */}
-                    <div className="flex flex-col gap-1.5">
-                      <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1">Media Files</span>
-                      <label className="border border-dashed border-white/10 rounded-2xl p-6 text-center flex flex-col items-center gap-2 cursor-pointer hover:border-white/20 transition-all">
-                        <input 
-                          type="file" 
-                          accept="image/*,video/*,application/pdf"
-                          className="hidden"
-                          onChange={(e) => setPostFile(e.target.files[0])}
-                        />
-                        <Image className="w-6 h-6 text-brand-primary" />
-                        <span className="text-xs text-slate-300 font-semibold">Upload Image, Video, or PDF</span>
-                        <span className="text-[10px] text-slate-500 font-medium">
-                          {postFile ? `Selected: ${postFile.name}` : 'File size up to 10MB'}
-                        </span>
-                      </label>
-                    </div>
-
-                    <button 
-                      type="submit" 
-                      className="w-full bg-brand-primary hover:bg-brand-primary-hover text-white py-3 rounded-xl text-xs font-bold transition-all shadow-lg mt-2"
-                    >
-                      Publish Post
-                    </button>
-                  </form>
-                )}
-
-                {/* 2. Task creation form */}
-                {modalTab === 'task' && (
-                  <form onSubmit={handleTaskSubmit} className="flex flex-col gap-4">
-                    <div className="flex flex-col gap-1">
-                      <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1">Task Name</span>
-                      <input
-                        type="text"
-                        required
-                        placeholder="e.g. Present Research Draft"
-                        value={taskTitle}
-                        onChange={(e) => setTaskTitle(e.target.value)}
-                        className="bg-[#102043] border border-white/5 text-xs text-white p-3 rounded-xl outline-none"
-                      />
-                    </div>
-
-                    <div className="flex flex-col gap-1">
-                      <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1">Description</span>
-                      <textarea
-                        placeholder="Task details, milestones, or goals..."
-                        value={taskDesc}
-                        onChange={(e) => setTaskDesc(e.target.value)}
-                        className="bg-[#102043] border border-white/5 text-xs text-white p-3 rounded-xl h-20 outline-none"
-                      />
-                    </div>
-
-                    <div className="flex flex-col gap-1">
-                      <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1">Assignee</span>
-                      <select
-                        value={taskAssignee}
-                        onChange={(e) => setTaskAssignee(e.target.value)}
-                        className="bg-[#102043] border border-white/5 text-xs text-white p-3 rounded-xl outline-none"
-                      >
-                        <option value="">Unassigned</option>
-                        {users.map(u => (
-                          <option key={u.id} value={u.id}>{u.name} ({u.role.toUpperCase()})</option>
-                        ))}
-                      </select>
-                    </div>
-
-                    <button 
-                      type="submit" 
-                      className="w-full bg-brand-primary hover:bg-brand-primary-hover text-white py-3 rounded-xl text-xs font-bold transition-all shadow-lg mt-2"
-                    >
-                      Create Task
-                    </button>
-                  </form>
-                )}
-
-                {/* 3. Poll creation form */}
-                {modalTab === 'poll' && (
-                  <form onSubmit={handlePollSubmit} className="flex flex-col gap-4">
-                    <div className="flex flex-col gap-1">
-                      <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1">Question</span>
-                      <input
-                        type="text"
-                        required
-                        placeholder="e.g. Schedule review for Friday?"
-                        value={pollQuestion}
-                        onChange={(e) => setPollQuestion(e.target.value)}
-                        className="bg-[#102043] border border-white/5 text-xs text-white p-3 rounded-xl outline-none"
-                      />
-                    </div>
-
-                    <div className="flex flex-col gap-2">
-                      <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest pl-1">Options</span>
-                      {pollOptions.map((opt, i) => (
-                        <input 
-                          key={i}
-                          type="text"
-                          required={i < 2}
-                          placeholder={`Option ${i + 1}`}
-                          value={opt}
-                          onChange={(e) => {
-                            const newOpts = [...pollOptions];
-                            newOpts[i] = e.target.value;
-                            setPollOptions(newOpts);
-                          }}
-                          className="bg-[#102043] border border-white/5 text-xs text-white p-2.5 rounded-xl outline-none"
-                        />
-                      ))}
-                      <button
-                        type="button"
-                        onClick={() => setPollOptions([...pollOptions, ''])}
-                        className="text-[10px] font-bold text-brand-primary hover:underline text-left self-start mt-1 bg-transparent border-none outline-none"
-                      >
-                        + Add Option
-                      </button>
-                    </div>
-
-                    <button 
-                      type="submit" 
-                      className="w-full bg-brand-primary hover:bg-brand-primary-hover text-white py-3 rounded-xl text-xs font-bold transition-all shadow-lg mt-2"
-                    >
-                      Post Poll
-                    </button>
-                  </form>
-                )}
-
-              </div>
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
+        </div>
+      </CubicDialog>
 
     </div>
   );

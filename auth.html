@@ -418,7 +418,7 @@
       });
 
       // Handle Sign In
-      signinFormEl.addEventListener('submit', function(e) {
+      signinFormEl.addEventListener('submit', async function(e) {
         e.preventDefault();
         hideAlert(signinError);
         const email = document.getElementById('signin-email').value.trim().toLowerCase();
@@ -429,45 +429,67 @@
           return;
         }
 
-        let matchedUser = null;
-        try {
-          const users = JSON.parse(localStorage.getItem(USERS_KEY) || '[]');
-          matchedUser = users.find(u => u.email && u.email.toLowerCase() === email);
-        } catch(err) {}
-
-        let inferredRole = matchedUser ? matchedUser.role : 'student';
-        if (!matchedUser) {
-          if (email.includes('superadmin')) inferredRole = 'superadmin';
-          else if (email.includes('admin')) inferredRole = 'admin';
-          else if (email.includes('faculty') || email.includes('prof')) inferredRole = 'faculty';
-          else if (email.includes('hod')) inferredRole = 'hod';
-          else if (email.includes('dean')) inferredRole = 'dean';
-          else if (email.includes('registrar')) inferredRole = 'registrar';
-          else if (email.includes('finance')) inferredRole = 'finance_manager';
-        }
-
-        const userName = matchedUser ? matchedUser.name : (email.split('@')[0].replace(/[._-]/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) || 'Campus User');
-
-        const session = {
-          id: matchedUser ? matchedUser.id : 'usr_' + Date.now().toString(36),
-          name: userName,
-          email: email,
-          role: inferredRole,
-          avatar: matchedUser ? matchedUser.avatar : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
-          loginAt: new Date().toISOString()
-        };
-
-        sessionStorage.setItem(SESSION_KEY, JSON.stringify(session));
-        localStorage.setItem(SESSION_KEY, JSON.stringify(session));
-
         signinBtn.classList.add('loading');
-        setTimeout(() => {
+
+        try {
+          const res = await fetch('/api/auth/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, password })
+          });
+          const data = await res.json();
+
+          if (!res.ok || !data.success) {
+            signinBtn.classList.remove('loading');
+            showAlert(signinError, signinErrorText, data.error || 'Invalid credentials.');
+            return;
+          }
+
+          const user = data.user;
+          const session = {
+            id: user.id,
+            name: user.name,
+            email: user.email,
+            role: user.role,
+            avatar: user.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
+            loginAt: new Date().toISOString()
+          };
+
+          sessionStorage.setItem(SESSION_KEY, JSON.stringify(session));
+          localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+          sessionStorage.setItem('campusx_erp_session', JSON.stringify(session));
+          localStorage.setItem('campusx_erp_session', JSON.stringify(session));
+
+          setTimeout(() => {
+            window.location.href = roleHomeMap[user.role] || 'index.html';
+          }, 300);
+        } catch (err) {
+          // Offline fallback
+          let matchedUser = null;
+          try {
+            const users = JSON.parse(localStorage.getItem(USERS_KEY) || '[]');
+            matchedUser = users.find(u => u.email && u.email.toLowerCase() === email);
+          } catch(e) {}
+
+          let inferredRole = matchedUser ? matchedUser.role : 'student';
+          const session = {
+            id: matchedUser ? matchedUser.id : 'usr_' + Date.now().toString(36),
+            name: matchedUser ? matchedUser.name : (email.split('@')[0] || 'Campus User'),
+            email: email,
+            role: inferredRole,
+            avatar: matchedUser ? matchedUser.avatar : 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
+            loginAt: new Date().toISOString()
+          };
+          sessionStorage.setItem(SESSION_KEY, JSON.stringify(session));
+          localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+          sessionStorage.setItem('campusx_erp_session', JSON.stringify(session));
+          localStorage.setItem('campusx_erp_session', JSON.stringify(session));
           window.location.href = roleHomeMap[inferredRole] || 'index.html';
-        }, 400);
+        }
       });
 
       // Handle Sign Up
-      signupFormEl.addEventListener('submit', function(e) {
+      signupFormEl.addEventListener('submit', async function(e) {
         e.preventDefault();
         hideAlert(signupError);
         hideAlert(signupSuccess);
@@ -493,33 +515,57 @@
           return;
         }
 
-        const newUser = {
-          id: 'usr_' + Date.now().toString(36),
-          name: name,
-          email: email,
-          role: role,
-          avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
-          createdAt: new Date().toISOString()
-        };
-
-        try {
-          const users = JSON.parse(localStorage.getItem(USERS_KEY) || '[]');
-          const filtered = users.filter(u => u.email !== email);
-          filtered.push(newUser);
-          localStorage.setItem(USERS_KEY, JSON.stringify(filtered));
-        } catch(err) {}
-
-        showAlert(signupSuccess, signupSuccessText, 'Account created successfully! Switching to Sign In...');
         signupBtn.classList.add('loading');
 
-        setTimeout(() => {
-          signupBtn.classList.remove('loading');
-          switchTab('signin');
-          document.getElementById('signin-email').value = email;
-          document.getElementById('signin-password').value = password;
-          signupFormEl.reset();
-          strengthBox.style.display = 'none';
-        }, 1200);
+        try {
+          const res = await fetch('/api/auth/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, email, role, password })
+          });
+          const data = await res.json();
+
+          if (!res.ok || !data.success) {
+            signupBtn.classList.remove('loading');
+            showAlert(signupError, signupErrorText, data.error || 'Failed to register account.');
+            return;
+          }
+
+          showAlert(signupSuccess, signupSuccessText, 'Account created & synced to Firebase! Switching to Sign In...');
+
+          setTimeout(() => {
+            signupBtn.classList.remove('loading');
+            switchTab('signin');
+            document.getElementById('signin-email').value = email;
+            document.getElementById('signin-password').value = password;
+            signupFormEl.reset();
+            strengthBox.style.display = 'none';
+          }, 1200);
+        } catch (err) {
+          // Offline local registration fallback
+          const newUser = {
+            id: 'usr_' + Date.now().toString(36),
+            name: name,
+            email: email,
+            role: role,
+            avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
+            createdAt: new Date().toISOString()
+          };
+          try {
+            const users = JSON.parse(localStorage.getItem(USERS_KEY) || '[]');
+            users.push(newUser);
+            localStorage.setItem(USERS_KEY, JSON.stringify(users));
+          } catch(e) {}
+
+          showAlert(signupSuccess, signupSuccessText, 'Account created in local cache! Switching to Sign In...');
+          setTimeout(() => {
+            signupBtn.classList.remove('loading');
+            switchTab('signin');
+            document.getElementById('signin-email').value = email;
+            document.getElementById('signin-password').value = password;
+            signupFormEl.reset();
+          }, 1200);
+        }
       });
 
       // SSO Mock

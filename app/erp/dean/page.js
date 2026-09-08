@@ -304,6 +304,53 @@ export default function DeanDashboard() {
     return matchesDept && matchesSearch;
   });
 
+  const handleExportDeanRegistry = () => {
+    try {
+      const timestamp = new Date().toISOString().split('T')[0];
+      const filename = `CampusX_Deanery_Registry_${timestamp}.csv`;
+
+      let csvRows = [];
+      const escapeCell = (val) => {
+        if (val === null || val === undefined) return '""';
+        const str = String(val).replace(/"/g, '""');
+        return `"${str}"`;
+      };
+
+      csvRows.push(['CAMPUSX OS - ACADEMIC DEANERY REGISTRY & REVIEW']);
+      csvRows.push(['Export Timestamp', new Date().toLocaleString()]);
+      csvRows.push(['Dean Officer', currentUser?.name || 'Dean of Faculty']);
+      csvRows.push(['']);
+
+      csvRows.push(['=== FACULTY WORKLOADS & ROSTER ===']);
+      csvRows.push(['Faculty ID', 'Full Name', 'Email', 'Department', 'Designation', 'Weekly Hours', 'Status']);
+      faculty.forEach(f => {
+        csvRows.push([f.id || '', f.name || '', f.email || '', f.dept || '', f.designation || 'Professor', f.workload || 12, (f.workload || 12) > 15 ? 'Overloaded' : 'Optimal']);
+      });
+      csvRows.push(['']);
+
+      csvRows.push(['=== RESEARCH PROJECT PIPELINES & GRANTS ===']);
+      csvRows.push(['Project ID', 'Project Title', 'Department', 'Lead Investigator', 'Budget ($)', 'Status']);
+      researchProjects.forEach(p => {
+        csvRows.push([p.id || '', p.title || '', p.dept || '', p.lead || '', p.budget || 0, p.status || 'Active']);
+      });
+      csvRows.push(['']);
+
+      const csvString = csvRows.map(row => row.map(escapeCell).join(',')).join('\r\n');
+      const blob = new Blob(['\uFEFF' + csvString], { type: 'text/csv;charset=utf-8;' });
+      const link = document.createElement('a');
+      const url = URL.createObjectURL(blob);
+      link.setAttribute('href', url);
+      link.setAttribute('download', filename);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('Export Dean Registry error:', err);
+      alert('Could not export registry.');
+    }
+  };
+
   const totalResearchBudget = researchProjects.reduce((acc, p) => acc + p.budget, 0);
 
   if (loading) return null;
@@ -326,8 +373,9 @@ export default function DeanDashboard() {
         </div>
         <div className="flex gap-2">
           <button 
-            onClick={() => alert('Exporting Global Academic Review...')}
+            onClick={handleExportDeanRegistry}
             className="btn btn-secondary btn-sm flex items-center gap-1.5 cursor-pointer"
+            title="Download Deanery Registry Spreadsheet"
           >
             <FileText className="w-4 h-4" />
             Export Registry

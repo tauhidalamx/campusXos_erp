@@ -1,7 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: false,
-  turbopack: {},
   serverExternalPackages: ['utf-8-validate', 'bufferutil', 'sqlite3'],
   webpack: (config) => {
     config.externals.push({
@@ -28,4 +27,3 @@ const nextConfig = {
 };
 
 module.exports = nextConfig;
-

@@ -65,17 +65,36 @@ export default function FloatingMessenger() {
 
   const activeMessages = chatMessages[activeChatChannel] || [];
 
-  // Filter conversations/channels
-  const conversationChannels = [
+  // Dynamic list of conversation channels combining standard channels + all active users
+  const defaultChannels = [
     { id: 'channel_general', name: 'General Announcements', type: 'channel', unread: false },
-    { id: 'ai_chat', name: 'CampusX AI Copilot', type: 'ai', unread: true },
-    { id: 'usr_001', name: 'Dr. Evelyn Sterling', type: 'faculty', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150', unread: false },
-    { id: 'usr_002', name: 'Prof. Marcus Chen', type: 'faculty', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150', unread: false },
-    { id: 'usr_005', name: 'Carlos Mendez', type: 'student', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150', unread: true }
+    { id: 'ai_chat', name: 'CampusX AI Copilot', type: 'ai', unread: true }
   ];
+
+  const userChannels = (users || [])
+    .filter(u => u.id !== currentUser?.id)
+    .map(u => ({
+      id: u.id,
+      name: u.name,
+      type: u.role === 'faculty' ? 'faculty' : u.role === 'student' ? 'student' : 'member',
+      avatar: u.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
+      unread: false
+    }));
+
+  const allConversationChannels = [
+    ...defaultChannels,
+    ...userChannels.filter(uc => !defaultChannels.some(dc => dc.id === uc.id))
+  ];
+
+  const filteredChannels = allConversationChannels.filter(ch => {
+    if (!chatSearchQuery.trim()) return true;
+    const q = chatSearchQuery.toLowerCase();
+    return ch.name.toLowerCase().includes(q) || ch.type.toLowerCase().includes(q);
+  });
 
   const handleChannelSelect = (channelId) => {
     setActiveChatChannel(channelId);
+    setMessengerOpen(true);
     setMinimized(false);
   };
 
@@ -167,7 +186,7 @@ export default function FloatingMessenger() {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-[80] flex flex-col items-end connect-font-inter">
+    <div className="chat-widget-dock flex flex-col items-end connect-font-inter">
       
       {/* Real-time Video Call Overlay Popup */}
       <AnimatePresence>
@@ -239,24 +258,24 @@ export default function FloatingMessenger() {
 
       {/* Main messenger collapsible card overlay */}
       <div 
-        className={`messenger-container w-[360px] max-w-[90vw] bg-[#0B1736] border border-white/5 rounded-2xl flex flex-col overflow-hidden connect-glass shadow-2xl ${
-          minimized ? 'h-14' : 'h-[480px]'
+        className={`messenger-container fixed bottom-0 right-6 z-40 w-80 rounded-t-2xl shadow-xl border border-slate-200 bg-white flex flex-col overflow-hidden transition-all duration-200 ${
+          minimized ? 'h-13' : 'h-[480px]'
         }`}
       >
         
         {/* Messenger Header bar */}
         <div 
           onClick={() => setMinimized(!minimized)}
-          className="h-14 px-4 bg-[#102043]/50 border-b border-white/5 flex items-center justify-between cursor-pointer select-none"
+          className="px-4 py-3 bg-white border-b border-slate-100 flex items-center justify-between cursor-pointer select-none"
         >
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-2">
             <div className="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-ping shrink-0" />
-            <span className="text-sm font-bold text-white tracking-wide">CampusX Direct Chat</span>
+            <span className="text-xs font-bold text-slate-900 tracking-wide">CampusX Direct Chat</span>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center">
             {/* Unread count badge */}
-            <span className="bg-brand-primary text-white text-[10px] font-bold px-1.5 py-0.5 rounded-md">3 unread</span>
-            {minimized ? <ChevronUp className="w-4 h-4 text-slate-400" /> : <ChevronDown className="w-4 h-4 text-slate-400" />}
+            <span className="px-2 py-0.5 text-xs rounded-full bg-blue-600 text-white font-medium mr-3">3 unread</span>
+            {minimized ? <ChevronUp className="w-4 h-4 text-slate-500" /> : <ChevronDown className="w-4 h-4 text-slate-500" />}
           </div>
         </div>
 
@@ -268,77 +287,99 @@ export default function FloatingMessenger() {
             {messengerOpen === false ? (
               <div className="w-full flex flex-col overflow-hidden">
                 {/* Search Bar */}
-                <div className="p-3 border-b border-white/5">
-                  <div className="flex items-center bg-[#102043]/40 border border-white/5 rounded-xl px-3 py-1.5 gap-2">
-                    <Search className="w-3.5 h-3.5 text-slate-500" />
+                <div className="p-3.5 px-4 border-b border-slate-200 bg-white">
+                  <div className="flex items-center bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 gap-2 shadow-2xs focus-within:border-indigo-500 focus-within:bg-white transition-all">
+                    <Search className="w-3.5 h-3.5 text-slate-400 shrink-0" />
                     <input 
                       type="text" 
                       placeholder="Search channels, people..." 
-                      className="bg-transparent border-none text-xs text-white outline-none w-full placeholder-slate-500"
+                      value={chatSearchQuery}
+                      onChange={(e) => setChatSearchQuery(e.target.value)}
+                      className="bg-transparent border-none text-xs text-slate-800 outline-none w-full placeholder-slate-400 font-medium"
                     />
+                    {chatSearchQuery && (
+                      <button onClick={() => setChatSearchQuery('')} className="text-slate-400 hover:text-slate-700 cursor-pointer">
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    )}
                   </div>
                 </div>
 
-                {/* Channel List */}
-                <div className="flex-1 overflow-y-auto p-2 flex flex-col gap-1 text-left">
-                  {conversationChannels.map((ch) => (
-                    <div 
-                      key={ch.id}
-                      onClick={() => handleChannelSelect(ch.id)}
-                      className={`flex justify-between items-center p-2.5 hover:bg-white/[0.03] rounded-xl cursor-pointer transition-all duration-150 border ${
-                        activeChatChannel === ch.id 
-                          ? 'bg-brand-primary/10 border-brand-primary/20 text-brand-primary' 
-                          : 'border-transparent text-slate-300'
-                      }`}
-                    >
-                      <div className="flex items-center gap-3 min-w-0">
-                        {ch.avatar ? (
-                          <img src={ch.avatar} alt="" className="w-8 h-8 rounded-full object-cover border border-white/10" />
-                        ) : (
-                          <div className="w-8 h-8 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 flex items-center justify-center shrink-0">
-                            {ch.type === 'ai' ? <Sparkles className="w-4 h-4 text-brand-primary" /> : <MessageSquare className="w-4 h-4" />}
+                {/* Channel & People List */}
+                <div className="flex-1 overflow-y-auto p-2.5 flex flex-col gap-1.5 text-left story-tray-scrollbar">
+                  {filteredChannels.length > 0 ? (
+                    filteredChannels.map((ch) => (
+                      <div 
+                        key={ch.id}
+                        onClick={() => handleChannelSelect(ch.id)}
+                        className={`flex justify-between items-center p-2.5 px-3 rounded-xl cursor-pointer transition-all duration-150 gap-2.5 min-w-0 ${
+                          activeChatChannel === ch.id 
+                            ? 'bg-indigo-50 text-indigo-700 font-bold' 
+                            : 'hover:bg-slate-50 text-slate-700'
+                        }`}
+                      >
+                        <div className="flex items-center gap-3 min-w-0 flex-1">
+                          {ch.avatar ? (
+                            <img src={ch.avatar} alt="" className="w-8 h-8 rounded-full object-cover shrink-0" />
+                          ) : (
+                            <div className="w-8 h-8 rounded-full bg-indigo-50 text-indigo-700 flex items-center justify-center shrink-0">
+                              {ch.type === 'ai' ? <Sparkles className="w-4 h-4 text-indigo-600" /> : <MessageSquare className="w-4 h-4" />}
+                            </div>
+                          )}
+                          <div className="flex flex-col min-w-0 text-left flex-1">
+                            <span className="text-xs font-bold text-slate-900 truncate">{ch.name}</span>
+                            <span className="text-[10px] font-medium text-slate-500 mt-0.5 capitalize truncate">{ch.type} chat</span>
                           </div>
-                        )}
-                        <div className="flex flex-col min-w-0">
-                          <span className="text-xs font-bold text-white truncate">{ch.name}</span>
-                          <span className="text-[9px] font-medium text-slate-400 mt-0.5 capitalize">{ch.type} chat</span>
                         </div>
+                        
+                        {ch.unread && (
+                          <span className="w-2.5 h-2.5 rounded-full bg-indigo-600 shrink-0 shadow-2xs" />
+                        )}
                       </div>
-                      
-                      {ch.unread && (
-                        <span className="w-2 h-2 rounded-full bg-brand-primary shrink-0" />
-                      )}
+                    ))
+                  ) : (
+                    <div className="p-6 text-center text-xs text-slate-400 font-medium">
+                      No contacts or channels found matching "{chatSearchQuery}".
                     </div>
-                  ))}
+                  )}
                 </div>
               </div>
             ) : (
               
               /* Right panels view: Active Chat window */
-              <div className="w-full flex flex-col overflow-hidden relative">
+              <div className="w-full flex flex-col overflow-hidden relative bg-white">
                 
                 {/* Chat window Header */}
-                <div className="p-3 border-b border-white/5 bg-[#102043]/30 flex items-center justify-between">
-                  <div className="flex items-center gap-2.5">
+                <div className="p-3 border-b border-slate-200 bg-slate-50 flex items-center justify-between">
+                  <div className="flex items-center gap-2.5 min-w-0">
                     <button 
                       onClick={() => setMessengerOpen(false)}
-                      className="text-xs font-bold text-slate-400 hover:text-white mr-1.5"
+                      className="text-xs font-bold text-slate-500 hover:text-slate-900 mr-1 shrink-0 cursor-pointer"
+                      title="Back to Contacts"
                     >
                       ← Back
                     </button>
-                    <span className="text-xs font-bold text-white truncate max-w-[150px]">
-                      {conversationChannels.find(ch => ch.id === activeChatChannel)?.name || 'Direct Channel'}
+                    {allConversationChannels.find(ch => ch.id === activeChatChannel)?.avatar && (
+                      <img 
+                        src={allConversationChannels.find(ch => ch.id === activeChatChannel)?.avatar} 
+                        alt="" 
+                        className="w-6 h-6 rounded-full object-cover border border-slate-200 shrink-0" 
+                      />
+                    )}
+                    <span className="text-xs font-bold text-slate-900 truncate max-w-[140px]">
+                      {allConversationChannels.find(ch => ch.id === activeChatChannel)?.name || (users || []).find(u => u.id === activeChatChannel)?.name || 'Direct Channel'}
                     </span>
                   </div>
                   
                   {/* Video Call trigger */}
-                  {activeChatChannel.startsWith('usr_') && (
+                  {activeChatChannel !== 'channel_general' && activeChatChannel !== 'ai_chat' && (
                     <button 
                       onClick={() => {
-                        const rec = users.find(u => u.id === activeChatChannel) || { name: 'CampusX Node', avatar: '' };
+                        const rec = (users || []).find(u => u.id === activeChatChannel) || allConversationChannels.find(ch => ch.id === activeChatChannel) || { name: 'CampusX Node', avatar: '' };
                         startVideoCall(rec);
                       }}
-                      className="p-1.5 bg-brand-primary/10 border border-brand-primary/20 text-brand-primary hover:bg-brand-primary hover:text-white rounded-xl transition-all"
+                      title="Start Video Call"
+                      className="p-1.5 bg-indigo-50 border border-indigo-200 text-indigo-700 hover:bg-brand-primary hover:text-white rounded-xl transition-all cursor-pointer"
                     >
                       <Video className="w-3.5 h-3.5" />
                     </button>
@@ -346,7 +387,16 @@ export default function FloatingMessenger() {
                 </div>
 
                 {/* Messages scroller viewport */}
-                <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-3.5">
+                <div className="flex-1 overflow-y-auto p-4 px-4.5 flex flex-col gap-3.5 story-tray-scrollbar bg-slate-50/40">
+                  {activeMessages.length === 0 && (
+                    <div className="flex-1 flex flex-col items-center justify-center text-center p-6 text-slate-400 my-auto">
+                      <div className="w-10 h-10 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200 flex items-center justify-center mb-2 shadow-2xs">
+                        <MessageSquare className="w-5 h-5" />
+                      </div>
+                      <span className="text-xs font-bold text-slate-800">Direct Chat</span>
+                      <span className="text-[10.5px] text-slate-500 mt-1 font-medium">Send a message below to start the conversation!</span>
+                    </div>
+                  )}
                   {activeMessages.map((msg) => {
                     const isSelf = msg.senderName === currentUser?.name;
                     return (
@@ -354,18 +404,18 @@ export default function FloatingMessenger() {
                         <img 
                           src={msg.senderAvatar || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150'} 
                           alt="" 
-                          className="w-7 h-7 rounded-full object-cover border border-white/10 mt-0.5 shrink-0" 
+                          className="w-7 h-7 rounded-full object-cover border border-slate-200 mt-0.5 shrink-0 shadow-2xs" 
                         />
-                        <div className="flex flex-col min-w-0 max-w-[70%]">
-                          <div className={`flex items-baseline gap-1.5 mb-0.5 ${isSelf ? 'flex-row-reverse' : ''}`}>
-                            <span className="text-[10px] font-bold text-white/50">{msg.senderName.split(' ')[0]}</span>
-                            <span className="text-[8px] font-mono text-slate-500">{msg.time}</span>
+                        <div className="flex flex-col min-w-0 max-w-[75%]">
+                          <div className={`flex items-baseline gap-1.5 mb-1 px-1 ${isSelf ? 'flex-row-reverse' : ''}`}>
+                            <span className="text-[10.5px] font-bold text-slate-600">{msg.senderName.split(' ')[0]}</span>
+                            <span className="text-[8.5px] font-mono text-slate-400">{msg.time}</span>
                           </div>
                           
                           {/* Chat bubble */}
                           <div 
-                            className={`p-3 rounded-2xl text-xs text-white leading-normal font-semibold relative group ${
-                              isSelf ? 'bubble-sent' : 'bubble-received'
+                            className={`p-3.5 px-4 rounded-2xl text-xs leading-relaxed font-medium relative group shadow-2xs break-words ${
+                              isSelf ? 'bg-gradient-to-r from-indigo-600 to-indigo-700 text-white rounded-br-xs' : 'bg-white text-slate-800 border border-slate-200 rounded-bl-xs'
                             }`}
                             onDoubleClick={() => setShowEmojiReaction(msg.id)}
                           >
@@ -379,7 +429,7 @@ export default function FloatingMessenger() {
                                   <motion.div 
                                     initial={{ scale: 0.8, opacity: 0 }}
                                     animate={{ scale: 1, opacity: 1 }}
-                                    className="absolute -top-10 left-0 bg-[#0B1736] border border-white/10 rounded-full p-1 z-50 flex gap-1.5 shadow-xl"
+                                    className="absolute -top-10 left-0 bg-white border border-slate-200 rounded-full p-1 z-50 flex gap-1.5 shadow-xl"
                                   >
                                     {['👍', '❤️', '🔥', '👏'].map(emoji => (
                                       <button 
@@ -398,9 +448,9 @@ export default function FloatingMessenger() {
 
                           {/* Render reactions indices */}
                           {msg.reactions && Object.keys(msg.reactions).length > 0 && (
-                            <div className={`flex gap-1 mt-1 ${isSelf ? 'justify-end' : ''}`}>
+                            <div className={`flex gap-1 mt-1.5 ${isSelf ? 'justify-end' : ''}`}>
                               {Object.entries(msg.reactions).map(([emoji, count]) => (
-                                <span key={emoji} className="bg-[#102043] border border-white/5 px-1.5 py-0.5 rounded-full text-[9px] font-bold font-mono text-slate-400">
+                                <span key={emoji} className="bg-white border border-slate-200 px-2 py-0.5 rounded-full text-[9.5px] font-bold font-mono text-slate-600 shadow-2xs">
                                   {emoji} {count}
                                 </span>
                               ))}
@@ -415,8 +465,8 @@ export default function FloatingMessenger() {
                 </div>
 
                 {/* Message input tray */}
-                <div className="p-3 border-t border-white/5 bg-[#102043]/20 flex gap-2 items-center">
-                  <button className="p-2 text-slate-400 hover:text-white rounded-lg">
+                <div className="p-3 px-3.5 border-t border-slate-200 bg-white flex gap-2 items-center">
+                  <button className="p-2 text-slate-400 hover:text-slate-800 rounded-xl cursor-pointer shrink-0">
                     <Paperclip className="w-4 h-4" />
                   </button>
                   <input 
@@ -426,16 +476,16 @@ export default function FloatingMessenger() {
                     value={chatInput}
                     onChange={(e) => setChatInput(e.target.value)}
                     onKeyDown={(e) => { if (e.key === 'Enter') handleChatSend(); }}
-                    className="flex-1 bg-[#0B1736] border border-white/5 text-xs text-white p-2.5 rounded-xl outline-none placeholder-slate-500"
+                    className="flex-1 min-w-0 bg-slate-50 border border-slate-200 text-xs text-slate-800 p-2.5 px-3.5 rounded-xl outline-none placeholder-slate-400 focus:border-indigo-600 focus:bg-white transition-all shadow-inner font-medium"
                   />
                   
                   {/* Voice Note button */}
                   <button 
                     onClick={handleVoiceRecord}
-                    className={`p-2 rounded-xl transition-all border ${
+                    className={`p-2.5 rounded-xl transition-all border cursor-pointer shrink-0 ${
                       voiceRecording 
                         ? 'bg-rose-500 border-rose-500 text-white animate-pulse' 
-                        : 'bg-[#102043] border-white/5 text-slate-400 hover:text-white'
+                        : 'bg-slate-50 border-slate-200 text-slate-500 hover:text-slate-900'
                     }`}
                   >
                     <Mic className="w-4 h-4" />
@@ -443,7 +493,7 @@ export default function FloatingMessenger() {
                   
                   <button 
                     onClick={handleChatSend}
-                    className="p-2.5 bg-brand-primary text-white rounded-xl hover:bg-brand-primary-hover shadow-md shrink-0"
+                    className="p-2.5 bg-gradient-to-r from-indigo-600 to-indigo-700 text-white rounded-xl hover:brightness-105 shadow-md shadow-indigo-500/20 shrink-0 cursor-pointer"
                   >
                     <Send className="w-4 h-4" />
                   </button>

@@ -81,56 +81,46 @@ export default function AdminPaymentsControl() {
   const loadAdminData = async () => {
     setLoading(true);
     try {
-      // 1. Fetch Dashboard analytics
-      const dashRes = await fetch('/api/payments/dashboard');
-      const dashData = await dashRes.json();
-      if (dashData && !dashData.error) {
-        setDashboardData(dashData);
+      // Fetch in parallel with error tolerance
+      const [dashRes, payRes, refRes, bankRes, qrRes, auditRes] = await Promise.allSettled([
+        fetch('/api/payments/dashboard'),
+        fetch('/api/payments'),
+        fetch('/api/refunds'),
+        fetch('/api/bank-accounts'),
+        fetch('/api/qr-codes'),
+        fetch('/api/payments/audit-logs')
+      ]);
+
+      if (dashRes.status === 'fulfilled' && dashRes.value.ok) {
+        const dashData = await dashRes.value.json();
+        if (dashData && !dashData.error) {
+          setDashboardData(dashData);
+        }
       }
 
-      // 2. Fetch payments list
-      const payRes = await fetch('/api/payments');
-      const payData = await payRes.json();
-      if (Array.isArray(payData)) {
-        setPayments(payData);
-      } else {
-        setPayments([]);
+      if (payRes.status === 'fulfilled' && payRes.value.ok) {
+        const payData = await payRes.value.json();
+        setPayments(Array.isArray(payData) ? payData : []);
       }
 
-      // 3. Fetch refunds list
-      const refRes = await fetch('/api/refunds');
-      const refData = await refRes.json();
-      if (Array.isArray(refData)) {
-        setRefunds(refData);
-      } else {
-        setRefunds([]);
+      if (refRes.status === 'fulfilled' && refRes.value.ok) {
+        const refData = await refRes.value.json();
+        setRefunds(Array.isArray(refData) ? refData : []);
       }
 
-      // 4. Fetch bank accounts
-      const bankRes = await fetch('/api/bank-accounts');
-      const bankData = await bankRes.json();
-      if (Array.isArray(bankData)) {
-        setBankAccounts(bankData);
-      } else {
-        setBankAccounts([]);
+      if (bankRes.status === 'fulfilled' && bankRes.value.ok) {
+        const bankData = await bankRes.value.json();
+        setBankAccounts(Array.isArray(bankData) ? bankData : []);
       }
 
-      // 5. Fetch QR codes
-      const qrRes = await fetch('/api/qr-codes');
-      const qrData = await qrRes.json();
-      if (Array.isArray(qrData)) {
-        setQrCodes(qrData);
-      } else {
-        setQrCodes([]);
+      if (qrRes.status === 'fulfilled' && qrRes.value.ok) {
+        const qrData = await qrRes.value.json();
+        setQrCodes(Array.isArray(qrData) ? qrData : []);
       }
 
-      // 6. Fetch payment audit logs
-      const auditRes = await fetch('/api/payments/audit-logs');
-      const auditData = await auditRes.json();
-      if (Array.isArray(auditData)) {
-        setAuditLogs(auditData);
-      } else {
-        setAuditLogs([]);
+      if (auditRes.status === 'fulfilled' && auditRes.value.ok) {
+        const auditData = await auditRes.value.json();
+        setAuditLogs(Array.isArray(auditData) ? auditData : []);
       }
 
     } catch (err) {
@@ -142,58 +132,73 @@ export default function AdminPaymentsControl() {
 
   // Render Chart.js analytics when dashboard data changes
   useEffect(() => {
-    if (typeof window === 'undefined' || !window.Chart || !chartRef.current || !dashboardData) return;
-    const Chart = window.Chart;
+    if (typeof window === 'undefined' || !chartRef.current) return;
 
-    if (chartInstance.current) {
-      chartInstance.current.destroy();
-    }
+    const renderChart = () => {
+      const Chart = window.Chart;
+      if (!Chart || !chartRef.current) return false;
 
-    const categories = dashboardData.charts.categoryRevenue || [];
-    const labels = categories.map(c => c.fee_type);
-    const totals = categories.map(c => c.total);
+      if (chartInstance.current) {
+        chartInstance.current.destroy();
+      }
 
-    const ctx = chartRef.current.getContext('2d');
-    chartInstance.current = new Chart(ctx, {
-      type: 'bar',
-      data: {
-        labels: labels.length > 0 ? labels : ['TUITION', 'HOSTEL', 'MESS', 'TRANSPORT'],
-        datasets: [{
-          label: 'Fee Ingestions ($)',
-          data: totals.length > 0 ? totals : [4500, 1500, 800, 400],
-          backgroundColor: [
-            'rgba(99, 102, 241, 0.65)',
-            'rgba(16, 185, 129, 0.65)',
-            'rgba(245, 158, 11, 0.65)',
-            'rgba(239, 68, 68, 0.65)',
-          ],
-          borderColor: [
-            'rgb(99, 102, 241)',
-            'rgb(16, 185, 129)',
-            'rgb(245, 158, 11)',
-            'rgb(239, 68, 68)',
-          ],
-          borderWidth: 1.5,
-          borderRadius: 8
-        }]
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: { display: false }
+      const categories = dashboardData?.charts?.categoryRevenue || [];
+      const labels = categories.map(c => c.fee_type);
+      const totals = categories.map(c => c.total);
+
+      const ctx = chartRef.current.getContext('2d');
+      chartInstance.current = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labels.length > 0 ? labels : ['TUITION', 'HOSTEL', 'MESS', 'TRANSPORT'],
+          datasets: [{
+            label: 'Fee Ingestions ($)',
+            data: totals.length > 0 ? totals : [4500, 1500, 800, 400],
+            backgroundColor: [
+              'rgba(99, 102, 241, 0.65)',
+              'rgba(16, 185, 129, 0.65)',
+              'rgba(245, 158, 11, 0.65)',
+              'rgba(239, 68, 68, 0.65)',
+            ],
+            borderColor: [
+              'rgb(99, 102, 241)',
+              'rgb(16, 185, 129)',
+              'rgb(245, 158, 11)',
+              'rgb(239, 68, 68)',
+            ],
+            borderWidth: 1.5,
+            borderRadius: 8
+          }]
         },
-        scales: {
-          y: {
-            grid: { color: 'rgba(255, 255, 255, 0.05)' },
-            ticks: { color: 'rgba(255, 255, 255, 0.5)' }
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: false }
           },
-          x: {
-            grid: { display: false },
-            ticks: { color: 'rgba(255, 255, 255, 0.5)' }
+          scales: {
+            y: {
+              grid: { color: 'rgba(255, 255, 255, 0.05)' },
+              ticks: { color: 'rgba(255, 255, 255, 0.5)' }
+            },
+            x: {
+              grid: { display: false },
+              ticks: { color: 'rgba(255, 255, 255, 0.5)' }
+            }
           }
         }
-      }
-    });
+      });
+      return true;
+    };
+
+    if (!renderChart()) {
+      // Retry in case Chart.js script tag is still loading
+      const interval = setInterval(() => {
+        if (renderChart()) {
+          clearInterval(interval);
+        }
+      }, 500);
+      return () => clearInterval(interval);
+    }
 
     return () => {
       if (chartInstance.current) {
@@ -401,7 +406,12 @@ export default function AdminPaymentsControl() {
     );
   }
 
-  const { stats } = dashboardData;
+  const stats = dashboardData?.stats || {
+    totalRevenue: 0,
+    verificationPending: 0,
+    todayCollection: 0,
+    refundRequested: 0
+  };
 
   return (
     <div className="flex flex-col gap-6 md:gap-8 fade-in text-white animate-fade-in">
@@ -432,7 +442,7 @@ export default function AdminPaymentsControl() {
         <div className="card p-5 bg-brand-bg-secondary border border-brand-border rounded-2xl">
           <span className="text-brand-text-muted text-xs font-semibold">Cumulative Reconciled Revenue</span>
           <span className="block text-2xl font-bold font-display text-white mt-1">
-            ${stats.totalRevenue.toLocaleString()}
+            ${(stats.totalRevenue || 0).toLocaleString()}
           </span>
           <span className="text-[10px] text-brand-accent-emerald mt-1 block">✓ All approved bank/UPI ledgers</span>
         </div>
@@ -440,7 +450,7 @@ export default function AdminPaymentsControl() {
         <div className="card p-5 bg-brand-bg-secondary border border-brand-border rounded-2xl">
           <span className="text-brand-text-muted text-xs font-semibold">Verification Pending Queue</span>
           <span className="block text-2xl font-bold font-display text-brand-accent-amber mt-1">
-            {stats.verificationPending} Payments
+            {stats.verificationPending || 0} Payments
           </span>
           <span className="text-[10px] text-brand-text-muted mt-1 block">Awaiting receipt check</span>
         </div>
@@ -448,7 +458,7 @@ export default function AdminPaymentsControl() {
         <div className="card p-5 bg-brand-bg-secondary border border-brand-border rounded-2xl">
           <span className="text-brand-text-muted text-xs font-semibold">Today's Collections</span>
           <span className="block text-2xl font-bold font-display text-brand-accent-cyan mt-1">
-            ${stats.todayCollection.toLocaleString()}
+            ${(stats.todayCollection || 0).toLocaleString()}
           </span>
           <span className="text-[10px] text-brand-text-muted mt-1 block">Hourly bank reconciliation logs</span>
         </div>
@@ -456,7 +466,7 @@ export default function AdminPaymentsControl() {
         <div className="card p-5 bg-brand-bg-secondary border border-brand-border rounded-2xl">
           <span className="text-brand-text-muted text-xs font-semibold">Refund Queue</span>
           <span className="block text-2xl font-bold font-display text-brand-accent-ruby mt-1">
-            {stats.refundRequested} Requests
+            {stats.refundRequested || 0} Requests
           </span>
           <span className="text-[10px] text-brand-text-muted mt-1 block">Awaiting HOD/Dean review</span>
         </div>

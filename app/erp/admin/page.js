@@ -60,8 +60,12 @@ export default function UniversityAdminDashboard() {
     deleteAnnouncement
   } = useDb() || {};
 
-  const [currentUser, setCurrentUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [currentUser, setCurrentUser] = useState({
+    name: 'System Administrator',
+    role: 'admin',
+    department: 'University Governance'
+  });
+  const [loading, setLoading] = useState(false);
 
   // Active Role View Selector (Admin, Faculty, Student, Dean)
   const [activeRoleView, setActiveRoleView] = useState('admin');
@@ -535,82 +539,180 @@ export default function UniversityAdminDashboard() {
               </div>
             </div>
 
-            <div className="lg:col-span-5 card bg-brand-bg-secondary border border-brand-border rounded-2xl p-5 flex flex-col gap-3 shadow-sm">
-              <div className="flex justify-between items-center border-b border-brand-border/30 pb-2">
-                <div>
-                  <h3 className="text-sm font-bold text-white">Department Student Distribution</h3>
-                  <p className="text-[11px] text-brand-text-muted mt-0.5">Faculty major capacity breakdown</p>
+            <div className="lg:col-span-5 card bg-brand-bg-secondary border border-brand-border rounded-2xl p-5 flex flex-col gap-4 shadow-md transition-all">
+              {/* Header */}
+              <div className="flex justify-between items-center border-b border-brand-border/30 pb-3">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a10 10 0 0 1 10 10"/><path d="M12 12 2 12"/></svg>
+                  </div>
+                  <div>
+                    <h3 className="text-sm font-bold text-white tracking-tight">Department Student Distribution</h3>
+                    <p className="text-[11px] text-brand-text-muted mt-0.5">Faculty major capacity breakdown</p>
+                  </div>
                 </div>
-                <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded font-semibold">
-                  Distribution
+                <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-full font-bold flex items-center gap-1.5">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                  {adminDonutData.length} Faculties
                 </span>
               </div>
 
-              <div className="w-full overflow-hidden flex items-center justify-center py-1">
-                <svg viewBox="0 0 450 170" className="w-full h-auto">
+              {/* Modern Chart & Capacity Layout */}
+              <div className="grid grid-cols-1 md:grid-cols-12 gap-5 items-center">
+                {/* Donut Chart Visualizer */}
+                <div className="md:col-span-6 flex flex-col items-center justify-center relative py-2">
                   {(() => {
                     const total = adminDonutData.reduce((acc, d) => acc + d.count, 0);
-                    let startAngle = 0;
-                    const cx = 130;
-                    const cy = 80;
-                    const r = 58;
-                    const rInner = 34;
+                    const r = 64;
+                    const circ = 2 * Math.PI * r;
+                    let accumulated = 0;
+                    const activeDept = hoverDonut !== null ? adminDonutData[hoverDonut] : null;
 
                     return (
-                      <g>
-                        {adminDonutData.map((d, i) => {
-                          const sliceAngle = (d.count / total) * 2 * Math.PI;
-                          const endAngle = startAngle + sliceAngle;
+                      <div className="relative w-48 h-48 flex items-center justify-center">
+                        <svg className="w-full h-full -rotate-90 transform" viewBox="0 0 160 160">
+                          {/* Background Track Ring */}
+                          <circle
+                            cx="80"
+                            cy="80"
+                            r={r}
+                            fill="transparent"
+                            stroke="rgba(51, 65, 85, 0.35)"
+                            strokeWidth="18"
+                          />
 
-                          const x1 = cx + r * Math.cos(startAngle);
-                          const y1 = cy + r * Math.sin(startAngle);
-                          const x2 = cx + r * Math.cos(endAngle);
-                          const y2 = cy + r * Math.sin(endAngle);
+                          {/* Data Segments with Crisp Spacing */}
+                          {adminDonutData.map((d, i) => {
+                            const pct = d.count / total;
+                            const segmentLength = pct * circ;
+                            const gap = 3.5;
+                            const dashArray = `${Math.max(0, segmentLength - gap)} ${circ - Math.max(0, segmentLength - gap)}`;
+                            const dashOffset = -accumulated;
+                            accumulated += segmentLength;
 
-                          const x1In = cx + rInner * Math.cos(startAngle);
-                          const y1In = cy + rInner * Math.sin(startAngle);
-                          const x2In = cx + rInner * Math.cos(endAngle);
-                          const y2In = cy + rInner * Math.sin(endAngle);
+                            const isHovered = hoverDonut === i;
+                            const isDimmed = hoverDonut !== null && !isHovered;
 
-                          const largeArc = sliceAngle > Math.PI ? 1 : 0;
-                          const pathData = `M ${x1In} ${y1In} L ${x1} ${y1} A ${r} ${r} 0 ${largeArc} 1 ${x2} ${y2} L ${x2In} ${x2In} L ${x2In} ${y2In} A ${rInner} ${rInner} 0 ${largeArc} 0 ${x1In} ${y1In} Z`;
+                            return (
+                              <circle
+                                key={i}
+                                cx="80"
+                                cy="80"
+                                r={r}
+                                fill="transparent"
+                                stroke={d.color}
+                                strokeWidth={isHovered ? 24 : 18}
+                                strokeDasharray={dashArray}
+                                strokeDashoffset={dashOffset}
+                                className="transition-all duration-300 cursor-pointer"
+                                style={{
+                                  opacity: isDimmed ? 0.35 : 1,
+                                  filter: isHovered ? `drop-shadow(0 0 8px ${d.color}90)` : 'none'
+                                }}
+                                onMouseEnter={() => setHoverDonut(i)}
+                                onMouseLeave={() => setHoverDonut(null)}
+                              />
+                            );
+                          })}
+                        </svg>
 
-                          startAngle = endAngle;
-
-                          return (
-                            <path
-                              key={i}
-                              d={pathData}
-                              fill={d.color}
-                              stroke="#0f172a"
-                              strokeWidth="1.5"
-                              className="cursor-pointer hover:opacity-90 transition-all"
-                            />
-                          );
-                        })}
-
-                        <text x={cx} y={cy - 4} fill="#ffffff" fontSize="13" fontWeight="bold" textAnchor="middle" fontFamily="sans-serif">
-                          {total.toLocaleString()}
-                        </text>
-                        <text x={cx} y={cy + 12} fill="#94a3b8" fontSize="8" textAnchor="middle" fontFamily="monospace">
-                          STUDENTS
-                        </text>
-
-                        {adminDonutData.map((d, i) => (
-                          <g key={`leg_${i}`} transform={`translate(240, ${25 + i * 26})`}>
-                            <rect x="0" y="0" width="12" height="12" rx="3" fill={d.color} />
-                            <text x="18" y="10" fill="#ffffff" fontSize="10" fontWeight="600" fontFamily="sans-serif">
-                              {d.dept}
-                            </text>
-                            <text x="170" y="10" fill="#94a3b8" fontSize="10" fontFamily="monospace" textAnchor="end">
-                              {d.count} ({Math.round((d.count / total) * 100)}%)
-                            </text>
-                          </g>
-                        ))}
-                      </g>
+                        {/* Center Metric Spotlight */}
+                        <div className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none px-3">
+                          {activeDept ? (
+                            <div className="animate-fade-in flex flex-col items-center">
+                              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-slate-300 truncate max-w-[100px]">
+                                {activeDept.dept}
+                              </span>
+                              <span className="text-xl font-display font-extrabold text-white mt-0.5">
+                                {activeDept.count.toLocaleString()}
+                              </span>
+                              <span className="text-[10px] font-mono font-bold text-emerald-400 mt-0.5">
+                                {Math.round((activeDept.count / total) * 100)}% of total
+                              </span>
+                            </div>
+                          ) : (
+                            <div className="flex flex-col items-center">
+                              <span className="text-2xl font-display font-extrabold text-white tracking-tight">
+                                {total.toLocaleString()}
+                              </span>
+                              <span className="text-[9px] font-mono font-bold uppercase tracking-wider text-slate-400 mt-0.5 flex items-center gap-1">
+                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                                Students
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
                     );
                   })()}
-                </svg>
+                </div>
+
+                {/* Interactive Capacity Breakdown Rows */}
+                <div className="md:col-span-6 flex flex-col gap-2.5">
+                  {(() => {
+                    const total = adminDonutData.reduce((acc, d) => acc + d.count, 0);
+                    return adminDonutData.map((d, i) => {
+                      const isHovered = hoverDonut === i;
+                      const pct = Math.round((d.count / total) * 100);
+
+                      return (
+                        <div
+                          key={d.dept}
+                          onMouseEnter={() => setHoverDonut(i)}
+                          onMouseLeave={() => setHoverDonut(null)}
+                          className={`p-2.5 rounded-xl border transition-all cursor-pointer flex flex-col gap-1.5 ${
+                            isHovered
+                              ? 'bg-slate-800/80 border-slate-600 shadow-md translate-x-1'
+                              : 'bg-brand-bg-tertiary/40 border-brand-border/40 hover:bg-slate-800/40'
+                          }`}
+                        >
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2 min-w-0">
+                              <span
+                                className="w-2.5 h-2.5 rounded-full shrink-0 shadow-xs"
+                                style={{ backgroundColor: d.color, boxShadow: `0 0 6px ${d.color}80` }}
+                              ></span>
+                              <span className="text-xs font-semibold text-white truncate max-w-[120px]">
+                                {d.dept}
+                              </span>
+                            </div>
+                            <div className="flex items-center gap-1.5 shrink-0">
+                              <span className="text-xs font-mono font-bold text-slate-200">
+                                {d.count}
+                              </span>
+                              <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 text-slate-300">
+                                {pct}%
+                              </span>
+                            </div>
+                          </div>
+
+                          {/* Progress Bar */}
+                          <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
+                            <div
+                              className="h-full rounded-full transition-all duration-500"
+                              style={{
+                                width: `${pct}%`,
+                                backgroundColor: d.color,
+                                boxShadow: isHovered ? `0 0 8px ${d.color}` : 'none'
+                              }}
+                            ></div>
+                          </div>
+                        </div>
+                      );
+                    });
+                  })()}
+                </div>
+              </div>
+
+              {/* Telemetry Summary Footer */}
+              <div className="pt-3 border-t border-brand-border/30 flex items-center justify-between text-[10px] font-mono text-slate-400">
+                <span className="flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-blue-400"></span>
+                  Top Major: <strong className="text-slate-200 font-semibold">{adminDonutData[0]?.dept || 'CS'}</strong>
+                </span>
+                <span className="text-emerald-400 font-bold">
+                  Capacity: {Math.round(adminDonutData.reduce((acc, d) => acc + d.count, 0) / (adminDonutData.length || 1))} avg/dept
+                </span>
               </div>
             </div>
           </div>

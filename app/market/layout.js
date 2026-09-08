@@ -105,7 +105,7 @@ export default function MarketLayout({ children }) {
       document.documentElement.style.setProperty('--border', prevBorder);
       document.documentElement.style.setProperty('--radius-lg', prevRadiusLg);
       
-      const savedTheme = localStorage.getItem('campusx_theme') || 'light';
+      const savedTheme = localStorage.getItem('campusx_theme') || 'emerald';
       document.documentElement.setAttribute('data-theme', savedTheme);
     };
   }, []);
