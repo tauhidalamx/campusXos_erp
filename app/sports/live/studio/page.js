@@ -31,8 +31,8 @@ export default function LiveStreamStudioPage() {
   const [viewerCount, setViewerCount] = useState(0);
   
   // Stream Source Selection & Uploads
-  const [streamSource, setStreamSource] = useState('camera'); // 'camera' or 'file'
-  const [uploadedVideoUrl, setUploadedVideoUrl] = useState('');
+  const [streamSource, setStreamSource] = useState('file'); // 'camera' or 'file'
+  const [uploadedVideoUrl, setUploadedVideoUrl] = useState('/videos/mixkit-one-on-one-basketball-game-751-hd-ready.mp4');
   const [isUploading, setIsUploading] = useState(false);
   
   // Settings
@@ -152,8 +152,8 @@ export default function LiveStreamStudioPage() {
           setUploadedVideoUrl(data.stream.metadata.uploaded_video_url);
           setStreamSource('file');
         } else {
-          setUploadedVideoUrl('');
-          setStreamSource('camera');
+          setUploadedVideoUrl('/videos/mixkit-one-on-one-basketball-game-751-hd-ready.mp4');
+          setStreamSource('file');
         }
       }
       if (data.stream && data.stream.id) {
@@ -728,7 +728,20 @@ export default function LiveStreamStudioPage() {
 
                 {streamSource === 'file' && (
                   <div className="flex flex-col gap-3 p-4 bg-brand-bg-tertiary/40 border border-brand-border/60 rounded-xl">
-                    <span className="text-brand-text-muted font-semibold text-[11px] uppercase tracking-wider">Video Upload Channel</span>
+                    <div className="flex items-center justify-between">
+                      <span className="text-brand-text-muted font-semibold text-[11px] uppercase tracking-wider">Video Stream Source</span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const presetUrl = '/videos/mixkit-one-on-one-basketball-game-751-hd-ready.mp4';
+                          setUploadedVideoUrl(presetUrl);
+                          updateStreamVideo(presetUrl);
+                        }}
+                        className="text-[10px] font-bold text-brand-primary hover:text-white bg-brand-primary/10 hover:bg-brand-primary border border-brand-primary/30 px-2 py-1 rounded transition-all cursor-pointer"
+                      >
+                        🏀 Load Mixkit 1v1 Basketball HD
+                      </button>
+                    </div>
                     
                     {uploadedVideoUrl ? (
                       <div className="flex flex-col gap-2">
@@ -739,7 +752,7 @@ export default function LiveStreamStudioPage() {
                               setUploadedVideoUrl('');
                               updateStreamVideo('');
                             }}
-                            className="text-xs font-bold hover:underline"
+                            className="text-xs font-bold hover:underline cursor-pointer"
                           >
                             Remove
                           </button>
@@ -752,7 +765,7 @@ export default function LiveStreamStudioPage() {
                           accept="video/mp4,video/webm" 
                           onChange={handleFileUpload}
                           disabled={isUploading}
-                          className="text-xs text-brand-text-muted file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-brand-primary file:text-white hover:file:bg-brand-primary-hover"
+                          className="text-xs text-brand-text-muted file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-xs file:font-semibold file:bg-brand-primary file:text-white hover:file:bg-brand-primary-hover cursor-pointer"
                         />
                         {isUploading && (
                           <div className="flex items-center gap-2 text-[10px] text-brand-accent-cyan font-mono mt-1">

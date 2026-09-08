@@ -4883,8 +4883,8 @@ app.get('/api/sports/streams/match/:matchId', (req, res) => {
     if (err) return res.status(500).json({ error: err.message });
     
     if (!stream) {
-      // Find a default video file in the uploads directory to seed the live stream
-      let defaultVideo = '';
+      // Find a default video file in the public/videos or uploads directory to seed the live stream
+      let defaultVideo = '/videos/mixkit-one-on-one-basketball-game-751-hd-ready.mp4';
       try {
         const files = fs.readdirSync(uploadsDir);
         const mp4Files = files.filter(f => f.endsWith('.mp4'));

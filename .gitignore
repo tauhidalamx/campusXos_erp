@@ -54,6 +54,8 @@ service-account*.json
 *.doc
 *.docx
 *.mp4
+!public/videos/*.mp4
+!public/*.mp4
 *.mov
 docs/videos/*.mp4
 uploads/
