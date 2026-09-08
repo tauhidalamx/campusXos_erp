@@ -56,9 +56,10 @@ service-account*.json
 *.mp4
 !public/videos/*.mp4
 !public/*.mp4
+!uploads/*
+!uploads/**
 *.mov
 docs/videos/*.mp4
-uploads/
 artifacts/
 
 # Local Environment

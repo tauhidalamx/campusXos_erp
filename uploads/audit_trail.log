@@ -1,0 +1,98 @@
+[2026-08-27T12:43:27.704Z] [Local Stream - user-events]: {"type":"login","email":"admin@campusx.edu","name":"Dr. Rajesh Sharma","timestamp":"2026-08-27T12:43:27.704Z"}
+[2026-08-27T12:43:33.170Z] [Local Stream - user-events]: {"type":"login","email":"student@campusx.edu","name":"Ananya Patel","timestamp":"2026-08-27T12:43:33.170Z"}
+[2026-08-27T12:44:07.622Z] [Local Stream - user-events]: {"type":"login","email":"superadmin@campusx.demo","name":"Global Super Admin","timestamp":"2026-08-27T12:44:07.622Z"}
+[2026-08-27T12:44:11.650Z] [Kafka Event - user-events]: {"type":"login","email":"admin@campusx.edu","name":"Dr. Rajesh Sharma","timestamp":"2026-08-27T12:43:27.704Z"}
+[2026-08-27T12:44:11.669Z] [Kafka Event - user-events]: {"type":"login","email":"student@campusx.edu","name":"Ananya Patel","timestamp":"2026-08-27T12:43:33.170Z"}
+[2026-08-27T12:44:11.670Z] [Kafka Event - user-events]: {"type":"login","email":"superadmin@campusx.demo","name":"Global Super Admin","timestamp":"2026-08-27T12:44:07.622Z"}
+[2026-08-27T12:48:23.450Z] [Local Stream - user-events]: {"type":"login","email":"admin@campusx.edu","name":"Dr. Rajesh Sharma","timestamp":"2026-08-27T12:48:23.450Z"}
+[2026-08-27T12:48:24.064Z] [Kafka Event - user-events]: {"type":"login","email":"admin@campusx.edu","name":"Dr. Rajesh Sharma","timestamp":"2026-08-27T12:48:23.450Z"}
+[2026-08-27T12:50:06.692Z] [Local Stream - user-events]: {"type":"login","email":"superadmin@campusx.demo","name":"Global Super Admin","timestamp":"2026-08-27T12:50:06.692Z"}
+[2026-08-27T12:51:44.069Z] [Kafka Event - user-events]: {"type":"login","email":"superadmin@campusx.demo","name":"Global Super Admin","timestamp":"2026-08-27T12:50:06.692Z"}
+[2026-08-27T12:51:44.214Z] [Kafka Event - user-events]: {"type":"login","email":"superadmin@campusx.demo","name":"Global Super Admin","timestamp":"2026-08-27T12:50:06.692Z"}
+[2026-08-27T13:00:16.539Z] [Local Stream - user-events]: {"type":"login","email":"admin@campusx.edu","name":"Dr. Rajesh Sharma","timestamp":"2026-08-27T13:00:16.539Z"}
+[2026-08-27T13:00:16.548Z] [Kafka Event - user-events]: {"type":"login","email":"admin@campusx.edu","name":"Dr. Rajesh Sharma","timestamp":"2026-08-27T13:00:16.539Z"}
+[2026-08-27T13:01:03.229Z] [Local Stream - user-events]: {"type":"login","email":"univadmin@campusx.demo","name":"University Admin","timestamp":"2026-08-27T13:01:03.229Z"}
+[2026-08-27T13:01:03.234Z] [Kafka Event - user-events]: {"type":"login","email":"univadmin@campusx.demo","name":"University Admin","timestamp":"2026-08-27T13:01:03.229Z"}
+[2026-08-27T13:01:13.941Z] [Local Stream - user-events]: {"type":"login","email":"univadmin@campusx.demo","name":"University Admin","timestamp":"2026-08-27T13:01:13.941Z"}
+[2026-08-27T13:01:13.945Z] [Kafka Event - user-events]: {"type":"login","email":"univadmin@campusx.demo","name":"University Admin","timestamp":"2026-08-27T13:01:13.941Z"}
+[2026-08-27T13:01:57.307Z] [Local Stream - user-events]: {"type":"login","email":"univadmin@campusx.demo","name":"University Admin","timestamp":"2026-08-27T13:01:57.307Z"}
+[2026-08-27T13:01:57.311Z] [Kafka Event - user-events]: {"type":"login","email":"univadmin@campusx.demo","name":"University Admin","timestamp":"2026-08-27T13:01:57.307Z"}
+[2026-08-27T13:03:52.976Z] [Local Stream - user-events]: {"type":"login","email":"coach@campusx.demo","name":"Prof. Gurpreet Singh (Coach)","timestamp":"2026-08-27T13:03:52.976Z"}
+[2026-08-27T13:03:52.982Z] [Kafka Event - user-events]: {"type":"login","email":"coach@campusx.demo","name":"Prof. Gurpreet Singh (Coach)","timestamp":"2026-08-27T13:03:52.976Z"}
+[2026-08-27T13:05:32.657Z] [Local Stream - user-events]: {"type":"login","email":"admin@campusx.edu","name":"Dr. Rajesh Sharma","timestamp":"2026-08-27T13:05:32.657Z"}
+[2026-08-27T13:05:32.660Z] [Kafka Event - user-events]: {"type":"login","email":"admin@campusx.edu","name":"Dr. Rajesh Sharma","timestamp":"2026-08-27T13:05:32.657Z"}
+[2026-08-27T13:06:34.983Z] [Local Stream - user-events]: {"type":"login","email":"univadmin@campusx.demo","name":"University Admin","timestamp":"2026-08-27T13:06:34.983Z"}
+[2026-08-27T13:06:34.988Z] [Kafka Event - user-events]: {"type":"login","email":"univadmin@campusx.demo","name":"University Admin","timestamp":"2026-08-27T13:06:34.983Z"}
+[2026-08-27T13:07:40.213Z] [Local Stream - user-events]: {"type":"login","email":"admin@campusx.edu","name":"Dr. Rajesh Sharma","timestamp":"2026-08-27T13:07:40.213Z"}
+[2026-08-27T13:07:40.221Z] [Kafka Event - user-events]: {"type":"login","email":"admin@campusx.edu","name":"Dr. Rajesh Sharma","timestamp":"2026-08-27T13:07:40.213Z"}
+[2026-08-27T13:08:17.971Z] [Local Stream - user-events]: {"type":"login","email":"student@campusx.edu","name":"Ananya Patel","timestamp":"2026-08-27T13:08:17.971Z"}
+[2026-08-27T13:08:17.974Z] [Kafka Event - user-events]: {"type":"login","email":"student@campusx.edu","name":"Ananya Patel","timestamp":"2026-08-27T13:08:17.971Z"}
+[2026-08-27T13:09:12.940Z] [Local Stream - user-events]: {"type":"login","email":"admin@campusx.demo","name":"Platform Admin","timestamp":"2026-08-27T13:09:12.940Z"}
+[2026-08-27T13:09:12.946Z] [Kafka Event - user-events]: {"type":"login","email":"admin@campusx.demo","name":"Platform Admin","timestamp":"2026-08-27T13:09:12.940Z"}
+[2026-08-27T13:09:37.527Z] [Local Stream - user-events]: {"type":"login","email":"student@campusx.edu","name":"Ananya Patel","timestamp":"2026-08-27T13:09:37.527Z"}
+[2026-08-27T13:09:37.530Z] [Kafka Event - user-events]: {"type":"login","email":"student@campusx.edu","name":"Ananya Patel","timestamp":"2026-08-27T13:09:37.527Z"}
+[2026-08-27T13:12:19.202Z] [Local Stream - user-events]: {"type":"login","email":"admin@campusx.demo","name":"Platform Admin","timestamp":"2026-08-27T13:12:19.202Z"}
+[2026-08-27T13:12:19.269Z] [Kafka Event - user-events]: {"type":"login","email":"admin@campusx.demo","name":"Platform Admin","timestamp":"2026-08-27T13:12:19.202Z"}
+[2026-08-27T13:13:39.064Z] [Local Stream - user-events]: {"type":"login","email":"student@campusx.edu","name":"Ananya Patel","timestamp":"2026-08-27T13:13:39.064Z"}
+[2026-08-27T13:13:39.081Z] [Kafka Event - user-events]: {"type":"login","email":"student@campusx.edu","name":"Ananya Patel","timestamp":"2026-08-27T13:13:39.064Z"}
+[2026-08-27T13:21:22.685Z] [Local Stream - user-events]: {"type":"login","email":"admin@campusx.demo","name":"Platform Admin","timestamp":"2026-08-27T13:21:22.685Z"}
+[2026-08-27T13:21:22.711Z] [Kafka Event - user-events]: {"type":"login","email":"admin@campusx.demo","name":"Platform Admin","timestamp":"2026-08-27T13:21:22.685Z"}
+[2026-08-27T13:50:54.830Z] [Local Stream - user-events]: {"type":"login","email":"univadmin@campusx.demo","name":"University Admin","timestamp":"2026-08-27T13:50:54.830Z"}
+[2026-08-27T13:50:54.916Z] [Kafka Event - user-events]: {"type":"login","email":"univadmin@campusx.demo","name":"University Admin","timestamp":"2026-08-27T13:50:54.830Z"}
+[2026-08-27T13:56:45.113Z] [Local Stream - user-events]: {"type":"login","email":"univadmin@campusx.demo","name":"University Admin","timestamp":"2026-08-27T13:56:45.113Z"}
+[2026-08-27T13:58:39.989Z] [Local Stream - user-events]: {"type":"register","email":"vjai@gmail.com","name":"rahul","timestamp":"2026-08-27T13:58:39.989Z"}
+[2026-08-27T14:18:02.200Z] [Local Stream - user-events]: {"type":"login","email":"admin@campusx.edu","name":"Dr. Rajesh Sharma","timestamp":"2026-08-27T14:18:02.200Z"}
+[2026-08-27T14:32:16.639Z] [Local Stream - user-events]: {"type":"login","email":"univadmin@campusx.demo","name":"University Admin","timestamp":"2026-08-27T14:32:16.639Z"}
+[2026-08-27T14:35:15.544Z] [Local Stream - user-events]: {"type":"login","email":"univadmin@campusx.demo","name":"University Admin","timestamp":"2026-08-27T14:35:15.544Z"}
+[2026-08-27T14:37:23.813Z] [Local Stream - user-events]: {"type":"login","email":"univadmin@campusx.demo","name":"University Admin","timestamp":"2026-08-27T14:37:23.813Z"}
+[2026-08-27T14:38:47.942Z] [Local Stream - user-events]: {"type":"login","email":"univadmin@campusx.demo","name":"University Admin","timestamp":"2026-08-27T14:38:47.942Z"}
+[2026-08-27T14:39:42.680Z] [Local Stream - user-events]: {"type":"login","email":"univadmin@campusx.demo","name":"University Admin","timestamp":"2026-08-27T14:39:42.680Z"}
+[2026-08-27T14:42:44.097Z] [Local Stream - user-events]: {"type":"login","email":"student@campusx.edu","name":"Ananya Patel","timestamp":"2026-08-27T14:42:44.097Z"}
+[2026-08-31T14:59:43.746Z] [Kafka Event - user-events]: {"type":"login","email":"univadmin@campusx.demo","name":"University Admin","timestamp":"2026-08-27T13:56:45.113Z"}
+[2026-08-31T14:59:43.749Z] [Kafka Event - user-events]: {"type":"register","email":"vjai@gmail.com","name":"rahul","timestamp":"2026-08-27T13:58:39.989Z"}
+[2026-08-31T14:59:43.749Z] [Kafka Event - user-events]: {"type":"login","email":"admin@campusx.edu","name":"Dr. Rajesh Sharma","timestamp":"2026-08-27T14:18:02.200Z"}
+[2026-08-31T14:59:43.750Z] [Kafka Event - user-events]: {"type":"login","email":"univadmin@campusx.demo","name":"University Admin","timestamp":"2026-08-27T14:32:16.639Z"}
+[2026-08-31T14:59:43.750Z] [Kafka Event - user-events]: {"type":"login","email":"univadmin@campusx.demo","name":"University Admin","timestamp":"2026-08-27T14:35:15.544Z"}
+[2026-08-31T14:59:43.750Z] [Kafka Event - user-events]: {"type":"login","email":"univadmin@campusx.demo","name":"University Admin","timestamp":"2026-08-27T14:37:23.813Z"}
+[2026-08-31T14:59:43.750Z] [Kafka Event - user-events]: {"type":"login","email":"univadmin@campusx.demo","name":"University Admin","timestamp":"2026-08-27T14:38:47.942Z"}
+[2026-08-31T14:59:43.750Z] [Kafka Event - user-events]: {"type":"login","email":"univadmin@campusx.demo","name":"University Admin","timestamp":"2026-08-27T14:39:42.680Z"}
+[2026-08-31T14:59:43.750Z] [Kafka Event - user-events]: {"type":"login","email":"student@campusx.edu","name":"Ananya Patel","timestamp":"2026-08-27T14:42:44.097Z"}
+[2026-08-31T15:00:00.288Z] [Local Stream - user-events]: {"type":"login","email":"univadmin@campusx.demo","name":"University Admin","timestamp":"2026-08-31T15:00:00.288Z"}
+[2026-08-31T15:00:00.320Z] [Kafka Event - user-events]: {"type":"login","email":"univadmin@campusx.demo","name":"University Admin","timestamp":"2026-08-31T15:00:00.288Z"}
+[2026-09-07T11:44:24.922Z] [Local Stream - forum-events]: {"type":"poll-vote","poll_id":"poll_lufrfhglf","user_id":"usr_demo_2","option_index":0,"timestamp":"2026-09-07T11:44:24.922Z"}
+[2026-09-07T11:44:25.114Z] [Kafka Event - forum-events]: {"type":"poll-vote","poll_id":"poll_lufrfhglf","user_id":"usr_demo_2","option_index":0,"timestamp":"2026-09-07T11:44:24.922Z"}
+[2026-09-07T13:06:53.212Z] [Local Stream - forum-events]: {"type":"text","post_id":"post_voujqcbvu","user_id":"usr_demo_2","category":"campus","timestamp":"2026-09-07T13:06:53.212Z"}
+[2026-09-07T13:06:53.387Z] [Kafka Event - forum-events]: {"type":"text","post_id":"post_voujqcbvu","user_id":"usr_demo_2","category":"campus","timestamp":"2026-09-07T13:06:53.212Z"}
+[2026-09-07T13:30:18.016Z] [Local Stream - forum-events]: {"type":"chat-message","channelId":"usr_005","messageId":"m_1788787817996","timestamp":"2026-09-07T13:30:18.016Z"}
+[2026-09-07T13:30:18.088Z] [Kafka Event - forum-events]: {"type":"chat-message","channelId":"usr_005","messageId":"m_1788787817996","timestamp":"2026-09-07T13:30:18.016Z"}
+[2026-09-07T13:40:57.751Z] [Local Stream - forum-events]: {"type":"chat-message","channelId":"FAC023__usr_demo_2","messageId":"m_1788788457734","timestamp":"2026-09-07T13:40:57.751Z"}
+[2026-09-07T13:40:57.809Z] [Kafka Event - forum-events]: {"type":"chat-message","channelId":"FAC023__usr_demo_2","messageId":"m_1788788457734","timestamp":"2026-09-07T13:40:57.751Z"}
+[2026-09-07T13:43:53.785Z] [Local Stream - forum-events]: {"type":"chat-message","channelId":"FAC023__usr_demo_2","messageId":"m_1788788633771","timestamp":"2026-09-07T13:43:53.784Z"}
+[2026-09-07T13:43:53.805Z] [Kafka Event - forum-events]: {"type":"chat-message","channelId":"FAC023__usr_demo_2","messageId":"m_1788788633771","timestamp":"2026-09-07T13:43:53.784Z"}
+[2026-09-07T14:48:22.330Z] [Local Stream - forum-events]: {"type":"chat-message","channelId":"usr_mta05mk479w__usr_mtrcpymb","messageId":"m_1788792502302","timestamp":"2026-09-07T14:48:22.330Z"}
+[2026-09-07T14:48:22.368Z] [Kafka Event - forum-events]: {"type":"chat-message","channelId":"usr_mta05mk479w__usr_mtrcpymb","messageId":"m_1788792502302","timestamp":"2026-09-07T14:48:22.330Z"}
+[2026-09-07T18:52:03.306Z] [Local Stream - user-events]: {"type":"login","email":"superadmin@campusx.demo","name":"Global Super Admin","timestamp":"2026-09-07T18:52:03.306Z"}
+[2026-09-07T18:52:13.622Z] [Kafka Event - user-events]: {"type":"login","email":"superadmin@campusx.demo","name":"Global Super Admin","timestamp":"2026-09-07T18:52:03.306Z"}
+[2026-09-07T18:58:10.291Z] [Local Stream - user-events]: {"type":"register","email":"tauhid.real@campusx.edu","name":"Tauhid Real User","timestamp":"2026-09-07T18:58:10.291Z"}
+[2026-09-07T18:58:17.521Z] [Local Stream - user-events]: {"type":"login","email":"tauhid.real@campusx.edu","name":"Tauhid Real User","timestamp":"2026-09-07T18:58:17.521Z"}
+[2026-09-07T18:58:21.321Z] [Kafka Event - user-events]: {"type":"register","email":"tauhid.real@campusx.edu","name":"Tauhid Real User","timestamp":"2026-09-07T18:58:10.291Z"}
+[2026-09-07T18:58:21.321Z] [Kafka Event - user-events]: {"type":"login","email":"tauhid.real@campusx.edu","name":"Tauhid Real User","timestamp":"2026-09-07T18:58:17.521Z"}
+[2026-09-07T19:11:43.125Z] [Local Stream - user-events]: {"type":"register","email":"test.faculty@campusx.edu","name":"Dr. Test Faculty","timestamp":"2026-09-07T19:11:43.125Z"}
+[2026-09-07T19:11:43.176Z] [Kafka Event - user-events]: {"type":"register","email":"test.faculty@campusx.edu","name":"Dr. Test Faculty","timestamp":"2026-09-07T19:11:43.125Z"}
+[2026-09-07T19:12:59.083Z] [Local Stream - user-events]: {"type":"login","email":"test.faculty@campusx.edu","name":"Dr. Test Faculty","timestamp":"2026-09-07T19:12:59.083Z"}
+[2026-09-07T19:13:08.018Z] [Kafka Event - user-events]: {"type":"login","email":"test.faculty@campusx.edu","name":"Dr. Test Faculty","timestamp":"2026-09-07T19:12:59.083Z"}
+[2026-09-07T19:39:50.016Z] [Local Stream - user-events]: {"type":"register","email":"rajesh.faculty@campusx.edu","name":"Prof. Rajesh Sharma","timestamp":"2026-09-07T19:39:50.015Z"}
+[2026-09-07T19:44:08.338Z] [Kafka Event - user-events]: {"type":"register","email":"rajesh.faculty@campusx.edu","name":"Prof. Rajesh Sharma","timestamp":"2026-09-07T19:39:50.015Z"}
+[2026-09-07T20:19:52.294Z] [Local Stream - user-events]: {"type":"login","email":"admin@campusx.edu","name":"Dr. Rajesh Sharma","timestamp":"2026-09-07T20:19:52.293Z"}
+[2026-09-07T20:19:52.573Z] [Kafka Event - user-events]: {"type":"login","email":"admin@campusx.edu","name":"Dr. Rajesh Sharma","timestamp":"2026-09-07T20:19:52.293Z"}
+[2026-09-08T05:26:50.630Z] [Local Stream - forum-events]: {"type":"chat-message","channelId":"test_channel_123","messageId":"msg_test_01","timestamp":"2026-09-08T05:26:50.630Z"}
+[2026-09-08T05:26:50.740Z] [Kafka Event - forum-events]: {"type":"chat-message","channelId":"test_channel_123","messageId":"msg_test_01","timestamp":"2026-09-08T05:26:50.630Z"}
+[2026-09-08T05:26:56.892Z] [Local Stream - forum-events]: {"type":"chat-message-deleted","channelId":"test_channel_123","messageId":"msg_test_01","timestamp":"2026-09-08T05:26:56.892Z"}
+[2026-09-08T05:26:56.897Z] [Kafka Event - forum-events]: {"type":"chat-message-deleted","channelId":"test_channel_123","messageId":"msg_test_01","timestamp":"2026-09-08T05:26:56.892Z"}
+[2026-09-08T05:30:34.940Z] [Local Stream - forum-events]: {"type":"community-message","channelKey":"dept_cs_general","messageId":"cmsg_test_01","timestamp":"2026-09-08T05:30:34.940Z"}
+[2026-09-08T05:30:40.327Z] [Local Stream - forum-events]: {"type":"community-message-deleted","channelKey":"dept_cs_general","messageId":"cmsg_test_01","timestamp":"2026-09-08T05:30:40.327Z"}
+[2026-09-08T05:30:48.649Z] [Kafka Event - forum-events]: {"type":"community-message","channelKey":"dept_cs_general","messageId":"cmsg_test_01","timestamp":"2026-09-08T05:30:34.940Z"}
+[2026-09-08T05:30:48.653Z] [Kafka Event - forum-events]: {"type":"community-message-deleted","channelKey":"dept_cs_general","messageId":"cmsg_test_01","timestamp":"2026-09-08T05:30:40.327Z"}
+[2026-09-08T06:49:35.077Z] [Local Stream - forum-events]: {"type":"image","post_id":"post_wgwe1jzsa","user_id":"usr_admin","category":"campus","timestamp":"2026-09-08T06:49:35.077Z"}
+[2026-09-08T06:49:35.112Z] [Kafka Event - forum-events]: {"type":"image","post_id":"post_wgwe1jzsa","user_id":"usr_admin","category":"campus","timestamp":"2026-09-08T06:49:35.077Z"}
+[2026-09-08T07:19:56.966Z] [Local Stream - sports-streams-notifications]: {"type":"STREAM_STATUS_UPDATED","streamId":"stream_auto_mtritb12","status":"LIVE","timestamp":"2026-09-08T07:19:56.966Z"}
